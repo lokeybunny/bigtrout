@@ -1,4 +1,4 @@
-import { Twitter, MessageCircle, Globe } from 'lucide-react';
+import { Twitter, Globe } from 'lucide-react';
 
 const socialLinks = [
   {
@@ -9,18 +9,11 @@ const socialLinks = [
     color: 'fire',
   },
   {
-    icon: MessageCircle,
-    name: 'Telegram',
-    handle: 't.me/bigtrout',
-    url: '#',
-    color: 'ice',
-  },
-  {
     icon: Globe,
     name: 'Website',
     handle: 'bigtrout.io',
     url: '#',
-    color: 'fire',
+    color: 'ice',
   },
 ];
 
