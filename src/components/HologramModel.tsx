@@ -12,7 +12,7 @@ export const HologramModel = () => {
         }}
       />
       
-      {/* GIF container */}
+      {/* GIF container with smooth loop masking */}
       <div className="relative w-full h-full animate-float flex items-center justify-center">
         <img
           src={heroGif}
@@ -20,6 +20,7 @@ export const HologramModel = () => {
           className="w-full h-full object-contain"
           style={{
             filter: 'drop-shadow(0 0 30px hsl(190 100% 70% / 0.6)) drop-shadow(0 0 60px hsl(20 100% 50% / 0.4))',
+            animation: 'smoothLoop 4s ease-in-out infinite',
           }}
         />
       </div>
