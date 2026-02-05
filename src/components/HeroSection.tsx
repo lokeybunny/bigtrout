@@ -68,9 +68,14 @@ export const HeroSection = () => {
           >
             Buy $BIGTROUT
           </a>
-          <button className="btn-ice">
+          <a 
+            href="https://dexscreener.com/solana/84q5fsb6dhvsyhqdfkbxdvdfmsiwelezwgmutd1fubac"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ice"
+          >
             View Chart
-          </button>
+          </a>
         </div>
       </div>
 
