@@ -3,9 +3,9 @@ import { Twitter, Globe } from 'lucide-react';
 const socialLinks = [
   {
     icon: Twitter,
-    name: 'Twitter',
-    handle: '@BIGTROUT',
-    url: '#',
+    name: 'Community',
+    handle: 'Join on X',
+    url: 'https://x.com/i/communities/2019176023888187687',
     color: 'fire',
   },
   {
