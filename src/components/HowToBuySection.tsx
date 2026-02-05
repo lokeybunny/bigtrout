@@ -1,4 +1,6 @@
 import { Wallet, ArrowRightLeft, Coins, Trophy } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import lavaTrailBg from '@/assets/lava-trail-bg.jpg';
 
 const steps = [
   {
@@ -28,17 +30,61 @@ const steps = [
 ];
 
 export const HowToBuySection = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        const sectionTop = rect.top;
+        const windowHeight = window.innerHeight;
+        const parallaxOffset = (windowHeight - sectionTop) * 0.3;
+        setScrollY(parallaxOffset);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <section className="relative py-24 px-4">
-      {/* Background accent */}
+    <section ref={sectionRef} className="relative py-24 px-4 overflow-hidden">
+      {/* Parallax lava background */}
       <div 
-        className="absolute inset-0 pointer-events-none opacity-20"
+        className="absolute inset-0 z-0"
         style={{
-          background: 'radial-gradient(ellipse at center, hsl(20 100% 50% / 0.3), transparent 60%)',
+          backgroundImage: `url(${lavaTrailBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
+          transform: `translateY(${scrollY * -0.5}px) scale(1.2)`,
+          willChange: 'transform',
+        }}
+      />
+      
+      {/* Gradient overlay to blend with ice section above */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          background: `linear-gradient(180deg, 
+            hsl(195 90% 45% / 0.3) 0%, 
+            hsl(220 30% 6% / 0.7) 15%, 
+            hsl(220 30% 6% / 0.6) 50%, 
+            hsl(220 30% 6% / 0.8) 100%
+          )`,
         }}
       />
 
-      <div className="relative max-w-6xl mx-auto">
+      {/* Fire glow effect */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          background: 'radial-gradient(ellipse at center, hsl(20 100% 50% / 0.2), transparent 60%)',
+        }}
+      />
+
+      <div className="relative z-10 max-w-6xl mx-auto">
         {/* Section header */}
         <div className="text-center mb-16">
           <h2 className="font-display text-4xl md:text-6xl font-bold mb-4">
@@ -55,7 +101,12 @@ export const HowToBuySection = () => {
             <div key={index} className="relative">
               {/* Connector line */}
               {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-12 left-full w-full h-0.5 -translate-y-1/2 bg-gradient-to-r from-primary/50 to-transparent z-0" />
+                <div 
+                  className="hidden lg:block absolute top-12 left-full w-full h-0.5 -translate-y-1/2 z-0" 
+                  style={{
+                    background: 'linear-gradient(90deg, hsl(20 100% 50% / 0.6), hsl(35 100% 55% / 0.3), transparent)',
+                  }}
+                />
               )}
               
               <div className="card-volcanic p-6 relative z-10">
@@ -84,7 +135,7 @@ export const HowToBuySection = () => {
         {/* Contract address */}
         <div className="mt-16 text-center">
           <p className="text-muted-foreground mb-4 font-display text-sm tracking-wider">CONTRACT ADDRESS</p>
-          <div className="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-card/80 border border-border/50 backdrop-blur-xl">
+          <div className="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-card/80 border border-primary/30 backdrop-blur-xl glow-ember">
             <code className="font-mono text-sm md:text-base text-fire break-all">
               BIGTr0utXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx
             </code>
