@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -13,6 +18,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ["Orbitron", "monospace"],
+        body: ["Rajdhani", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,6 +66,26 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        lava: {
+          deep: "hsl(var(--lava-deep))",
+          core: "hsl(var(--lava-core))",
+          glow: "hsl(var(--lava-glow))",
+        },
+        ember: "hsl(var(--ember))",
+        fire: "hsl(var(--fire-orange))",
+        ice: {
+          deep: "hsl(var(--ice-deep))",
+          mid: "hsl(var(--ice-mid))",
+          glow: "hsl(var(--ice-glow))",
+        },
+        snow: "hsl(var(--snow))",
+        frost: "hsl(var(--frost))",
+        storm: {
+          dark: "hsl(var(--storm-dark))",
+          mid: "hsl(var(--storm-mid))",
+          cloud: "hsl(var(--storm-cloud))",
+        },
+        ash: "hsl(var(--ash))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,25 +94,27 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-20px)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 3s ease-in-out infinite",
+        float: "float 6s ease-in-out infinite",
       },
     },
   },
