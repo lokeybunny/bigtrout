@@ -13,7 +13,10 @@ export const HologramModel = () => {
       />
       
       {/* Video container with transparency effect */}
-      <div className="relative w-full h-full animate-float flex items-center justify-center">
+      <div 
+        className="relative w-full h-full animate-float flex items-center justify-center"
+        style={{ isolation: 'isolate' }}
+      >
         <video
           src={heroVideo}
           autoPlay
@@ -22,7 +25,7 @@ export const HologramModel = () => {
           playsInline
           className="w-full h-full object-contain"
           style={{
-            mixBlendMode: 'screen',
+            mixBlendMode: 'lighten',
             filter: 'drop-shadow(0 0 30px hsl(190 100% 70% / 0.6)) drop-shadow(0 0 60px hsl(20 100% 50% / 0.4))',
           }}
         />
