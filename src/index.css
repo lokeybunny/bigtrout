@@ -274,6 +274,26 @@
     }
   }
   
+  /* Intense fire/orange flame animation */
+  @keyframes fireFlameIntense {
+    0%, 100% {
+      opacity: 0.75;
+      transform: rotate(var(--rotation, 0deg)) translateY(-62%) translateX(-50%) scaleY(1) scaleX(1);
+    }
+    30% {
+      opacity: 1;
+      transform: rotate(var(--rotation, 0deg)) translateY(-75%) translateX(-50%) scaleY(1.35) scaleX(0.85);
+    }
+    60% {
+      opacity: 0.85;
+      transform: rotate(var(--rotation, 0deg)) translateY(-68%) translateX(-50%) scaleY(1.2) scaleX(1.05);
+    }
+    80% {
+      opacity: 1;
+      transform: rotate(var(--rotation, 0deg)) translateY(-78%) translateX(-50%) scaleY(1.3) scaleX(0.9);
+    }
+  }
+  
   /* Button fire style */
   .btn-fire {
     @apply px-8 py-4 font-bold text-lg uppercase tracking-wider rounded-lg;
