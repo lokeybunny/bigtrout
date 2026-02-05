@@ -1,4 +1,5 @@
 import { HologramModel } from './HologramModel';
+import { Parallax3D } from './Parallax3D';
 import heroImage from '@/assets/bigtrout-hero.png';
 
 export const HeroSection = () => {
@@ -68,9 +69,11 @@ export const HeroSection = () => {
         </div>
       </div>
 
-      {/* 3D Hologram Model */}
+      {/* 3D Hologram Model with mouse parallax */}
       <div className="relative z-20">
-        <HologramModel />
+        <Parallax3D intensity={15}>
+          <HologramModel />
+        </Parallax3D>
       </div>
 
       {/* Scroll indicator */}
