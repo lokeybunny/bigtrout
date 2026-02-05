@@ -57,58 +57,6 @@ export const HologramModel = () => {
         ))}
       </div>
 
-      {/* Orange/Fire flames - inner layer */}
-      <div className="absolute inset-[-5%] pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={`fire-inner-${i}`}
-            className="absolute top-1/2 left-1/2"
-            style={{
-              width: '70px',
-              height: '160px',
-              background: `linear-gradient(to top, 
-                hsl(15 100% 55% / 1), 
-                hsl(25 100% 60% / 0.8), 
-                hsl(35 100% 65% / 0.5), 
-                transparent
-              )`,
-              borderRadius: '50% 50% 50% 50% / 65% 65% 35% 35%',
-              filter: 'blur(4px)',
-              transform: `rotate(${i * 45 + 22.5}deg) translateY(-60%) translateX(-50%)`,
-              transformOrigin: 'center bottom',
-              animation: `fireFlameIntense ${0.9 + (i % 3) * 0.2}s ease-in-out infinite`,
-              animationDelay: `${i * 0.15}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Blue flames - inner intense layer */}
-      <div className="absolute inset-[-5%] pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={`inner-${i}`}
-            className="absolute top-1/2 left-1/2"
-            style={{
-              width: '80px',
-              height: '180px',
-              background: `linear-gradient(to top, 
-                hsl(220 100% 70% / 1), 
-                hsl(200 100% 75% / 0.8), 
-                hsl(190 100% 80% / 0.5), 
-                transparent
-              )`,
-              borderRadius: '50% 50% 50% 50% / 65% 65% 35% 35%',
-              filter: 'blur(4px)',
-              transform: `rotate(${i * 45}deg) translateY(-58%) translateX(-50%)`,
-              transformOrigin: 'center bottom',
-              animation: `blueFlameIntense ${1 + (i % 3) * 0.25}s ease-in-out infinite`,
-              animationDelay: `${i * 0.12}s`,
-            }}
-          />
-        ))}
-      </div>
-
       {/* Core flame glow - fire and ice */}
       <div 
         className="absolute inset-[-10%] rounded-full pointer-events-none"
