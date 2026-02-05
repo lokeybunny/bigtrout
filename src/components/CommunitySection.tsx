@@ -1,4 +1,4 @@
-import { Twitter, Globe } from 'lucide-react';
+import { Twitter } from 'lucide-react';
 
 const socialLinks = [
   {
@@ -7,13 +7,6 @@ const socialLinks = [
     handle: 'Join on X',
     url: 'https://x.com/i/communities/2019176023888187687',
     color: 'fire',
-  },
-  {
-    icon: Globe,
-    name: 'Website',
-    handle: 'bigtrout.io',
-    url: '#',
-    color: 'ice',
   },
 ];
 
