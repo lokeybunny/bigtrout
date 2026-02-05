@@ -28,9 +28,14 @@ export const Navbar = () => {
         </div>
 
         {/* CTA */}
-        <button className="btn-fire text-sm py-2 px-4">
+        <a 
+          href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-fire text-sm py-2 px-4"
+        >
           Buy Now
-        </button>
+        </a>
       </div>
     </nav>
   );
