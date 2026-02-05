@@ -3,107 +3,64 @@ import heroGif from '@/assets/bigtrout-hero.gif';
 export const HologramModel = () => {
   return (
     <div className="relative w-[600px] h-[600px] md:w-[800px] md:h-[800px] lg:w-[1000px] lg:h-[1000px]">
-      {/* Orange/Fire flames - outer layer */}
-      <div className="absolute inset-[-15%] pointer-events-none">
-        {[...Array(12)].map((_, i) => (
+      {/* Fire flames shooting outward from sphere edge */}
+      <div className="absolute inset-0 pointer-events-none z-20">
+        {[...Array(16)].map((_, i) => (
           <div
-            key={`fire-outer-${i}`}
-            className="absolute top-1/2 left-1/2"
+            key={`fire-shoot-${i}`}
+            className="absolute"
             style={{
-              width: '90px',
-              height: '200px',
+              width: '120px',
+              height: '280px',
+              left: '50%',
+              top: '50%',
+              marginLeft: '-60px',
+              marginTop: '-50%',
               background: `linear-gradient(to top, 
-                hsl(20 100% 50% / 1), 
-                hsl(30 100% 55% / 0.9), 
-                hsl(40 100% 60% / 0.6), 
-                hsl(50 100% 70% / 0.3),
+                hsl(15 100% 50% / 1), 
+                hsl(25 100% 55% / 0.95), 
+                hsl(35 100% 60% / 0.8), 
+                hsl(45 100% 65% / 0.5),
+                hsl(55 100% 70% / 0.2),
                 transparent
               )`,
-              borderRadius: '50% 50% 50% 50% / 70% 70% 30% 30%',
-              filter: 'blur(6px)',
-              transform: `rotate(${i * 30 + 15}deg) translateY(-68%) translateX(-50%)`,
-              transformOrigin: 'center bottom',
-              animation: `fireFlameIntense ${1.1 + (i % 3) * 0.2}s ease-in-out infinite`,
-              animationDelay: `${i * 0.1}s`,
+              borderRadius: '50% 50% 50% 50% / 80% 80% 20% 20%',
+              filter: 'blur(3px)',
+              transform: `rotate(${i * 22.5}deg)`,
+              transformOrigin: '50% 100%',
+              animation: `fireFlameIntense ${0.8 + (i % 4) * 0.15}s ease-in-out infinite`,
+              animationDelay: `${i * 0.06}s`,
             }}
           />
         ))}
       </div>
 
-      {/* Blue flames emanating from the sphere - outer layer */}
-      <div className="absolute inset-[-15%] pointer-events-none">
-        {[...Array(12)].map((_, i) => (
+      {/* Blue/Ice flames shooting outward */}
+      <div className="absolute inset-0 pointer-events-none z-20">
+        {[...Array(16)].map((_, i) => (
           <div
-            key={`outer-${i}`}
-            className="absolute top-1/2 left-1/2"
+            key={`ice-shoot-${i}`}
+            className="absolute"
             style={{
               width: '100px',
-              height: '220px',
+              height: '260px',
+              left: '50%',
+              top: '50%',
+              marginLeft: '-50px',
+              marginTop: '-48%',
               background: `linear-gradient(to top, 
-                hsl(210 100% 60% / 1), 
-                hsl(200 100% 65% / 0.9), 
-                hsl(190 100% 70% / 0.6), 
-                hsl(180 100% 80% / 0.3),
+                hsl(200 100% 60% / 1), 
+                hsl(195 100% 65% / 0.9), 
+                hsl(190 100% 70% / 0.7), 
+                hsl(185 100% 80% / 0.4),
                 transparent
               )`,
-              borderRadius: '50% 50% 50% 50% / 70% 70% 30% 30%',
-              filter: 'blur(6px)',
-              transform: `rotate(${i * 30}deg) translateY(-65%) translateX(-50%)`,
-              transformOrigin: 'center bottom',
-              animation: `blueFlameIntense ${1.2 + (i % 4) * 0.2}s ease-in-out infinite`,
+              borderRadius: '50% 50% 50% 50% / 80% 80% 20% 20%',
+              filter: 'blur(4px)',
+              transform: `rotate(${i * 22.5 + 11.25}deg)`,
+              transformOrigin: '50% 100%',
+              animation: `blueFlameIntense ${1 + (i % 3) * 0.2}s ease-in-out infinite`,
               animationDelay: `${i * 0.08}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Orange/Fire flames - inner layer */}
-      <div className="absolute inset-[-5%] pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={`fire-inner-${i}`}
-            className="absolute top-1/2 left-1/2"
-            style={{
-              width: '70px',
-              height: '160px',
-              background: `linear-gradient(to top, 
-                hsl(15 100% 55% / 1), 
-                hsl(25 100% 60% / 0.8), 
-                hsl(35 100% 65% / 0.5), 
-                transparent
-              )`,
-              borderRadius: '50% 50% 50% 50% / 65% 65% 35% 35%',
-              filter: 'blur(4px)',
-              transform: `rotate(${i * 45 + 22.5}deg) translateY(-60%) translateX(-50%)`,
-              transformOrigin: 'center bottom',
-              animation: `fireFlameIntense ${0.9 + (i % 3) * 0.2}s ease-in-out infinite`,
-              animationDelay: `${i * 0.15}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Blue flames - inner intense layer */}
-      <div className="absolute inset-[-5%] pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={`inner-${i}`}
-            className="absolute top-1/2 left-1/2"
-            style={{
-              width: '80px',
-              height: '180px',
-              background: `linear-gradient(to top, 
-                hsl(220 100% 70% / 1), 
-                hsl(200 100% 75% / 0.8), 
-                hsl(190 100% 80% / 0.5), 
-                transparent
-              )`,
-              borderRadius: '50% 50% 50% 50% / 65% 65% 35% 35%',
-              filter: 'blur(4px)',
-              transform: `rotate(${i * 45}deg) translateY(-58%) translateX(-50%)`,
-              transformOrigin: 'center bottom',
-              animation: `blueFlameIntense ${1 + (i % 3) * 0.25}s ease-in-out infinite`,
-              animationDelay: `${i * 0.12}s`,
             }}
           />
         ))}
@@ -111,11 +68,11 @@ export const HologramModel = () => {
 
       {/* Core flame glow - fire and ice */}
       <div 
-        className="absolute inset-[-10%] rounded-full pointer-events-none"
+        className="absolute inset-[-20%] rounded-full pointer-events-none z-10"
         style={{
           background: `
-            radial-gradient(circle, transparent 40%, hsl(200 100% 60% / 0.25) 55%, transparent 70%),
-            radial-gradient(circle, transparent 40%, hsl(25 100% 55% / 0.25) 60%, transparent 75%)
+            radial-gradient(circle, transparent 30%, hsl(25 100% 55% / 0.4) 45%, transparent 60%),
+            radial-gradient(circle, transparent 35%, hsl(200 100% 60% / 0.35) 50%, transparent 65%)
           `,
           animation: 'pulseGlow 1.5s ease-in-out infinite',
         }}
