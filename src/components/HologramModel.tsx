@@ -2,7 +2,7 @@ import heroGif from '@/assets/bigtrout-hero.gif';
 
 export const HologramModel = () => {
   return (
-    <div className="relative w-[600px] h-[600px] md:w-[800px] md:h-[800px] lg:w-[1000px] lg:h-[1000px]">
+    <div className="relative w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[800px]">
       {/* Orange/Fire flames - outer layer */}
       <div className="absolute inset-[-15%] pointer-events-none">
         {[...Array(12)].map((_, i) => (
@@ -120,7 +120,7 @@ export const HologramModel = () => {
       
       {/* Hologram base glow */}
       <div 
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-64 h-6 rounded-full blur-xl"
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 sm:w-48 md:w-64 h-4 sm:h-5 md:h-6 rounded-full blur-xl"
         style={{
           background: 'radial-gradient(ellipse, hsl(190 100% 70% / 0.8), hsl(200 100% 50% / 0.4), transparent)',
           animation: 'pulse 2s ease-in-out infinite',
