@@ -238,15 +238,19 @@
     }
   }
   
-  /* Smooth GIF loop transition */
-  @keyframes smoothLoop {
-    0%, 100% {
-      opacity: 0.95;
-      transform: scale(1);
-    }
-    50% {
+  /* Dissolve loop transition - fades out and back in */
+  @keyframes dissolveLoop {
+    0%, 85% {
       opacity: 1;
-      transform: scale(1.02);
+      filter: blur(0px) drop-shadow(0 0 30px hsl(190 100% 70% / 0.6)) drop-shadow(0 0 60px hsl(20 100% 50% / 0.4));
+    }
+    92% {
+      opacity: 0;
+      filter: blur(8px) drop-shadow(0 0 30px hsl(190 100% 70% / 0.6)) drop-shadow(0 0 60px hsl(20 100% 50% / 0.4));
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0px) drop-shadow(0 0 30px hsl(190 100% 70% / 0.6)) drop-shadow(0 0 60px hsl(20 100% 50% / 0.4));
     }
   }
   
