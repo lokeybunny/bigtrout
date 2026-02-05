@@ -137,11 +137,11 @@ export const HowToBuySection = () => {
           <p className="text-muted-foreground mb-4 font-display text-sm tracking-wider">CONTRACT ADDRESS</p>
           <div className="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-card/80 border border-primary/30 backdrop-blur-xl glow-ember">
             <code className="font-mono text-sm md:text-base text-fire break-all">
-              BIGTr0utXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx
+              EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG
             </code>
             <button 
               className="p-2 rounded-lg bg-primary/20 hover:bg-primary/30 transition-colors"
-              onClick={() => navigator.clipboard.writeText('BIGTr0utXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx')}
+              onClick={() => navigator.clipboard.writeText('EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG')}
             >
               <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
