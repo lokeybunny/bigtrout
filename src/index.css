@@ -254,6 +254,18 @@
     }
   }
   
+  /* Blue flame animation */
+  @keyframes blueFlame {
+    0%, 100% {
+      opacity: 0.6;
+      transform: rotate(var(--rotation, 0deg)) translateY(-55%) translateX(-50%) scaleY(1);
+    }
+    50% {
+      opacity: 1;
+      transform: rotate(var(--rotation, 0deg)) translateY(-60%) translateX(-50%) scaleY(1.2);
+    }
+  }
+  
   /* Button fire style */
   .btn-fire {
     @apply px-8 py-4 font-bold text-lg uppercase tracking-wider rounded-lg;
