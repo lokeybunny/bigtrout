@@ -5,6 +5,7 @@ import { HowToBuySection } from '@/components/HowToBuySection';
 import { CommunitySection } from '@/components/CommunitySection';
 import { Footer } from '@/components/Footer';
 import { ParticleField } from '@/components/ParticleField';
+import { MusicPlayer } from '@/components/MusicPlayer';
 
 const Index = () => {
   return (
@@ -34,6 +35,9 @@ const Index = () => {
       
       {/* Footer */}
       <Footer />
+      
+      {/* Music Player */}
+      <MusicPlayer />
     </div>
   );
 };
