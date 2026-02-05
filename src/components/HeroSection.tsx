@@ -60,9 +60,14 @@ export const HeroSection = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="btn-fire">
+          <a 
+            href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-fire"
+          >
             Buy $BIGTROUT
-          </button>
+          </a>
           <button className="btn-ice">
             View Chart
           </button>
