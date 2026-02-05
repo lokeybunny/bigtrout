@@ -254,43 +254,48 @@
     }
   }
   
-  /* Intense blue flame animation */
-  @keyframes blueFlameIntense {
-    0%, 100% {
-      opacity: 0.7;
-      transform: rotate(var(--rotation, 0deg)) translateY(-60%) translateX(-50%) scaleY(1) scaleX(1);
+  /* Fire particle rise animation */
+  @keyframes fireParticleRise {
+    0% {
+      opacity: 0;
+      transform: translateY(0) translateX(0) scale(0.5);
     }
-    25% {
+    10% {
       opacity: 1;
-      transform: rotate(var(--rotation, 0deg)) translateY(-70%) translateX(-50%) scaleY(1.3) scaleX(0.9);
     }
     50% {
       opacity: 0.9;
-      transform: rotate(var(--rotation, 0deg)) translateY(-65%) translateX(-50%) scaleY(1.15) scaleX(1.1);
+      transform: translateY(-150px) translateX(10px) scale(1);
     }
-    75% {
-      opacity: 1;
-      transform: rotate(var(--rotation, 0deg)) translateY(-72%) translateX(-50%) scaleY(1.25) scaleX(0.95);
+    80% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-300px) translateX(-5px) scale(0.3);
     }
   }
   
-  /* Intense fire/orange flame animation */
-  @keyframes fireFlameIntense {
-    0%, 100% {
-      opacity: 0.75;
-      transform: rotate(var(--rotation, 0deg)) translateY(-62%) translateX(-50%) scaleY(1) scaleX(1);
+  /* Slower fire particle rise for larger embers */
+  @keyframes fireParticleRiseSlow {
+    0% {
+      opacity: 0;
+      transform: translateY(0) translateX(0) scale(0.6);
     }
-    30% {
+    15% {
       opacity: 1;
-      transform: rotate(var(--rotation, 0deg)) translateY(-75%) translateX(-50%) scaleY(1.35) scaleX(0.85);
     }
-    60% {
-      opacity: 0.85;
-      transform: rotate(var(--rotation, 0deg)) translateY(-68%) translateX(-50%) scaleY(1.2) scaleX(1.05);
+    40% {
+      opacity: 0.95;
+      transform: translateY(-120px) translateX(15px) scale(1.2);
     }
-    80% {
-      opacity: 1;
-      transform: rotate(var(--rotation, 0deg)) translateY(-78%) translateX(-50%) scaleY(1.3) scaleX(0.9);
+    70% {
+      opacity: 0.6;
+      transform: translateY(-220px) translateX(-10px) scale(0.8);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-350px) translateX(5px) scale(0.2);
     }
   }
   
