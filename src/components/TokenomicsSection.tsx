@@ -1,4 +1,4 @@
-import { Lock, Unlock, Fish, Zap, TrendingUp, Clock } from 'lucide-react';
+import { Lock, Unlock, Fish, Zap, TrendingUp, Clock, FileText } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import snowMountainBg from '@/assets/snow-mountain-bg.jpg';
@@ -6,8 +6,9 @@ import snowMountainBg from '@/assets/snow-mountain-bg.jpg';
 interface VestingData {
   totalLocked: number;
   totalUnlocked: number;
-  totalVested: number;
-  streamCount: number;
+  lockedPercent: number;
+  circulatingPercent: number;
+  contractCount: number;
   lastUpdated: string;
   source: string;
 }
@@ -22,7 +23,7 @@ const formatNumber = (num: number): string => {
   if (num >= 1_000) {
     return (num / 1_000).toFixed(2) + 'K';
   }
-  return num.toFixed(2);
+  return num.toFixed(0);
 };
 
 export const TokenomicsSection = () => {
@@ -70,14 +71,13 @@ export const TokenomicsSection = () => {
 
     fetchVestingData();
     
-    // Refresh every 60 seconds
-    const interval = setInterval(fetchVestingData, 60000);
+    // Refresh every 5 minutes
+    const interval = setInterval(fetchVestingData, 300000);
     return () => clearInterval(interval);
   }, []);
 
-  const totalSupply = 1_000_000_000;
-  const lockedPercent = vestingData ? (vestingData.totalLocked / totalSupply) * 100 : 0;
-  const unlockedPercent = vestingData ? (vestingData.totalUnlocked / totalSupply) * 100 : 0;
+  const lockedPercent = vestingData?.lockedPercent || 0;
+  const circulatingPercent = vestingData?.circulatingPercent || 100;
 
   const staticCards = [
     {
@@ -145,13 +145,13 @@ export const TokenomicsSection = () => {
           </p>
         </div>
 
-        {/* Vesting breakdown - Live data from Streamflow */}
+        {/* Live Streamflow Data */}
         <div className="mb-12">
           <div className="text-center mb-6">
             <p className="text-muted-foreground text-sm font-display tracking-wider flex items-center justify-center gap-2">
               <Clock className="w-4 h-4" />
-              LIVE VESTING DATA
-              {vestingData?.source === 'streamflow' && (
+              LIVE STREAMFLOW DATA
+              {vestingData?.source === 'streamflow-dashboard' && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                   LIVE
@@ -160,7 +160,7 @@ export const TokenomicsSection = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
             {/* Locked Supply Card */}
             <div className="card-volcanic p-6 text-center">
               <div 
@@ -178,11 +178,11 @@ export const TokenomicsSection = () => {
                 {loading ? '...' : formatNumber(vestingData?.totalLocked || 0)}
               </p>
               <p className="text-muted-foreground text-xs">
-                {lockedPercent.toFixed(1)}% of total
+                {loading ? '...' : `${lockedPercent.toFixed(2)}% locked`}
               </p>
             </div>
 
-            {/* Unlocked Supply Card */}
+            {/* Circulating Supply Card */}
             <div className="card-volcanic p-6 text-center">
               <div 
                 className="w-14 h-14 mx-auto mb-4 rounded-xl flex items-center justify-center glow-ice"
@@ -193,54 +193,86 @@ export const TokenomicsSection = () => {
                 <Unlock className="w-7 h-7 text-storm-dark" />
               </div>
               <p className="text-muted-foreground text-sm mb-1 font-display tracking-wider">
-                Unlocked Supply
+                Circulating Supply
               </p>
               <p className="font-display text-3xl font-bold text-ice mb-1">
                 {loading ? '...' : formatNumber(vestingData?.totalUnlocked || 0)}
               </p>
               <p className="text-muted-foreground text-xs">
-                {unlockedPercent.toFixed(1)}% of total
+                {loading ? '...' : `${circulatingPercent.toFixed(2)}% circulating`}
+              </p>
+            </div>
+
+            {/* Lock Contracts Card */}
+            <div className="card-volcanic p-6 text-center">
+              <div 
+                className="w-14 h-14 mx-auto mb-4 rounded-xl flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, hsl(20 100% 50%), hsl(195 90% 45%))',
+                  boxShadow: '0 0 30px hsl(20 100% 50% / 0.4), 0 0 30px hsl(195 90% 45% / 0.4)',
+                }}
+              >
+                <FileText className="w-7 h-7 text-storm-dark" />
+              </div>
+              <p className="text-muted-foreground text-sm mb-1 font-display tracking-wider">
+                Lock Contracts
+              </p>
+              <p className="font-display text-3xl font-bold text-fire-ice mb-1">
+                {loading ? '...' : vestingData?.contractCount || 0}
+              </p>
+              <p className="text-muted-foreground text-xs">
+                Active on Streamflow
               </p>
             </div>
           </div>
 
           {/* Visual breakdown bar */}
-          {(vestingData?.totalLocked || 0) > 0 || (vestingData?.totalUnlocked || 0) > 0 ? (
-            <div className="max-w-xl mx-auto">
-              <div className="h-4 rounded-full overflow-hidden bg-card border border-border/50 flex">
-                <div 
-                  className="h-full transition-all duration-1000"
-                  style={{
-                    width: `${lockedPercent}%`,
-                    background: 'linear-gradient(90deg, hsl(20 100% 50%), hsl(35 100% 55%))',
-                  }}
-                />
-                <div 
-                  className="h-full transition-all duration-1000"
-                  style={{
-                    width: `${unlockedPercent}%`,
-                    background: 'linear-gradient(90deg, hsl(195 90% 45%), hsl(190 100% 70%))',
-                  }}
-                />
-              </div>
-              <div className="flex justify-between mt-3 text-sm">
-                <span className="text-fire flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full" style={{ background: 'linear-gradient(90deg, hsl(20 100% 50%), hsl(35 100% 55%))' }} />
-                  Locked
-                </span>
-                <span className="text-ice flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full" style={{ background: 'linear-gradient(90deg, hsl(195 90% 45%), hsl(190 100% 70%))' }} />
-                  Unlocked
-                </span>
-              </div>
-              
-              {vestingData?.lastUpdated && (
-                <p className="text-center text-muted-foreground/50 text-xs mt-4">
-                  Last updated: {new Date(vestingData.lastUpdated).toLocaleString()}
-                </p>
-              )}
+          <div className="max-w-xl mx-auto">
+            <div className="h-4 rounded-full overflow-hidden bg-card border border-border/50 flex">
+              <div 
+                className="h-full transition-all duration-1000"
+                style={{
+                  width: `${lockedPercent}%`,
+                  background: 'linear-gradient(90deg, hsl(20 100% 50%), hsl(35 100% 55%))',
+                }}
+              />
+              <div 
+                className="h-full transition-all duration-1000"
+                style={{
+                  width: `${circulatingPercent}%`,
+                  background: 'linear-gradient(90deg, hsl(195 90% 45%), hsl(190 100% 70%))',
+                }}
+              />
             </div>
-          ) : null}
+            <div className="flex justify-between mt-3 text-sm">
+              <span className="text-fire flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full" style={{ background: 'linear-gradient(90deg, hsl(20 100% 50%), hsl(35 100% 55%))' }} />
+                Locked ({lockedPercent.toFixed(2)}%)
+              </span>
+              <span className="text-ice flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full" style={{ background: 'linear-gradient(90deg, hsl(195 90% 45%), hsl(190 100% 70%))' }} />
+                Circulating ({circulatingPercent.toFixed(2)}%)
+              </span>
+            </div>
+            
+            {vestingData?.lastUpdated && (
+              <p className="text-center text-muted-foreground/50 text-xs mt-4">
+                Last updated: {new Date(vestingData.lastUpdated).toLocaleString()}
+              </p>
+            )}
+
+            {/* Link to Streamflow */}
+            <div className="text-center mt-4">
+              <a 
+                href="https://app.streamflow.finance/token-dashboard/solana/mainnet/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+              >
+                View on Streamflow →
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* Static tokenomics cards */}

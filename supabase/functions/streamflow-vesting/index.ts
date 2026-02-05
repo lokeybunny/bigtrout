@@ -5,148 +5,162 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const STREAMFLOW_API = "https://api.streamflow.finance/v2";
 const TOKEN_MINT = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
+const STREAMFLOW_DASHBOARD_URL = `https://app.streamflow.finance/token-dashboard/solana/mainnet/${TOKEN_MINT}`;
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
-    console.log("Fetching Streamflow vesting data for token:", TOKEN_MINT);
+    console.log("Fetching Streamflow dashboard data for token:", TOKEN_MINT);
 
-    // Fetch all streams for this token on Solana
-    const response = await fetch(
-      `${STREAMFLOW_API}/streams/solana?token=${TOKEN_MINT}`,
-      {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Streamflow API error:", response.status, errorText);
-      
-      // Return mock/fallback data if API fails
+    const firecrawlApiKey = Deno.env.get('FIRECRAWL_API_KEY');
+    
+    if (!firecrawlApiKey) {
+      console.error('FIRECRAWL_API_KEY not configured');
       return new Response(
         JSON.stringify({
           success: true,
           data: {
             totalLocked: 0,
             totalUnlocked: 0,
-            totalVested: 0,
-            streams: [],
+            lockedPercent: 0,
+            circulatingPercent: 100,
+            contractCount: 0,
             lastUpdated: new Date().toISOString(),
-            source: "fallback"
+            source: "no-api-key"
           }
         }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const streams = await response.json();
-    console.log("Received streams:", JSON.stringify(streams).slice(0, 500));
+    console.log("Scraping Streamflow dashboard:", STREAMFLOW_DASHBOARD_URL);
 
-    // Process streams to calculate locked/unlocked amounts
-    let totalLocked = 0;
-    let totalUnlocked = 0;
-    let totalVested = 0;
-    const now = Date.now() / 1000; // Current time in seconds
+    const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${firecrawlApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        url: STREAMFLOW_DASHBOARD_URL,
+        formats: ['markdown'],
+        onlyMainContent: true,
+        waitFor: 5000,
+      }),
+    });
 
-    const processedStreams = [];
-
-    // Handle both array and object responses
-    const streamList = Array.isArray(streams) ? streams : (streams.data || []);
-
-    for (const stream of streamList) {
-      const depositedAmount = Number(stream.depositedAmount || stream.ix?.depositedAmount || 0);
-      const withdrawnAmount = Number(stream.withdrawnAmount || 0);
-      const start = Number(stream.start || stream.ix?.start || 0);
-      const end = Number(stream.end || stream.ix?.end || 0);
-      const cliff = Number(stream.cliff || stream.ix?.cliff || 0);
-      const cliffAmount = Number(stream.cliffAmount || stream.ix?.cliffAmount || 0);
-      const period = Number(stream.period || stream.ix?.period || 1);
-      const amountPerPeriod = Number(stream.amountPerPeriod || stream.ix?.amountPerPeriod || 0);
-
-      // Calculate vested amount based on schedule
-      let vestedAmount = 0;
+    if (!scrapeResponse.ok) {
+      const errorText = await scrapeResponse.text();
+      console.error("Firecrawl API error:", scrapeResponse.status, errorText);
       
-      if (now >= end) {
-        // Fully vested
-        vestedAmount = depositedAmount;
-      } else if (now >= cliff && cliff > 0) {
-        // Past cliff, calculate linear vesting
-        vestedAmount = cliffAmount;
-        if (now > cliff && period > 0) {
-          const periodsElapsed = Math.floor((now - cliff) / period);
-          vestedAmount += periodsElapsed * amountPerPeriod;
-        }
-        vestedAmount = Math.min(vestedAmount, depositedAmount);
-      } else if (now >= start && cliff === 0) {
-        // No cliff, linear vesting from start
-        if (period > 0) {
-          const periodsElapsed = Math.floor((now - start) / period);
-          vestedAmount = periodsElapsed * amountPerPeriod;
-        }
-        vestedAmount = Math.min(vestedAmount, depositedAmount);
-      }
-
-      const unlockedAmount = vestedAmount;
-      const lockedAmount = depositedAmount - vestedAmount;
-
-      totalLocked += lockedAmount;
-      totalUnlocked += unlockedAmount;
-      totalVested += vestedAmount;
-
-      processedStreams.push({
-        id: stream.id || stream.publicKey,
-        recipient: stream.recipient || stream.ix?.recipient,
-        depositedAmount,
-        withdrawnAmount,
-        vestedAmount,
-        lockedAmount,
-        unlockedAmount,
-        start,
-        end,
-        cliff,
-        status: stream.status || (now >= end ? 'completed' : 'active'),
-      });
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: {
+            totalLocked: 0,
+            totalUnlocked: 0,
+            lockedPercent: 0,
+            circulatingPercent: 100,
+            contractCount: 0,
+            lastUpdated: new Date().toISOString(),
+            source: "scrape-error"
+          }
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Convert from smallest unit (assuming 9 decimals for SOL-based tokens)
-    const decimals = 9;
-    const divisor = Math.pow(10, decimals);
+    const scrapeData = await scrapeResponse.json();
+    console.log("Scrape successful, parsing data...");
+    
+    const markdown = scrapeData.data?.markdown || scrapeData.markdown || '';
+    console.log("Markdown content:", markdown);
+
+    // Parse specific patterns from Streamflow dashboard
+    let totalLocked = 0;
+    let totalUnlocked = 0;
+    let lockedPercent = 0;
+    let circulatingPercent = 0;
+    let contractCount = 0;
+
+    // Parse "Total BigTrout Locked" - look for pattern like "48.853M" or "48,853,000"
+    const lockedMatch = markdown.match(/Total\s+(?:\w+\s+)?Locked\s*\n*\s*([0-9,.]+)\s*([KMBT])?/i);
+    if (lockedMatch) {
+      const num = parseFloat(lockedMatch[1].replace(/,/g, ''));
+      const multiplier = getMultiplier(lockedMatch[2]);
+      totalLocked = num * multiplier;
+      console.log("Parsed totalLocked:", totalLocked, "from:", lockedMatch[0]);
+    }
+
+    // Parse "Total BigTrout Unlocked"
+    const unlockedMatch = markdown.match(/Total\s+(?:\w+\s+)?Unlocked\s*\n*\s*([0-9,.]+)\s*([KMBT])?/i);
+    if (unlockedMatch) {
+      const num = parseFloat(unlockedMatch[1].replace(/,/g, ''));
+      const multiplier = getMultiplier(unlockedMatch[2]);
+      totalUnlocked = num * multiplier;
+      console.log("Parsed totalUnlocked:", totalUnlocked, "from:", unlockedMatch[0]);
+    }
+
+    // Parse locked percentage - "Locked (4.89%)"
+    const lockedPercentMatch = markdown.match(/Locked\s*\(([0-9.]+)%\)/i);
+    if (lockedPercentMatch) {
+      lockedPercent = parseFloat(lockedPercentMatch[1]);
+      console.log("Parsed lockedPercent:", lockedPercent);
+    }
+
+    // Parse circulating/unlocked percentage - "Circulation (95.11%)" or "Unlocked (95.11%)"
+    const circPercentMatch = markdown.match(/(?:Circulation|Unlocked)\s*\(([0-9.]+)%\)/i);
+    if (circPercentMatch) {
+      circulatingPercent = parseFloat(circPercentMatch[1]);
+      console.log("Parsed circulatingPercent:", circulatingPercent);
+    }
+
+    // Parse contract count - "Total\n\n4"
+    const contractMatch = markdown.match(/Contracts\s*\n*\s*Total\s*\n*\s*(\d+)/i);
+    if (contractMatch) {
+      contractCount = parseInt(contractMatch[1], 10);
+      console.log("Parsed contractCount:", contractCount);
+    }
+
+    // Also look for token locks percentage and amount
+    const tokenLocksMatch = markdown.match(/Token\s+locks\s*\n*\s*([0-9.]+)%\s*\n*\s*([0-9,.]+)\s*([KMBT])?\s*tokens/i);
+    if (tokenLocksMatch) {
+      lockedPercent = parseFloat(tokenLocksMatch[1]);
+      const num = parseFloat(tokenLocksMatch[2].replace(/,/g, ''));
+      const multiplier = getMultiplier(tokenLocksMatch[3]);
+      if (totalLocked === 0) {
+        totalLocked = num * multiplier;
+      }
+      console.log("Parsed from token locks:", { lockedPercent, totalLocked });
+    }
+
+    // Calculate unlocked if we have locked percentage
+    if (totalLocked > 0 && lockedPercent > 0 && totalUnlocked === 0) {
+      const totalSupply = 1_000_000_000;
+      circulatingPercent = 100 - lockedPercent;
+      totalUnlocked = totalSupply - totalLocked;
+    }
+
+    console.log("Final parsed data:", { totalLocked, totalUnlocked, lockedPercent, circulatingPercent, contractCount });
 
     return new Response(
       JSON.stringify({
         success: true,
         data: {
-          totalLocked: totalLocked / divisor,
-          totalUnlocked: totalUnlocked / divisor,
-          totalVested: totalVested / divisor,
-          streams: processedStreams.map(s => ({
-            ...s,
-            depositedAmount: s.depositedAmount / divisor,
-            withdrawnAmount: s.withdrawnAmount / divisor,
-            vestedAmount: s.vestedAmount / divisor,
-            lockedAmount: s.lockedAmount / divisor,
-            unlockedAmount: s.unlockedAmount / divisor,
-          })),
-          streamCount: processedStreams.length,
+          totalLocked,
+          totalUnlocked,
+          lockedPercent,
+          circulatingPercent,
+          contractCount,
           lastUpdated: new Date().toISOString(),
-          source: "streamflow"
+          source: "streamflow-dashboard"
         }
       }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error("Error fetching vesting data:", error);
@@ -157,16 +171,29 @@ serve(async (req) => {
         data: {
           totalLocked: 0,
           totalUnlocked: 0,
-          totalVested: 0,
-          streams: [],
+          lockedPercent: 0,
+          circulatingPercent: 100,
+          contractCount: 0,
           lastUpdated: new Date().toISOString(),
           source: "error"
         }
       }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
-      }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     );
   }
 });
+
+function getMultiplier(suffix: string | undefined): number {
+  if (!suffix) return 1;
+  const multipliers: Record<string, number> = {
+    'k': 1_000,
+    'K': 1_000,
+    'm': 1_000_000,
+    'M': 1_000_000,
+    'b': 1_000_000_000,
+    'B': 1_000_000_000,
+    't': 1_000_000_000_000,
+    'T': 1_000_000_000_000,
+  };
+  return multipliers[suffix] || 1;
+}
