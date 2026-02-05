@@ -2,7 +2,7 @@ import heroGif from '@/assets/bigtrout-hero.gif';
 
 export const HologramModel = () => {
   return (
-    <div className="relative w-80 h-80 md:w-[420px] md:h-[420px] lg:w-[500px] lg:h-[500px]">
+    <div className="relative w-[600px] h-[600px] md:w-[800px] md:h-[800px] lg:w-[1000px] lg:h-[1000px]">
       {/* Hologram base glow */}
       <div 
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-4 rounded-full blur-xl"
