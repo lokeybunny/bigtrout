@@ -1,12 +1,39 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Navbar } from '@/components/Navbar';
+import { HeroSection } from '@/components/HeroSection';
+import { TokenomicsSection } from '@/components/TokenomicsSection';
+import { HowToBuySection } from '@/components/HowToBuySection';
+import { CommunitySection } from '@/components/CommunitySection';
+import { Footer } from '@/components/Footer';
+import { ParticleField } from '@/components/ParticleField';
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="relative min-h-screen overflow-x-hidden">
+      {/* Particle effects layer */}
+      <ParticleField />
+      
+      {/* Navigation */}
+      <Navbar />
+      
+      {/* Main content */}
+      <main>
+        <HeroSection />
+        
+        <div id="tokenomics">
+          <TokenomicsSection />
+        </div>
+        
+        <div id="how-to-buy">
+          <HowToBuySection />
+        </div>
+        
+        <div id="community">
+          <CommunitySection />
+        </div>
+      </main>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
