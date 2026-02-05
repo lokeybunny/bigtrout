@@ -1,86 +1,135 @@
+import { useEffect, useState } from 'react';
 import heroGif from '@/assets/bigtrout-hero.gif';
 
+interface FireParticle {
+  id: number;
+  x: number;
+  delay: number;
+  duration: number;
+  size: number;
+  type: 'fire' | 'ember' | 'spark';
+  side: 'left' | 'right';
+}
+
 export const HologramModel = () => {
+  const [particles, setParticles] = useState<FireParticle[]>([]);
+
+  useEffect(() => {
+    // Generate fire particles for bottom-left side
+    const leftParticles: FireParticle[] = Array.from({ length: 25 }, (_, i) => ({
+      id: i,
+      x: 15 + Math.random() * 25, // 15-40% from left
+      delay: Math.random() * 3,
+      duration: 2 + Math.random() * 2,
+      size: 4 + Math.random() * 12,
+      type: Math.random() > 0.6 ? 'fire' : Math.random() > 0.5 ? 'ember' : 'spark',
+      side: 'left' as const,
+    }));
+
+    // Generate fire particles for bottom-right side
+    const rightParticles: FireParticle[] = Array.from({ length: 25 }, (_, i) => ({
+      id: i + 25,
+      x: 60 + Math.random() * 25, // 60-85% from left
+      delay: Math.random() * 3,
+      duration: 2 + Math.random() * 2,
+      size: 4 + Math.random() * 12,
+      type: Math.random() > 0.6 ? 'fire' : Math.random() > 0.5 ? 'ember' : 'spark',
+      side: 'right' as const,
+    }));
+
+    setParticles([...leftParticles, ...rightParticles]);
+  }, []);
+
+  const getParticleStyle = (particle: FireParticle) => {
+    const colors = {
+      fire: {
+        bg: 'radial-gradient(circle, hsl(25 100% 60%) 0%, hsl(15 100% 50%) 40%, transparent 70%)',
+        glow: '0 0 15px hsl(25 100% 55%), 0 0 30px hsl(15 100% 50% / 0.6)',
+      },
+      ember: {
+        bg: 'radial-gradient(circle, hsl(35 100% 65%) 0%, hsl(25 100% 55%) 50%, transparent 70%)',
+        glow: '0 0 10px hsl(35 100% 60%), 0 0 20px hsl(25 100% 50% / 0.5)',
+      },
+      spark: {
+        bg: 'radial-gradient(circle, hsl(45 100% 80%) 0%, hsl(35 100% 60%) 40%, transparent 70%)',
+        glow: '0 0 8px hsl(45 100% 70%), 0 0 15px hsl(35 100% 55% / 0.4)',
+      },
+    };
+
+    return colors[particle.type];
+  };
+
   return (
     <div className="relative w-[600px] h-[600px] md:w-[800px] md:h-[800px] lg:w-[1000px] lg:h-[1000px]">
-      {/* Fire flames shooting outward from sphere edge */}
-      <div className="absolute inset-0 pointer-events-none z-20">
-        {[...Array(16)].map((_, i) => (
-          <div
-            key={`fire-shoot-${i}`}
-            className="absolute"
-            style={{
-              width: '120px',
-              height: '280px',
-              left: '50%',
-              top: '50%',
-              marginLeft: '-60px',
-              marginTop: '-50%',
-              background: `linear-gradient(to top, 
-                hsl(15 100% 50% / 1), 
-                hsl(25 100% 55% / 0.95), 
-                hsl(35 100% 60% / 0.8), 
-                hsl(45 100% 65% / 0.5),
-                hsl(55 100% 70% / 0.2),
-                transparent
-              )`,
-              borderRadius: '50% 50% 50% 50% / 80% 80% 20% 20%',
-              filter: 'blur(3px)',
-              transform: `rotate(${i * 22.5}deg)`,
-              transformOrigin: '50% 100%',
-              animation: `fireFlameIntense ${0.8 + (i % 4) * 0.15}s ease-in-out infinite`,
-              animationDelay: `${i * 0.06}s`,
-            }}
-          />
-        ))}
+      {/* Fire particles rising from bottom sides */}
+      <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">
+        {particles.map((particle) => {
+          const style = getParticleStyle(particle);
+          return (
+            <div
+              key={particle.id}
+              className="absolute rounded-full"
+              style={{
+                left: `${particle.x}%`,
+                bottom: '10%',
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
+                background: style.bg,
+                boxShadow: style.glow,
+                animation: `fireParticleRise ${particle.duration}s ease-out infinite`,
+                animationDelay: `${particle.delay}s`,
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* Blue/Ice flames shooting outward */}
-      <div className="absolute inset-0 pointer-events-none z-20">
-        {[...Array(16)].map((_, i) => (
-          <div
-            key={`ice-shoot-${i}`}
-            className="absolute"
-            style={{
-              width: '100px',
-              height: '260px',
-              left: '50%',
-              top: '50%',
-              marginLeft: '-50px',
-              marginTop: '-48%',
-              background: `linear-gradient(to top, 
-                hsl(200 100% 60% / 1), 
-                hsl(195 100% 65% / 0.9), 
-                hsl(190 100% 70% / 0.7), 
-                hsl(185 100% 80% / 0.4),
-                transparent
-              )`,
-              borderRadius: '50% 50% 50% 50% / 80% 80% 20% 20%',
-              filter: 'blur(4px)',
-              transform: `rotate(${i * 22.5 + 11.25}deg)`,
-              transformOrigin: '50% 100%',
-              animation: `blueFlameIntense ${1 + (i % 3) * 0.2}s ease-in-out infinite`,
-              animationDelay: `${i * 0.08}s`,
-            }}
-          />
-        ))}
+      {/* Additional larger ember particles */}
+      <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">
+        {[...Array(12)].map((_, i) => {
+          const isLeft = i < 6;
+          const xPos = isLeft ? 20 + (i % 6) * 5 : 60 + (i % 6) * 5;
+          return (
+            <div
+              key={`large-ember-${i}`}
+              className="absolute rounded-full"
+              style={{
+                left: `${xPos}%`,
+                bottom: '15%',
+                width: `${16 + (i % 4) * 4}px`,
+                height: `${16 + (i % 4) * 4}px`,
+                background: 'radial-gradient(circle, hsl(30 100% 60%) 0%, hsl(20 100% 50%) 30%, hsl(10 100% 45%) 60%, transparent 70%)',
+                boxShadow: '0 0 20px hsl(25 100% 55%), 0 0 40px hsl(15 100% 50% / 0.5), 0 0 60px hsl(10 100% 45% / 0.3)',
+                animation: `fireParticleRiseSlow ${3 + (i % 3)}s ease-out infinite`,
+                animationDelay: `${i * 0.4}s`,
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* Core flame glow - fire and ice */}
+      {/* Fire glow at bottom sides */}
       <div 
-        className="absolute inset-[-20%] rounded-full pointer-events-none z-10"
+        className="absolute bottom-[5%] left-[10%] w-[30%] h-[20%] rounded-full pointer-events-none z-10"
         style={{
-          background: `
-            radial-gradient(circle, transparent 30%, hsl(25 100% 55% / 0.4) 45%, transparent 60%),
-            radial-gradient(circle, transparent 35%, hsl(200 100% 60% / 0.35) 50%, transparent 65%)
-          `,
-          animation: 'pulseGlow 1.5s ease-in-out infinite',
+          background: 'radial-gradient(ellipse, hsl(25 100% 50% / 0.6) 0%, hsl(15 100% 45% / 0.3) 40%, transparent 70%)',
+          filter: 'blur(20px)',
+          animation: 'pulseGlow 2s ease-in-out infinite',
+        }}
+      />
+      <div 
+        className="absolute bottom-[5%] right-[10%] w-[30%] h-[20%] rounded-full pointer-events-none z-10"
+        style={{
+          background: 'radial-gradient(ellipse, hsl(25 100% 50% / 0.6) 0%, hsl(15 100% 45% / 0.3) 40%, transparent 70%)',
+          filter: 'blur(20px)',
+          animation: 'pulseGlow 2s ease-in-out infinite',
+          animationDelay: '0.5s',
         }}
       />
 
       {/* Glass sphere effect */}
       <div 
-        className="absolute inset-[5%] rounded-full pointer-events-none"
+        className="absolute inset-[5%] rounded-full pointer-events-none z-5"
         style={{
           background: `
             radial-gradient(ellipse at 30% 20%, hsl(200 100% 90% / 0.4) 0%, transparent 50%),
@@ -137,7 +186,7 @@ export const HologramModel = () => {
       />
       
       {/* GIF container with dissolve loop effect */}
-      <div className="relative w-full h-full animate-float flex items-center justify-center z-10">
+      <div className="relative w-full h-full animate-float flex items-center justify-center z-30">
         <img
           src={heroGif}
           alt="BIGTROUT Hero"
