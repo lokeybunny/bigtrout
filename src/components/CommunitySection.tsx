@@ -10,6 +10,8 @@ import mobyagentLogo from '@/assets/logos/mobyagent.svg';
 import jupiterLogo from '@/assets/logos/jupiter.svg';
 import coinmarketcapLogo from '@/assets/logos/coinmarketcap.png';
 import coingeckoLogo from '@/assets/logos/coingecko.png';
+import bybitLogo from '@/assets/logos/bybit.png';
+import bitmartLogo from '@/assets/logos/bitmart.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -71,6 +73,18 @@ const exchangeLogos = [
     logo: coingeckoLogo,
     url: 'https://www.coingecko.com/en/coins/bigtrout',
     alt: 'View BIGTROUT on CoinGecko',
+  },
+  {
+    name: 'Bybit',
+    logo: bybitLogo,
+    url: 'https://www.bybit.com/',
+    alt: 'Trade BIGTROUT on Bybit',
+  },
+  {
+    name: 'BitMart',
+    logo: bitmartLogo,
+    url: 'https://www.bitmart.com/',
+    alt: 'Trade BIGTROUT on BitMart',
   },
 ];
 
