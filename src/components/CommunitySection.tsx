@@ -5,7 +5,8 @@ import { useState } from 'react';
 import mexcLogo from '@/assets/logos/mexc.png';
 import lbankLogo from '@/assets/logos/lbank.png';
 import moonshotLogo from '@/assets/logos/moonshot.png';
-import mobyagentLogo from '@/assets/logos/mobyagent.png';
+import pocketfiLogo from '@/assets/logos/pocketfi.png';
+import mobyagentLogo from '@/assets/logos/mobyagent.svg';
 import jupiterLogo from '@/assets/logos/jupiter.svg';
 import coinmarketcapLogo from '@/assets/logos/coinmarketcap.png';
 import coingeckoLogo from '@/assets/logos/coingecko.png';
@@ -43,7 +44,7 @@ const exchangeLogos = [
   },
   {
     name: 'PocketFi',
-    logo: null, // No logo available, will use text fallback
+    logo: pocketfiLogo,
     url: 'https://pocketfi.org/',
     alt: 'Trade BIGTROUT on PocketFi',
   },
