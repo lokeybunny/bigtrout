@@ -15,6 +15,7 @@ import btseLogo from '@/assets/logos/btse.png';
 import blynexLogo from '@/assets/logos/blynex.png';
 import weexLogo from '@/assets/logos/weex.png';
 import coindarLogo from '@/assets/logos/coindar.png';
+import kucoinLogo from '@/assets/logos/kucoin.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -106,6 +107,12 @@ const exchangeLogos = [
     logo: coindarLogo,
     url: 'https://coindar.org/en/event/the-big-trout-to-be-listed-on-weex-140441',
     alt: 'View BIGTROUT on Coindar',
+  },
+  {
+    name: 'KuCoin',
+    logo: kucoinLogo,
+    url: 'https://www.kucoin.com/announcement/en-kucoin-alpha-has-listed-token-bigtrout-and-usor?utm_source=social_listing_2026_twitter&utm_medium=social_media_pos',
+    alt: 'Trade BIGTROUT on KuCoin',
   },
 ];
 
