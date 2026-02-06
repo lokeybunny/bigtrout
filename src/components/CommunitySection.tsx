@@ -29,7 +29,7 @@ const exchangeLogos = [
   {
     name: 'MEXC',
     logo: mexcLogo,
-    url: `https://www.mexc.com/price/BIGTROUT`,
+    url: 'https://www.mexc.com/exchange/BIGTROUT_USDT?_from=search_spot_trade',
     alt: 'Trade BIGTROUT on MEXC',
   },
   {
