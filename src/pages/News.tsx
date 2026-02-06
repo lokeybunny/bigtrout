@@ -1,0 +1,147 @@
+import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
+import { ParticleField } from '@/components/ParticleField';
+import { timelineEntries } from '@/data/newsTimeline';
+import { ArrowLeft, ExternalLink, Calendar, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+const News = () => {
+  return (
+    <div className="relative min-h-screen overflow-x-hidden">
+      <ParticleField />
+      <Navbar />
+
+      <main className="pt-24 pb-16 px-4">
+        {/* Header */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="font-display text-sm tracking-wider">BACK HOME</span>
+          </Link>
+
+          <h1 className="font-display text-5xl md:text-7xl font-black mb-4">
+            <span className="text-fire">TRUST</span>{' '}
+            <span className="text-ice">TIMELINE</span>
+          </h1>
+          <p className="text-muted-foreground text-lg max-w-2xl">
+            BigTrout's Trust-Building Adventure! Dive into this splashy summary of all the
+            awesome ways{' '}
+            <a
+              href="https://x.com/BigTrout300"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-fire hover:underline"
+            >
+              @BigTrout300
+            </a>{' '}
+            has been building trust with the $BIGTROUT community.
+          </p>
+        </div>
+
+        {/* Timeline */}
+        <div className="max-w-4xl mx-auto relative">
+          {/* Vertical line */}
+          <div
+            className="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2"
+            style={{
+              background:
+                'linear-gradient(180deg, hsl(20 100% 50% / 0.6), hsl(195 90% 45% / 0.6), hsl(20 100% 50% / 0.3))',
+            }}
+          />
+
+          {timelineEntries.map((entry, index) => {
+            const isLeft = index % 2 === 0;
+
+            return (
+              <div
+                key={entry.id}
+                className={`relative flex items-start mb-12 ${
+                  isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
+                } flex-row`}
+              >
+                {/* Dot on the line */}
+                <div
+                  className="absolute left-6 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full z-10 mt-8"
+                  style={{
+                    background:
+                      index % 2 === 0
+                        ? 'linear-gradient(135deg, hsl(20 100% 50%), hsl(35 100% 55%))'
+                        : 'linear-gradient(135deg, hsl(195 90% 45%), hsl(190 100% 70%))',
+                    boxShadow:
+                      index % 2 === 0
+                        ? '0 0 15px hsl(20 100% 50% / 0.8)'
+                        : '0 0 15px hsl(195 90% 45% / 0.8)',
+                  }}
+                />
+
+                {/* Card */}
+                <div
+                  className={`ml-14 md:ml-0 md:w-[45%] ${
+                    isLeft ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'
+                  }`}
+                >
+                  <div className="card-volcanic p-6">
+                    {/* Emoji + Title */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-3xl">{entry.emoji}</span>
+                      <h3 className="font-display text-xl font-bold text-foreground">
+                        {entry.title}
+                      </h3>
+                    </div>
+
+                    {/* Date & Time */}
+                    <div className="flex flex-wrap items-center gap-4 mb-4 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {entry.date}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5" />
+                        {entry.time}
+                      </span>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                      {entry.description}
+                    </p>
+
+                    {/* Tweet link */}
+                    <a
+                      href={entry.tweetUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-display tracking-wider text-fire hover:text-ember transition-colors"
+                    >
+                      Check the tweet
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Bottom message */}
+        <div className="max-w-4xl mx-auto text-center mt-16">
+          <p className="text-muted-foreground text-lg">
+            These moves show BigTrout's all about{' '}
+            <span className="text-fire">transparency</span>,{' '}
+            <span className="text-ice">engagement</span>, and real-deal growth.
+            <br />
+            Keep swimming strong with <span className="text-fire-ice font-bold">$BIGTROUT</span> –
+            more updates coming soon! 🐟
+          </p>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default News;

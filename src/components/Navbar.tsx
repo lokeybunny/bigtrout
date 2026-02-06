@@ -1,5 +1,6 @@
 import { Fish, Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,6 +29,9 @@ export const Navbar = () => {
           <a href="#community" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
             Community
           </a>
+          <Link to="/news" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
+            News
+          </Link>
         </div>
 
         {/* Mobile menu button */}
@@ -74,6 +78,13 @@ export const Navbar = () => {
             >
               Community
             </a>
+            <Link 
+              to="/news" 
+              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              News
+            </Link>
             <a 
               href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
               target="_blank"
