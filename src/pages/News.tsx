@@ -4,14 +4,55 @@ import { ParticleField } from '@/components/ParticleField';
 import { timelineEntries } from '@/data/newsTimeline';
 import { ArrowLeft, ExternalLink, Calendar, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import lavaTrailBg from '@/assets/lava-trail-bg.jpg';
 
 const News = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
+    <div ref={containerRef} className="relative min-h-screen overflow-x-hidden">
+      {/* Parallax lava background — fixed behind everything */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          backgroundImage: `url(${lavaTrailBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transform: `translateY(${scrollY * -0.15}px) scale(1.15)`,
+          willChange: 'transform',
+        }}
+      />
+      {/* Heavy dark overlay for readability */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          background: `
+            radial-gradient(ellipse at 50% 20%, hsl(20 100% 50% / 0.08) 0%, transparent 60%),
+            radial-gradient(ellipse at 50% 80%, hsl(20 100% 45% / 0.06) 0%, transparent 50%),
+            linear-gradient(180deg, 
+              hsl(220 30% 6% / 0.92) 0%, 
+              hsl(220 30% 6% / 0.88) 30%, 
+              hsl(220 30% 6% / 0.85) 60%, 
+              hsl(220 30% 6% / 0.9) 100%
+            )
+          `,
+        }}
+      />
+
       <ParticleField />
       <Navbar />
 
-      <main className="pt-24 pb-16 px-4">
+      <main className="relative z-10 pt-24 pb-16 px-4">
         {/* Header */}
         <div className="max-w-4xl mx-auto mb-16">
           <Link
