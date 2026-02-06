@@ -1,5 +1,5 @@
 import heroGif from '@/assets/bigtrout-hero.gif';
-import heroStill from '@/assets/bigtrout-hero.png';
+import heroStill from '@/assets/bigtrout-hero-mobile.png';
 import { useState, useEffect } from 'react';
 
 export const HologramModel = () => {
