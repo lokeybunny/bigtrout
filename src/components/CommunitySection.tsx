@@ -41,7 +41,7 @@ const exchangeLogos = [
   {
     name: 'Moonshot',
     logo: moonshotLogo,
-    url: `https://moonshot.money/${CONTRACT_ADDRESS}`,
+    url: 'https://moonshot.money',
     alt: 'Trade BIGTROUT on Moonshot',
   },
   {
