@@ -128,20 +128,16 @@ export const HologramModel = () => {
       />
       
       {/* GIF container with dissolve loop effect */}
-      <div 
-        className="relative w-full h-full animate-float flex items-center justify-center z-10"
-      >
+      <div className="relative w-full h-full animate-float flex items-center justify-center z-10">
         <img
           src={heroGif}
           alt="BIGTROUT Hero"
           className="w-[85%] h-[85%] object-contain"
           style={{
             animation: 'dissolveLoop 3.5s ease-in-out infinite',
-            WebkitMaskImage: 'radial-gradient(ellipse 45% 45% at 50% 50%, black 60%, transparent 100%)',
-            maskImage: 'radial-gradient(ellipse 45% 45% at 50% 50%, black 60%, transparent 100%)',
+            mixBlendMode: 'screen',
             WebkitBackfaceVisibility: 'hidden',
             backfaceVisibility: 'hidden',
-            transform: 'translateZ(0)',
           }}
         />
       </div>
