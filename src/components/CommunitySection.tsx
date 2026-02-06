@@ -12,6 +12,7 @@ import coinmarketcapLogo from '@/assets/logos/coinmarketcap.png';
 import coingeckoLogo from '@/assets/logos/coingecko.png';
 import bitmartLogo from '@/assets/logos/bitmart.png';
 import btseLogo from '@/assets/logos/btse.png';
+import blynexLogo from '@/assets/logos/blynex.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -85,6 +86,12 @@ const exchangeLogos = [
     logo: bitmartLogo,
     url: 'https://www.bitmart.com/en-US/trade/BIGTROUT_USDT?type=spot',
     alt: 'Trade BIGTROUT on BitMart',
+  },
+  {
+    name: 'Blynex',
+    logo: blynexLogo,
+    url: 'https://blynex.com/spot/TheBigTrout_USDT',
+    alt: 'Trade BIGTROUT on Blynex',
   },
 ];
 
