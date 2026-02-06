@@ -77,7 +77,7 @@ const exchangeLogos = [
   {
     name: 'BTSE',
     logo: btseLogo,
-    url: 'https://www.btse.com/en',
+    url: 'https://www.btse.com/en/trading/BIGTROUT-USDT',
     alt: 'Trade BIGTROUT on BTSE',
   },
   {
