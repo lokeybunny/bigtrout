@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 // Import logo images
 import mexcLogo from '@/assets/logos/mexc.png';
-import lbankLogo from '@/assets/logos/lbank.png';
+import lbankLogo from '@/assets/logos/lbank-new.png';
 import moonshotLogo from '@/assets/logos/moonshot.png';
 import pocketfiLogo from '@/assets/logos/pocketfi.png';
 import mobyagentLogo from '@/assets/logos/mobyagent.svg';
