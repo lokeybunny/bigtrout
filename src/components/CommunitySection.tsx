@@ -16,6 +16,7 @@ import blynexLogo from '@/assets/logos/blynex.png';
 import weexLogo from '@/assets/logos/weex.png';
 import coindarLogo from '@/assets/logos/coindar.png';
 import kucoinLogo from '@/assets/logos/kucoin.png';
+import dexscreenerLogo from '@/assets/logos/dexscreener.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -113,6 +114,12 @@ const exchangeLogos = [
     logo: kucoinLogo,
     url: 'https://www.kucoin.com/announcement/en-kucoin-alpha-has-listed-token-bigtrout-and-usor?utm_source=social_listing_2026_twitter&utm_medium=social_media_pos',
     alt: 'Trade BIGTROUT on KuCoin',
+  },
+  {
+    name: 'DexScreener',
+    logo: dexscreenerLogo,
+    url: 'https://dexscreener.com/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG',
+    alt: 'View BIGTROUT on DexScreener',
   },
 ];
 

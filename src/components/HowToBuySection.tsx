@@ -167,7 +167,7 @@ export const HowToBuySection = () => {
         </div>
 
         {/* GMGN Trading Chart */}
-        <div className="mt-16">
+        <div id="live-chart" className="mt-16 scroll-mt-24">
           <h3 className="text-center font-display text-2xl md:text-3xl font-bold mb-6">
             <span className="text-ice">LIVE</span>{' '}
             <span className="text-fire">CHART</span>
