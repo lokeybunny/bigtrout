@@ -1,6 +1,17 @@
 import heroGif from '@/assets/bigtrout-hero.gif';
+import heroStill from '@/assets/bigtrout-hero.png';
+import { useState, useEffect } from 'react';
 
 export const HologramModel = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   return (
     <div className="relative w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[800px]">
       {/* Orange/Fire flames - outer layer */}
@@ -130,11 +141,11 @@ export const HologramModel = () => {
       {/* GIF container with dissolve loop effect */}
       <div className="relative w-full h-full animate-float flex items-center justify-center z-10">
         <img
-          src={heroGif}
+          src={isMobile ? heroStill : heroGif}
           alt="BIGTROUT Hero"
           className="w-[85%] h-[85%] object-contain"
           style={{
-            animation: 'dissolveLoop 3.5s ease-in-out infinite',
+            animation: isMobile ? undefined : 'dissolveLoop 3.5s ease-in-out infinite',
             mixBlendMode: 'screen',
             WebkitBackfaceVisibility: 'hidden',
             backfaceVisibility: 'hidden',
