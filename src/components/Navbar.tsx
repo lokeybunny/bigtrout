@@ -32,6 +32,9 @@ export const Navbar = () => {
           <Link to="/news" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
             News
           </Link>
+          <Link to="/lore" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
+            Lore
+          </Link>
         </div>
 
         {/* Mobile menu button */}
@@ -84,6 +87,13 @@ export const Navbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               News
+            </Link>
+            <Link 
+              to="/lore" 
+              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Lore
             </Link>
             <a 
               href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"

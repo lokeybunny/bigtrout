@@ -4,6 +4,7 @@ import { TokenomicsSection } from '@/components/TokenomicsSection';
 import { HowToBuySection } from '@/components/HowToBuySection';
 import { CommunitySection } from '@/components/CommunitySection';
 import { NewsSection } from '@/components/NewsSection';
+import { LoreSection } from '@/components/LoreSection';
 import { Footer } from '@/components/Footer';
 import { ParticleField } from '@/components/ParticleField';
 import { MusicPlayer } from '@/components/MusicPlayer';
@@ -35,6 +36,10 @@ const Index = () => {
 
         <div id="news">
           <NewsSection />
+        </div>
+
+        <div id="lore">
+          <LoreSection />
         </div>
       </main>
       
