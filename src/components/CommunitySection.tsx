@@ -47,7 +47,7 @@ const exchangeLogos = [
   {
     name: 'PocketFi',
     logo: pocketfiLogo,
-    url: 'https://pocketfi.org/',
+    url: 'https://pocketfi.org/en/',
     alt: 'Trade BIGTROUT on PocketFi',
   },
   {
