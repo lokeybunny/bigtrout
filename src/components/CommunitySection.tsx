@@ -261,8 +261,11 @@ export const CommunitySection = () => {
           {/* Logos Grid */}
           <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 lg:gap-12 mb-10">
             {exchangeLogos.map((exchange, index) => (
-              <div
+              <a
                 key={index}
+                href={exchange.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110"
                 title={exchange.alt}
               >
@@ -292,7 +295,7 @@ export const CommunitySection = () => {
                     filter: 'blur(15px)',
                   }}
                 />
-              </div>
+              </a>
             ))}
           </div>
 
