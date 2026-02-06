@@ -1,9 +1,21 @@
 import { Fish, Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/' + hash);
+    } else {
+      const el = document.querySelector(hash);
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/50 border-b border-border/30">
@@ -15,18 +27,18 @@ export const Navbar = () => {
           }}>
             <Fish className="w-6 h-6 text-storm-dark" />
           </div>
-          <span className="font-display text-xl font-bold text-fire-ice">$BIGTROUT</span>
+          <Link to="/" className="font-display text-xl font-bold text-fire-ice">$BIGTROUT</Link>
         </div>
 
         {/* Desktop Navigation links */}
         <div className="hidden md:flex items-center gap-8">
-          <a href="#tokenomics" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
+          <a href="#tokenomics" onClick={(e) => handleAnchorClick(e, '#tokenomics')} className="text-muted-foreground hover:text-foreground transition-colors font-medium">
             Tokenomics
           </a>
-          <a href="#how-to-buy" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
+          <a href="#how-to-buy" onClick={(e) => handleAnchorClick(e, '#how-to-buy')} className="text-muted-foreground hover:text-foreground transition-colors font-medium">
             How to Buy
           </a>
-          <a href="#community" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
+          <a href="#community" onClick={(e) => handleAnchorClick(e, '#community')} className="text-muted-foreground hover:text-foreground transition-colors font-medium">
             Community
           </a>
           <Link to="/news" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
@@ -63,21 +75,21 @@ export const Navbar = () => {
             <a 
               href="#tokenomics" 
               className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={(e) => { handleAnchorClick(e, '#tokenomics'); setIsMenuOpen(false); }}
             >
               Tokenomics
             </a>
             <a 
               href="#how-to-buy" 
               className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={(e) => { handleAnchorClick(e, '#how-to-buy'); setIsMenuOpen(false); }}
             >
               How to Buy
             </a>
             <a 
               href="#community" 
               className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={(e) => { handleAnchorClick(e, '#community'); setIsMenuOpen(false); }}
             >
               Community
             </a>

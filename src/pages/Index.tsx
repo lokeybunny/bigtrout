@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
 import { TokenomicsSection } from '@/components/TokenomicsSection';
@@ -10,6 +12,16 @@ import { ParticleField } from '@/components/ParticleField';
 import { MusicPlayer } from '@/components/MusicPlayer';
 
 const Index = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(location.hash);
+        el?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [location.hash]);
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       {/* Particle effects layer */}
