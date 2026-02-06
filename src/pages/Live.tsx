@@ -87,7 +87,7 @@ const Live = () => {
             </div>
 
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-4">
-              BigTrout Dev Stream
+              BigTrout300 Stream
             </h2>
             <p className="text-muted-foreground mb-8 max-w-md mx-auto">
               Join the stream on X to watch live development updates, ask questions, and hang with the Trout Squad.
