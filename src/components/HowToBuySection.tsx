@@ -165,6 +165,27 @@ export const HowToBuySection = () => {
             </button>
           </div>
         </div>
+
+        {/* GMGN Trading Chart */}
+        <div className="mt-16">
+          <h3 className="text-center font-display text-2xl md:text-3xl font-bold mb-6">
+            <span className="text-ice">LIVE</span>{' '}
+            <span className="text-fire">CHART</span>
+          </h3>
+          <div className="rounded-xl overflow-hidden border border-primary/20 bg-card/50 backdrop-blur-sm">
+            <iframe
+              src="https://www.gmgn.cc/kline/sol/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG?theme=dark"
+              title="BIGTROUT Trading Chart"
+              className="w-full h-[400px] sm:h-[500px] md:h-[600px]"
+              style={{ border: 'none' }}
+              allow="clipboard-write"
+              loading="lazy"
+            />
+          </div>
+          <p className="text-center text-muted-foreground/60 text-xs mt-3">
+            Chart powered by GMGN • Always DYOR
+          </p>
+        </div>
       </div>
     </section>
   );
