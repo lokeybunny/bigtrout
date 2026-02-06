@@ -1,5 +1,5 @@
 import heroGif from '@/assets/bigtrout-hero.gif';
-import heroMobile from '@/assets/bigtrout-mobile.jpg';
+import heroStill from '@/assets/bigtrout-hero.png';
 import { useState, useEffect } from 'react';
 
 export const HologramModel = () => {
@@ -141,7 +141,7 @@ export const HologramModel = () => {
       {/* GIF container with dissolve loop effect */}
       <div className="relative w-full h-full animate-float flex items-center justify-center z-10">
         <img
-          src={isMobile ? heroMobile : heroGif}
+          src={isMobile ? heroStill : heroGif}
           alt="BIGTROUT Hero"
           className="w-[85%] h-[85%] object-contain"
           style={{
