@@ -65,7 +65,7 @@ const exchangeLogos = [
   {
     name: 'CoinMarketCap',
     logo: coinmarketcapLogo,
-    url: 'https://coinmarketcap.com/currencies/bigtrout/',
+    url: 'https://coinmarketcap.com/mobile/',
     alt: 'View BIGTROUT on CoinMarketCap',
   },
   {
