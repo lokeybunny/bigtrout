@@ -135,6 +135,9 @@ export const HologramModel = () => {
           className="w-[85%] h-[85%] object-contain"
           style={{
             animation: 'dissolveLoop 3.5s ease-in-out infinite',
+            mixBlendMode: 'screen',
+            WebkitBackfaceVisibility: 'hidden',
+            backfaceVisibility: 'hidden',
           }}
         />
       </div>
