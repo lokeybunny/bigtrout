@@ -14,6 +14,7 @@ import bitmartLogo from '@/assets/logos/bitmart.png';
 import btseLogo from '@/assets/logos/btse.png';
 import blynexLogo from '@/assets/logos/blynex.png';
 import weexLogo from '@/assets/logos/weex.png';
+import coindarLogo from '@/assets/logos/coindar.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -99,6 +100,12 @@ const exchangeLogos = [
     logo: weexLogo,
     url: 'https://www.weex.com/spot/BIGTROUT-USDT?vipCode=ipqs',
     alt: 'Trade BIGTROUT on WEEX',
+  },
+  {
+    name: 'Coindar',
+    logo: coindarLogo,
+    url: 'https://coindar.org/en/event/the-big-trout-to-be-listed-on-weex-140441',
+    alt: 'View BIGTROUT on Coindar',
   },
 ];
 
