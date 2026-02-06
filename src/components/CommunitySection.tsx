@@ -83,7 +83,7 @@ const exchangeLogos = [
   {
     name: 'BitMart',
     logo: bitmartLogo,
-    url: 'https://www.bitmart.com/',
+    url: 'https://www.bitmart.com/en-US/trade/BIGTROUT_USDT?type=spot',
     alt: 'Trade BIGTROUT on BitMart',
   },
 ];
