@@ -33,7 +33,7 @@ const exchangeLogos = [
   {
     name: 'LBank',
     logo: lbankLogo,
-    url: 'https://www.lbank.com/',
+    url: 'https://www.lbank.com/trade/bigtrout_usdt',
     alt: 'Trade BIGTROUT on LBank',
   },
   {
