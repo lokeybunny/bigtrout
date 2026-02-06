@@ -90,15 +90,23 @@ export const CommunitySection = () => {
         className="absolute inset-0 z-0"
         style={{
           background: `
-            radial-gradient(ellipse at 20% 20%, hsl(240 60% 15% / 0.5) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 80%, hsl(260 50% 12% / 0.5) 0%, transparent 50%),
+            radial-gradient(ellipse at 20% 30%, hsl(240 60% 15% / 0.5) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 70%, hsl(260 50% 12% / 0.5) 0%, transparent 50%),
             linear-gradient(180deg, 
-              hsl(230 40% 8%) 0%, 
-              hsl(240 35% 6%) 30%,
+              hsl(235 35% 8%) 0%, 
+              hsl(240 35% 6%) 20%,
               hsl(250 30% 5%) 60%,
               hsl(220 30% 6%) 100%
             )
           `,
+        }}
+      />
+
+      {/* Top transition from lava/fire section */}
+      <div 
+        className="absolute top-0 left-0 right-0 h-48 z-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, hsl(20 100% 45% / 0.12) 0%, hsl(25 90% 40% / 0.06) 40%, transparent 100%)',
         }}
       />
 
