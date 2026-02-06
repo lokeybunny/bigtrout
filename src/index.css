@@ -294,6 +294,54 @@
     }
   }
   
+  /* Twinkling stars animation */
+  @keyframes twinkle {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+  
+  /* Shooting star animation */
+  @keyframes shootingStar {
+    0% {
+      opacity: 0;
+      transform: rotate(-45deg) translateX(0);
+    }
+    10% {
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: rotate(-45deg) translateX(500px);
+    }
+  }
+  
+  /* Fire dust rising animation */
+  @keyframes fireDustRise {
+    0% {
+      opacity: 0;
+      transform: translateY(0) scale(0.5);
+    }
+    10% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 0.6;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-80vh) scale(0.2);
+    }
+  }
+  
   /* Button fire style */
   .btn-fire {
     @apply px-8 py-4 font-bold text-lg uppercase tracking-wider rounded-lg;
