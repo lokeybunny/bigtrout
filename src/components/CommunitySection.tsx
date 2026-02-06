@@ -1,5 +1,14 @@
-import { Twitter, ExternalLink } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Twitter } from 'lucide-react';
+import { useState } from 'react';
+
+// Import logo images
+import mexcLogo from '@/assets/logos/mexc.png';
+import lbankLogo from '@/assets/logos/lbank.png';
+import moonshotLogo from '@/assets/logos/moonshot.png';
+import mobyagentLogo from '@/assets/logos/mobyagent.png';
+import jupiterLogo from '@/assets/logos/jupiter.svg';
+import coinmarketcapLogo from '@/assets/logos/coinmarketcap.png';
+import coingeckoLogo from '@/assets/logos/coingecko.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -16,41 +25,49 @@ const socialLinks = [
 const exchangeLogos = [
   {
     name: 'MEXC',
+    logo: mexcLogo,
     url: `https://www.mexc.com/price/BIGTROUT`,
     alt: 'Trade BIGTROUT on MEXC',
   },
   {
     name: 'LBank',
+    logo: lbankLogo,
     url: 'https://www.lbank.com/',
     alt: 'Trade BIGTROUT on LBank',
   },
   {
     name: 'Moonshot',
+    logo: moonshotLogo,
     url: `https://moonshot.money/${CONTRACT_ADDRESS}`,
     alt: 'Trade BIGTROUT on Moonshot',
   },
   {
     name: 'PocketFi',
+    logo: null, // No logo available, will use text fallback
     url: 'https://pocketfi.org/',
     alt: 'Trade BIGTROUT on PocketFi',
   },
   {
     name: 'MobyAgent',
+    logo: mobyagentLogo,
     url: 'https://mobyagent.com/',
     alt: 'Trade BIGTROUT on MobyAgent',
   },
   {
     name: 'Jupiter',
+    logo: jupiterLogo,
     url: `https://jup.ag/tokens/${CONTRACT_ADDRESS}`,
     alt: 'Trade BIGTROUT on Jupiter',
   },
   {
     name: 'CoinMarketCap',
+    logo: coinmarketcapLogo,
     url: 'https://coinmarketcap.com/currencies/bigtrout/',
     alt: 'View BIGTROUT on CoinMarketCap',
   },
   {
     name: 'CoinGecko',
+    logo: coingeckoLogo,
     url: 'https://www.coingecko.com/en/coins/bigtrout',
     alt: 'View BIGTROUT on CoinGecko',
   },
@@ -75,7 +92,7 @@ const generateFireDust = (count: number) => {
     size: 2 + Math.random() * 4,
     delay: Math.random() * 6,
     duration: 4 + Math.random() * 4,
-    hue: 15 + Math.random() * 25, // Orange to red hues
+    hue: 15 + Math.random() * 25,
   }));
 };
 
@@ -175,7 +192,7 @@ export const CommunitySection = () => {
         }}
       />
 
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
+      <div className="relative z-10 max-w-5xl mx-auto text-center">
         {/* Section header */}
         <h2 className="font-display text-4xl md:text-6xl font-bold mb-4">
           <span className="text-ice">JOIN THE</span>{' '}
@@ -227,31 +244,40 @@ export const CommunitySection = () => {
           </h3>
 
           {/* Logos Grid */}
-          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 lg:gap-10 mb-10">
+          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 lg:gap-12 mb-10">
             {exchangeLogos.map((exchange, index) => (
               <a
                 key={index}
                 href={exchange.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative flex items-center justify-center transition-all duration-300 hover:scale-110"
+                className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110"
                 title={exchange.alt}
               >
-                <div 
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 group-hover:bg-card/80"
-                >
-                  <span className="font-display font-bold text-sm md:text-base text-foreground/80 group-hover:text-foreground transition-colors">
-                    {exchange.name}
-                  </span>
-                  <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-primary transition-colors opacity-0 group-hover:opacity-100" />
-                </div>
+                {exchange.logo ? (
+                  <img
+                    src={exchange.logo}
+                    alt={exchange.alt}
+                    className="h-10 md:h-12 lg:h-14 w-auto max-w-[120px] md:max-w-[150px] object-contain transition-all duration-300 brightness-90 grayscale-[30%] group-hover:brightness-110 group-hover:grayscale-0"
+                    style={{
+                      filter: 'drop-shadow(0 0 8px hsl(0 0% 100% / 0.2))',
+                    }}
+                  />
+                ) : (
+                  // Text fallback for logos that couldn't be downloaded
+                  <div className="px-4 py-2 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 group-hover:bg-card/80">
+                    <span className="font-display font-bold text-sm md:text-base text-foreground/80 group-hover:text-foreground transition-colors">
+                      {exchange.name}
+                    </span>
+                  </div>
+                )}
                 
                 {/* Hover glow effect */}
                 <div 
                   className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{
-                    background: 'radial-gradient(circle, hsl(20 100% 50% / 0.2), transparent 70%)',
-                    filter: 'blur(10px)',
+                    background: 'radial-gradient(circle, hsl(20 100% 50% / 0.25), transparent 70%)',
+                    filter: 'blur(15px)',
                   }}
                 />
               </a>
