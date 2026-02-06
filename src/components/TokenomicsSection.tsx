@@ -121,7 +121,7 @@ export const TokenomicsSection = () => {
       <div 
         className="absolute inset-0 z-0"
         style={{
-          background: 'linear-gradient(180deg, hsl(220 30% 6% / 0.85) 0%, hsl(220 30% 6% / 0.7) 50%, hsl(220 30% 6% / 0.85) 100%)',
+          background: 'linear-gradient(180deg, hsl(220 30% 6% / 0.85) 0%, hsl(220 30% 6% / 0.6) 40%, hsl(220 30% 6% / 0.5) 70%, hsl(220 30% 6% / 0.3) 100%)',
         }}
       />
 
@@ -129,7 +129,15 @@ export const TokenomicsSection = () => {
       <div 
         className="absolute inset-0 pointer-events-none z-0"
         style={{
-          background: 'radial-gradient(ellipse at center bottom, hsl(195 90% 45% / 0.15), transparent 60%)',
+          background: 'radial-gradient(ellipse at center bottom, hsl(195 90% 45% / 0.2), transparent 50%)',
+        }}
+      />
+
+      {/* Bottom transition to fire/lava section */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-48 z-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, transparent 0%, hsl(20 100% 50% / 0.1) 50%, hsl(25 100% 45% / 0.2) 100%)',
         }}
       />
 

@@ -63,15 +63,23 @@ export const HowToBuySection = () => {
         }}
       />
       
-      {/* Gradient overlay to blend with ice section above */}
+      {/* Top transition from ice section */}
+      <div 
+        className="absolute top-0 left-0 right-0 h-48 z-[1] pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, hsl(195 90% 50% / 0.15) 0%, hsl(200 80% 45% / 0.08) 40%, transparent 100%)',
+        }}
+      />
+
+      {/* Gradient overlay for content readability */}
       <div 
         className="absolute inset-0 z-0"
         style={{
           background: `linear-gradient(180deg, 
-            hsl(195 90% 45% / 0.3) 0%, 
-            hsl(220 30% 6% / 0.7) 15%, 
-            hsl(220 30% 6% / 0.6) 50%, 
-            hsl(220 30% 6% / 0.8) 100%
+            hsl(220 30% 6% / 0.5) 0%, 
+            hsl(220 30% 6% / 0.4) 30%, 
+            hsl(220 30% 6% / 0.5) 60%, 
+            hsl(230 35% 8% / 0.7) 100%
           )`,
         }}
       />
@@ -80,7 +88,15 @@ export const HowToBuySection = () => {
       <div 
         className="absolute inset-0 pointer-events-none z-0"
         style={{
-          background: 'radial-gradient(ellipse at center, hsl(20 100% 50% / 0.2), transparent 60%)',
+          background: 'radial-gradient(ellipse at center 30%, hsl(20 100% 50% / 0.2), transparent 50%)',
+        }}
+      />
+
+      {/* Bottom transition to night sky */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-64 z-[1] pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, transparent 0%, hsl(240 40% 10% / 0.4) 50%, hsl(235 35% 8% / 0.8) 100%)',
         }}
       />
 
