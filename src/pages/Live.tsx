@@ -1,6 +1,5 @@
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { ParticleField } from '@/components/ParticleField';
 import { ArrowLeft, Radio, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +8,44 @@ const STREAM_URL = 'https://x.com/i/broadcasts/1mnxeNARBBQKX';
 const Live = () => {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <ParticleField />
+      {/* Dark night sky with fire glow at top */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          background: `
+            radial-gradient(ellipse at 50% 0%, hsl(20 100% 45% / 0.35) 0%, hsl(25 100% 40% / 0.15) 30%, transparent 60%),
+            radial-gradient(ellipse at 30% 10%, hsl(35 100% 50% / 0.2) 0%, transparent 40%),
+            radial-gradient(ellipse at 70% 5%, hsl(15 100% 45% / 0.18) 0%, transparent 35%),
+            linear-gradient(180deg, 
+              hsl(220 40% 4%) 0%, 
+              hsl(230 35% 5%) 30%,
+              hsl(240 30% 4%) 60%, 
+              hsl(235 35% 3%) 100%
+            )
+          `,
+        }}
+      />
+
+      {/* Ember particles rising */}
+      <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            key={`ember-${i}`}
+            className="absolute rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              bottom: '-10px',
+              width: `${2 + Math.random() * 3}px`,
+              height: `${2 + Math.random() * 3}px`,
+              background: `radial-gradient(circle, hsl(${15 + Math.random() * 25} 100% 60%), transparent)`,
+              boxShadow: `0 0 6px hsl(${15 + Math.random() * 25} 100% 50% / 0.6)`,
+              animation: `fireDustRise ${5 + Math.random() * 5}s ease-out infinite`,
+              animationDelay: `${Math.random() * 6}s`,
+            }}
+          />
+        ))}
+      </div>
+
       <Navbar />
 
       <main className="relative z-10 pt-24 pb-16 px-4">
