@@ -69,9 +69,11 @@ export const HeroSection = () => {
             Buy $BIGTROUT
           </a>
           <a 
-            href="https://dexscreener.com/solana/84q5fsb6dhvsyhqdfkbxdvdfmsiwelezwgmutd1fubac"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#live-chart"
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector('#live-chart')?.scrollIntoView({ behavior: 'smooth' });
+            }}
             className="btn-ice"
           >
             View Chart
