@@ -53,7 +53,7 @@ const exchangeLogos = [
   {
     name: 'MobyAgent',
     logo: mobyagentLogo,
-    url: 'https://mobyagent.com/',
+    url: 'https://www.mobyscreener.com/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG',
     alt: 'Trade BIGTROUT on MobyAgent',
   },
   {
