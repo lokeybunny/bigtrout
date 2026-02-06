@@ -13,6 +13,7 @@ import coingeckoLogo from '@/assets/logos/coingecko.png';
 import bitmartLogo from '@/assets/logos/bitmart.png';
 import btseLogo from '@/assets/logos/btse.png';
 import blynexLogo from '@/assets/logos/blynex.png';
+import weexLogo from '@/assets/logos/weex.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -92,6 +93,12 @@ const exchangeLogos = [
     logo: blynexLogo,
     url: 'https://blynex.com/spot/TheBigTrout_USDT',
     alt: 'Trade BIGTROUT on Blynex',
+  },
+  {
+    name: 'WEEX',
+    logo: weexLogo,
+    url: 'https://www.weex.com/spot/BIGTROUT-USDT?vipCode=ipqs',
+    alt: 'Trade BIGTROUT on WEEX',
   },
 ];
 
