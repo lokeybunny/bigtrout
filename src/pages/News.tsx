@@ -6,6 +6,7 @@ import { ArrowLeft, ExternalLink, Calendar, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import lavaTrailBg from '@/assets/lava-trail-bg.jpg';
+import lavaSnowMountain from '@/assets/lava-snow-mountain.jpg';
 
 const News = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -19,17 +20,33 @@ const News = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Calculate dissolve opacity based on scroll (dissolve over first 800px of scroll)
+  const dissolveProgress = Math.min(scrollY / 800, 1);
+
   return (
     <div ref={containerRef} className="relative min-h-screen overflow-x-hidden">
-      {/* Parallax lava background — fixed behind everything */}
+      {/* First parallax layer: lava trail (fades out) */}
       <div
-        className="fixed inset-0 z-0"
+        className="fixed inset-0 z-0 transition-opacity duration-100"
         style={{
           backgroundImage: `url(${lavaTrailBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           transform: `translateY(${scrollY * -0.15}px) scale(1.15)`,
           willChange: 'transform',
+          opacity: 1 - dissolveProgress,
+        }}
+      />
+      {/* Second parallax layer: lava snow mountain (fades in) */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          backgroundImage: `url(${lavaSnowMountain})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transform: `translateY(${scrollY * -0.08}px) scale(1.1)`,
+          willChange: 'transform',
+          opacity: dissolveProgress,
         }}
       />
       {/* Heavy dark overlay for readability */}
@@ -48,7 +65,6 @@ const News = () => {
           `,
         }}
       />
-
       <ParticleField />
       <Navbar />
 
