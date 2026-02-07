@@ -18,6 +18,7 @@ import coindarLogo from '@/assets/logos/coindar.png';
 import kucoinLogo from '@/assets/logos/kucoin.png';
 import dexscreenerLogo from '@/assets/logos/dexscreener.png';
 import poloniexLogo from '@/assets/logos/poloniex.png';
+import bitrueLogo from '@/assets/logos/bitrue.svg';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -127,6 +128,12 @@ const exchangeLogos = [
     logo: poloniexLogo,
     url: 'https://www.poloniex.com/trade/BIGTROUT_USDT',
     alt: 'Trade BIGTROUT on Poloniex',
+  },
+  {
+    name: 'Bitrue',
+    logo: bitrueLogo,
+    url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG',
+    alt: 'Trade BIGTROUT on Bitrue',
   },
 ];
 
