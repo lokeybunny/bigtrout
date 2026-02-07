@@ -20,7 +20,7 @@ import dexscreenerLogo from '@/assets/logos/dexscreener.png';
 import poloniexLogo from '@/assets/logos/poloniex.png';
 import bitrueLogo from '@/assets/logos/bitrue.svg';
 import moontokLogo from '@/assets/logos/moontok.svg';
-import lynxhlLogo from '@/assets/logos/lynxhl.png';
+
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -142,12 +142,6 @@ const exchangeLogos = [
     logo: moontokLogo,
     url: 'https://moontok.io/coins/the-big-trout',
     alt: 'View BIGTROUT on Moontok',
-  },
-  {
-    name: 'LynxHL',
-    logo: lynxhlLogo,
-    url: 'https://x.com/LynxOnHL/status/2020225450199642168',
-    alt: 'View BIGTROUT on LynxHL',
   },
 ];
 
