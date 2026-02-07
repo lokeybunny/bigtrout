@@ -136,6 +136,7 @@ const exchangeLogos = [
     logo: bitrueLogo,
     url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG',
     alt: 'Trade BIGTROUT on Bitrue',
+    hasBorder: true,
   },
   {
     name: 'Moontok',
@@ -330,7 +331,7 @@ export const CommunitySection = () => {
                   <img
                     src={exchange.logo}
                     alt={exchange.alt}
-                    className="h-10 md:h-12 lg:h-14 w-auto max-w-[120px] md:max-w-[150px] object-contain transition-all duration-300 brightness-90 grayscale-[30%] group-hover:brightness-110 group-hover:grayscale-0"
+                    className={`h-10 md:h-12 lg:h-14 w-auto max-w-[120px] md:max-w-[150px] object-contain transition-all duration-300 brightness-90 grayscale-[30%] group-hover:brightness-110 group-hover:grayscale-0 ${(exchange as any).hasBorder ? 'border-2 border-white/80 rounded-lg p-1' : ''}`}
                     style={{
                       filter: 'drop-shadow(0 0 8px hsl(0 0% 100% / 0.2))',
                     }}
