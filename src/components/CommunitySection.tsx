@@ -19,6 +19,7 @@ import kucoinLogo from '@/assets/logos/kucoin.png';
 import dexscreenerLogo from '@/assets/logos/dexscreener.png';
 import poloniexLogo from '@/assets/logos/poloniex.png';
 import bitrueLogo from '@/assets/logos/bitrue.svg';
+import moontokLogo from '@/assets/logos/moontok.svg';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -134,6 +135,12 @@ const exchangeLogos = [
     logo: bitrueLogo,
     url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG',
     alt: 'Trade BIGTROUT on Bitrue',
+  },
+  {
+    name: 'Moontok',
+    logo: moontokLogo,
+    url: 'https://moontok.io/coins/the-big-trout',
+    alt: 'View BIGTROUT on Moontok',
   },
 ];
 
