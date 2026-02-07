@@ -4,6 +4,7 @@ import { ArrowLeft, Radio, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const STREAM_URL = 'https://x.com/i/broadcasts/1mnxeNARBBQKX';
+const IS_LIVE = false;
 
 const Live = () => {
   return (
@@ -66,8 +67,8 @@ const Live = () => {
               }}
             >
               <Radio className="w-7 h-7 text-storm-dark" />
-              {/* Pulsing live dot */}
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 animate-pulse border-2 border-background" />
+              {/* Status dot */}
+              {IS_LIVE && <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 animate-pulse border-2 border-background" />}
             </div>
             <h1 className="font-display text-5xl md:text-7xl font-black">
               <span className="text-fire">LIVE</span>{' '}
@@ -80,29 +81,51 @@ const Live = () => {
 
           {/* Stream card */}
           <div className="card-volcanic p-8 md:p-12 text-center max-w-2xl mx-auto">
-            {/* Live indicator */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-red-500/50 bg-red-500/10 mb-8">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-              <span className="font-display text-sm tracking-widest text-red-400">LIVE NOW</span>
+            {/* Status indicator */}
+            <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border mb-8 ${
+              IS_LIVE 
+                ? 'border-red-500/50 bg-red-500/10' 
+                : 'border-muted-foreground/30 bg-muted/10'
+            }`}>
+              <span className={`w-2.5 h-2.5 rounded-full ${
+                IS_LIVE ? 'bg-red-500 animate-pulse' : 'bg-muted-foreground/50'
+              }`} />
+              <span className={`font-display text-sm tracking-widest ${
+                IS_LIVE ? 'text-red-400' : 'text-muted-foreground'
+              }`}>
+                {IS_LIVE ? 'LIVE NOW' : 'OFFLINE'}
+              </span>
             </div>
 
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-4">
               BigTrout300 Stream
             </h2>
             <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-              Join the stream on X to watch live development updates, ask questions, and hang with the Trout Squad.
+              {IS_LIVE
+                ? 'Join the stream on X to watch live development updates, ask questions, and hang with the Trout Squad.'
+                : 'The stream is currently offline. Check back later or follow us on X to get notified when we go live.'}
             </p>
 
-            <a
-              href={STREAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-fire inline-flex items-center gap-3 text-lg"
-            >
-              <Radio className="w-5 h-5" />
-              Watch Live on X
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            {IS_LIVE ? (
+              <a
+                href={STREAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-fire inline-flex items-center gap-3 text-lg"
+              >
+                <Radio className="w-5 h-5" />
+                Watch Live on X
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            ) : (
+              <button
+                disabled
+                className="btn-fire inline-flex items-center gap-3 text-lg opacity-50 cursor-not-allowed pointer-events-none"
+              >
+                <Radio className="w-5 h-5" />
+                Currently Offline
+              </button>
+            )}
           </div>
         </div>
       </main>
