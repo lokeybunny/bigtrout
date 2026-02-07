@@ -17,6 +17,7 @@ import weexLogo from '@/assets/logos/weex.png';
 import coindarLogo from '@/assets/logos/coindar.png';
 import kucoinLogo from '@/assets/logos/kucoin.png';
 import dexscreenerLogo from '@/assets/logos/dexscreener.png';
+import poloniexLogo from '@/assets/logos/poloniex.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -120,6 +121,12 @@ const exchangeLogos = [
     logo: dexscreenerLogo,
     url: 'https://dexscreener.com/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG',
     alt: 'View BIGTROUT on DexScreener',
+  },
+  {
+    name: 'Poloniex',
+    logo: poloniexLogo,
+    url: 'https://www.poloniex.com/trade/BIGTROUT_USDT',
+    alt: 'Trade BIGTROUT on Poloniex',
   },
 ];
 
