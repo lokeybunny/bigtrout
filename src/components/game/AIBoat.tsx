@@ -114,7 +114,7 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
     let z = baseZ + deflectRef.current[1];
 
     // Resolve solid collisions against world objects + obstacles — always active
-    const resolved = resolveCollisions(x, z, 2, obstacleColliders);
+    const resolved = resolveCollisions(x, z, 1.2, obstacleColliders);
     x = resolved.x;
     z = resolved.z;
 
