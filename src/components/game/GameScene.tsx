@@ -35,19 +35,21 @@ const AI_BOATS = [
 
 const CHECKPOINT_RADIUS = 8; // Must be within this distance to trigger checkpoint
 
+const CHECKPOINT_RADIUS_SQ = CHECKPOINT_RADIUS * CHECKPOINT_RADIUS;
+
 const getCheckpointProgress = (pos: THREE.Vector3): { index: number; withinRange: boolean } => {
-  let minDist = Infinity;
+  let minDistSq = Infinity;
   let closestIdx = 0;
   for (let i = 0; i < CHECKPOINTS.length; i++) {
     const dx = pos.x - CHECKPOINTS[i][0];
     const dz = pos.z - CHECKPOINTS[i][1];
-    const dist = Math.sqrt(dx * dx + dz * dz);
-    if (dist < minDist) {
-      minDist = dist;
+    const distSq = dx * dx + dz * dz;
+    if (distSq < minDistSq) {
+      minDistSq = distSq;
       closestIdx = i;
     }
   }
-  return { index: closestIdx, withinRange: minDist <= CHECKPOINT_RADIUS };
+  return { index: closestIdx, withinRange: minDistSq <= CHECKPOINT_RADIUS_SQ };
 };
 
 export const GameScene = () => {
@@ -236,6 +238,8 @@ export const GameScene = () => {
     setTimeout(() => { setHitMessage(null); setPaddleDisabled(false); }, 1500);
   }, [playSFX]);
 
+  const posUpdateThrottleRef = useRef(0);
+
   const handleBoatPosition = useCallback((pos: THREE.Vector3) => {
     boatPosRef.current.copy(pos);
     
@@ -250,7 +254,6 @@ export const GameScene = () => {
       lastCheckpointRef.current = cp;
       playerProgressRef.current = playerLapRef.current * totalCPs + cp;
       
-      // Mark checkpoint as passed & show flash
       setPassedCheckpoints(prev => new Set(prev).add(cp));
       setCheckpointFlash(`✅ Checkpoint ${cp + 1} / ${totalCPs}`);
       playSFX('checkpoint');
@@ -276,7 +279,12 @@ export const GameScene = () => {
       }));
     }
 
-    updatePositions();
+    // Throttle leaderboard updates to ~4x/sec to avoid React re-render jank
+    const now = performance.now();
+    if (now - posUpdateThrottleRef.current > 250) {
+      posUpdateThrottleRef.current = now;
+      updatePositions();
+    }
   }, []);
 
   const handleAIProgress = useCallback((id: number, progress: number, lap: number) => {

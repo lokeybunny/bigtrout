@@ -1,6 +1,21 @@
-import { useRef, useMemo } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+
+// Pre-compute spot positions once (avoids Math.random() in render)
+const ISLAND_SPOTS = Array.from({ length: 12 }, (_, i) => {
+  // Seeded pseudo-random using index
+  const s = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+  const r1 = s - Math.floor(s);
+  const s2 = Math.sin(i * 269.5 + 183.3) * 43758.5453;
+  const r2 = s2 - Math.floor(s2);
+  const s3 = Math.sin(i * 419.2 + 371.9) * 43758.5453;
+  const r3 = s3 - Math.floor(s3);
+  return {
+    pos: [(r1 - 0.5) * 10, 2 + r2 * 4, (r3 - 0.5) * 20] as [number, number, number],
+    size: 0.4 + ((Math.sin(i * 73.1) * 43758.5453) % 1) * 0.4,
+  };
+});
 
 export const TroutIsland = () => {
   const groupRef = useRef<THREE.Group>(null);
@@ -78,14 +93,10 @@ export const TroutIsland = () => {
         <coneGeometry args={[2, 4, 4]} />
         <meshStandardMaterial color="#2a8a4e" roughness={0.7} />
       </mesh>
-      {/* Spots on body */}
-      {Array.from({ length: 12 }).map((_, i) => (
-        <mesh key={i} position={[
-          (Math.random() - 0.5) * 10,
-          2 + Math.random() * 4,
-          (Math.random() - 0.5) * 20,
-        ]}>
-          <sphereGeometry args={[0.4 + Math.random() * 0.4, 6, 6]} />
+      {/* Spots on body — memoized positions */}
+      {ISLAND_SPOTS.map((spot, i) => (
+        <mesh key={i} position={spot.pos}>
+          <sphereGeometry args={[spot.size, 6, 6]} />
           <meshStandardMaterial color="#1a5a2e" roughness={0.9} />
         </mesh>
       ))}

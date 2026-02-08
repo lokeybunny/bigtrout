@@ -46,11 +46,10 @@ export const SpeedBoost = ({ pickup, playerPos, onCollect }: SpeedBoostProps) =>
     groupRef.current.position.y = pickup.position[1] + Math.sin(t * 3) * 0.3;
     groupRef.current.rotation.y = t * 2;
 
-    // Check collision with player
+    // Check collision with player — squared distance
     const dx = playerPos.current.x - pickup.position[0];
     const dz = playerPos.current.z - pickup.position[2];
-    const dist = Math.sqrt(dx * dx + dz * dz);
-    if (dist < 4) {
+    if (dx * dx + dz * dz < 16) { // 4^2 = 16
       collected.current = true;
       onCollect(pickup.id);
     }
