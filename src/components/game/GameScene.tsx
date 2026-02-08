@@ -335,10 +335,11 @@ export const GameScene = () => {
       {/* Boost message */}
       {boostMessage && (
         <div className="absolute top-24 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-          <div className="text-3xl font-bold" style={{
+          <div className="text-3xl font-bold px-4 py-1 rounded-lg" style={{
             fontFamily: 'Bangers, cursive',
             color: '#ffaa00',
             textShadow: '0 0 30px rgba(255,170,0,0.6), 3px 3px 0 #000',
+            background: 'rgba(0,0,0,0.7)',
             animation: 'floatUp 2s ease-out forwards',
           }}>
             {boostMessage}
@@ -349,10 +350,11 @@ export const GameScene = () => {
       {/* Hit message */}
       {hitMessage && (
         <div className="absolute top-32 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-          <div className="text-3xl font-bold" style={{
+          <div className="text-3xl font-bold px-4 py-1 rounded-lg" style={{
             fontFamily: 'Bangers, cursive',
             color: '#ff4444',
             textShadow: '0 0 30px rgba(255,68,68,0.6), 3px 3px 0 #000',
+            background: 'rgba(0,0,0,0.7)',
           }}>
             {hitMessage}
           </div>
@@ -375,10 +377,11 @@ export const GameScene = () => {
 
       {countdownDisplay && (
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-          <div className="text-8xl font-bold" style={{
+          <div className="text-8xl font-bold px-8 py-4 rounded-2xl" style={{
             fontFamily: 'Bangers, cursive',
             color: countdownDisplay === 'GO!' ? '#44ff88' : '#ffcc44',
             textShadow: '0 0 40px rgba(255,204,68,0.5), 4px 4px 0 #000',
+            background: 'rgba(0,0,0,0.6)',
           }}>
             {countdownDisplay}
           </div>
@@ -483,10 +486,11 @@ export const GameScene = () => {
       {/* Token event message */}
       {tokenMessage && (
         <div className="absolute left-2 z-10 pointer-events-none transition-all duration-300" style={{ bottom: chartExpanded ? 520 : 164 }}>
-          <div className="text-lg font-bold" style={{
+          <div className="text-lg font-bold px-3 py-1 rounded-md" style={{
             fontFamily: 'Bangers, cursive',
             color: tokenMessage.includes('SELL') ? '#ff4444' : '#44ff88',
             textShadow: '0 0 20px rgba(68,255,136,0.5), 2px 2px 0 #000',
+            background: 'rgba(0,0,0,0.7)',
           }}>
             {tokenMessage}
           </div>
