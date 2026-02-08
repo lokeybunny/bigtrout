@@ -25,7 +25,7 @@ export const Navbar = () => {
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img src={troutLogo} alt="BigTrout" className="w-10 h-10 rounded-xl object-cover" />
+          <img src={troutLogo} alt="BigTrout" className="w-12 h-12 object-contain mix-blend-multiply" />
         </Link>
 
         {/* Desktop Navigation links */}
