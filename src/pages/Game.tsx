@@ -133,7 +133,7 @@ const Game = () => {
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/80" />
 
         <div className="relative z-10 w-full max-w-3xl mx-auto px-6 py-8 overflow-y-auto max-h-screen">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-2" style={{
