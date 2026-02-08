@@ -345,20 +345,6 @@ export const GameScene = () => {
             )}
           </div>
 
-          {/* Position */}
-          <div className="text-center">
-            <div className="text-5xl font-bold" style={{
-              fontFamily: 'Bangers, cursive',
-              color: playerPlace <= 1 ? '#44ff88' : playerPlace <= 3 ? '#ffcc44' : '#ff6644',
-              textShadow: '0 0 20px rgba(68,255,136,0.3), 3px 3px 0 #000'
-            }}>
-              {playerPlace}{playerPlace === 1 ? 'st' : playerPlace === 2 ? 'nd' : playerPlace === 3 ? 'rd' : 'th'}
-            </div>
-            <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: '#888' }}>
-              of {AI_BOATS.length + 1}
-            </div>
-          </div>
-
           {/* Leaderboard */}
           <div className="bg-black/50 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[140px]">
             <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#ffcc44' }}>
@@ -387,6 +373,22 @@ export const GameScene = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </div>
+
+      {/* Position indicator - far right */}
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 z-10 pointer-events-none text-center">
+        <div className="bg-black/60 backdrop-blur-sm rounded-xl px-5 py-4">
+          <div className="text-6xl font-bold" style={{
+            fontFamily: 'Bangers, cursive',
+            color: playerPlace <= 1 ? '#44ff88' : playerPlace <= 3 ? '#ffcc44' : '#ff6644',
+            textShadow: '0 0 20px rgba(68,255,136,0.3), 3px 3px 0 #000'
+          }}>
+            {playerPlace}{playerPlace === 1 ? 'st' : playerPlace === 2 ? 'nd' : playerPlace === 3 ? 'rd' : 'th'}
+          </div>
+          <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: '#888' }}>
+            of {AI_BOATS.length + 1}
           </div>
         </div>
       </div>
