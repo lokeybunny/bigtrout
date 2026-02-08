@@ -78,14 +78,16 @@ const CheckpointBuoy = ({ position, index, passed }: { position: [number, number
           emissiveIntensity={passed ? 0.5 : 0.2}
         />
       </mesh>
-      {/* Light */}
-      <pointLight 
-        ref={lightRef}
-        position={[0, 1.5, 0]} 
-        color={passed ? '#44ff88' : (isStart ? '#44ff88' : '#ff8844')} 
-        intensity={passed ? 3 : 1} 
-        distance={passed ? 25 : 15} 
-      />
+      {/* Light — only render for start or passed checkpoints to reduce light count */}
+      {(isStart || passed) && (
+        <pointLight 
+          ref={lightRef}
+          position={[0, 1.5, 0]} 
+          color="#44ff88" 
+          intensity={passed ? 3 : 1} 
+          distance={passed ? 25 : 15} 
+        />
+      )}
       {/* Green glow ring when passed */}
       <mesh ref={glowRef} position={[0, 0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[1, 2.5, 16]} />

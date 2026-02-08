@@ -267,10 +267,9 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
 
       {/* Lantern on stern */}
       <mesh position={[-0.6, 0.8, 2]}>
-        <sphereGeometry args={[0.1, 8, 8]} />
-        <meshStandardMaterial color="#ffcc44" emissive="#ffaa22" emissiveIntensity={0.8} />
+        <sphereGeometry args={[0.1, 6, 6]} />
+        <meshStandardMaterial color="#ffcc44" emissive="#ffaa22" emissiveIntensity={1.2} />
       </mesh>
-      <pointLight position={[-0.6, 0.8, 2]} color="#ffcc44" intensity={1} distance={6} />
 
       {/* ===== FISHERMAN ===== */}
       <group position={[0, 0.22, 0.8]}>
