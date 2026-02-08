@@ -21,6 +21,7 @@ import dexscreenerLogo from '@/assets/logos/dexscreener.png';
 import poloniexLogo from '@/assets/logos/poloniex.png';
 import bitrueLogo from '@/assets/logos/bitrue.svg';
 import moontokLogo from '@/assets/logos/moontok.svg';
+import binanceLogo from '@/assets/logos/binance.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -47,6 +48,7 @@ const exchangeLogos = [
   { name: 'Poloniex', logo: poloniexLogo, url: 'https://www.poloniex.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Poloniex' },
   { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue', hasBorder: true },
   { name: 'Moontok', logo: moontokLogo, url: 'https://moontok.io/coins/the-big-trout', alt: 'View BIGTROUT on Moontok' },
+  { name: 'Binance', logo: binanceLogo, url: 'https://www.binance.com', alt: 'Trade BIGTROUT on Binance' },
 ];
 
 // Generate fireflies
