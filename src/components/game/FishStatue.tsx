@@ -4,10 +4,15 @@ import * as THREE from 'three';
 
 export const FishStatue = () => {
   const glowRef = useRef<THREE.PointLight>(null);
+  const fishRef = useRef<THREE.Group>(null);
 
   useFrame(({ clock }) => {
     if (glowRef.current) {
       glowRef.current.intensity = 3 + Math.sin(clock.getElapsedTime() * 1.5) * 1;
+    }
+    // Slow majestic rotation
+    if (fishRef.current) {
+      fishRef.current.rotation.y = clock.getElapsedTime() * 0.15;
     }
   });
 
@@ -18,7 +23,6 @@ export const FishStatue = () => {
         <cylinderGeometry args={[8, 10, 2, 16]} />
         <meshStandardMaterial color="#5a4a30" roughness={0.9} />
       </mesh>
-      {/* Sandy top */}
       <mesh position={[0, 0.6, 0]}>
         <cylinderGeometry args={[7, 8, 0.3, 16]} />
         <meshStandardMaterial color="#c4a870" roughness={0.95} />
@@ -28,94 +32,132 @@ export const FishStatue = () => {
         <cylinderGeometry args={[3, 3.5, 3, 8]} />
         <meshStandardMaterial color="#555555" roughness={0.8} metalness={0.1} />
       </mesh>
-      {/* Pedestal top rim */}
       <mesh position={[0, 3.6, 0]}>
         <cylinderGeometry args={[3.3, 3, 0.3, 8]} />
         <meshStandardMaterial color="#666666" roughness={0.7} />
       </mesh>
 
-      {/* ===== GIANT FISH STATUE ===== */}
-      <group position={[0, 3.8, 0]}>
-        {/* Body — large upright fish */}
-        <mesh position={[0, 4, 0]}>
-          <sphereGeometry args={[3, 12, 10]} />
-          <meshStandardMaterial color="#1a7a4a" metalness={0.6} roughness={0.3} />
+      {/* ===== FISH STATUE — horizontal, proper fish shape ===== */}
+      <group ref={fishRef} position={[0, 7.5, 0]}>
+        {/* Main body — elongated ellipsoid (scaled sphere) */}
+        <mesh scale={[1, 1.2, 2.8]}>
+          <sphereGeometry args={[2, 14, 10]} />
+          <meshStandardMaterial color="#1a8a4e" metalness={0.65} roughness={0.25} />
         </mesh>
-        <mesh position={[0, 6.5, 0]}>
-          <sphereGeometry args={[2.5, 12, 10]} />
-          <meshStandardMaterial color="#1a8a4e" metalness={0.6} roughness={0.3} />
+
+        {/* Belly — lighter underside */}
+        <mesh position={[0, -0.6, 0]} scale={[0.85, 0.7, 2.6]}>
+          <sphereGeometry args={[2, 12, 8]} />
+          <meshStandardMaterial color="#5ecf8a" metalness={0.5} roughness={0.3} />
         </mesh>
-        <mesh position={[0, 1.5, 0]}>
-          <sphereGeometry args={[2.5, 10, 8]} />
+
+        {/* Head — front bulge */}
+        <mesh position={[0, 0.3, 5]} scale={[1, 1, 0.8]}>
+          <sphereGeometry args={[2.2, 12, 10]} />
+          <meshStandardMaterial color="#2a9a5e" metalness={0.6} roughness={0.25} />
+        </mesh>
+
+        {/* Snout */}
+        <mesh position={[0, -0.2, 7]} scale={[0.7, 0.6, 0.6]}>
+          <sphereGeometry args={[1.5, 10, 8]} />
+          <meshStandardMaterial color="#2aaa60" metalness={0.55} roughness={0.3} />
+        </mesh>
+
+        {/* Mouth — open */}
+        <mesh position={[0, -0.8, 7.5]} rotation={[0.2, 0, 0]}>
+          <boxGeometry args={[1.4, 0.25, 0.8]} />
+          <meshStandardMaterial color="#cc3333" metalness={0.4} roughness={0.5} />
+        </mesh>
+        {/* Lower jaw */}
+        <mesh position={[0, -1.2, 7.2]} rotation={[-0.15, 0, 0]}>
+          <boxGeometry args={[1.2, 0.2, 0.6]} />
           <meshStandardMaterial color="#1a6a3a" metalness={0.6} roughness={0.3} />
         </mesh>
 
-        {/* Head */}
-        <mesh position={[0, 8.5, 0.5]}>
-          <sphereGeometry args={[2, 10, 8]} />
-          <meshStandardMaterial color="#2a9a5e" metalness={0.5} roughness={0.3} />
+        {/* Left eye */}
+        <mesh position={[-1.8, 1, 5.5]}>
+          <sphereGeometry args={[0.6, 8, 8]} />
+          <meshStandardMaterial color="#ffffff" metalness={0.2} />
         </mesh>
-
-        {/* Eyes — left */}
-        <mesh position={[-1.3, 9, 1.3]}>
-          <sphereGeometry args={[0.5, 8, 8]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.3} />
-        </mesh>
-        <mesh position={[-1.4, 9.1, 1.7]}>
-          <sphereGeometry args={[0.25, 8, 8]} />
+        <mesh position={[-2.1, 1.1, 5.9]}>
+          <sphereGeometry args={[0.3, 8, 8]} />
           <meshStandardMaterial color="#111111" />
         </mesh>
-        {/* Eyes — right */}
-        <mesh position={[1.3, 9, 1.3]}>
-          <sphereGeometry args={[0.5, 8, 8]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.3} />
+        {/* Right eye */}
+        <mesh position={[1.8, 1, 5.5]}>
+          <sphereGeometry args={[0.6, 8, 8]} />
+          <meshStandardMaterial color="#ffffff" metalness={0.2} />
         </mesh>
-        <mesh position={[1.4, 9.1, 1.7]}>
-          <sphereGeometry args={[0.25, 8, 8]} />
+        <mesh position={[2.1, 1.1, 5.9]}>
+          <sphereGeometry args={[0.3, 8, 8]} />
           <meshStandardMaterial color="#111111" />
         </mesh>
 
-        {/* Mouth — open grin */}
-        <mesh position={[0, 7.8, 1.8]} rotation={[0.3, 0, 0]}>
-          <boxGeometry args={[1.5, 0.3, 0.5]} />
-          <meshStandardMaterial color="#cc3333" metalness={0.4} roughness={0.4} />
+        {/* Tail fin — forked V */}
+        <mesh position={[-1.2, 0.5, -6.5]} rotation={[0, 0.4, -0.3]}>
+          <boxGeometry args={[2.5, 0.3, 2]} />
+          <meshStandardMaterial color="#0a6a2e" metalness={0.55} roughness={0.3} />
+        </mesh>
+        <mesh position={[1.2, 0.5, -6.5]} rotation={[0, -0.4, 0.3]}>
+          <boxGeometry args={[2.5, 0.3, 2]} />
+          <meshStandardMaterial color="#0a6a2e" metalness={0.55} roughness={0.3} />
+        </mesh>
+        {/* Upper tail lobe */}
+        <mesh position={[0, 2, -6.5]} rotation={[0.4, 0, 0]}>
+          <boxGeometry args={[1.8, 0.3, 2]} />
+          <meshStandardMaterial color="#0a6a2e" metalness={0.55} roughness={0.3} />
+        </mesh>
+        {/* Lower tail lobe */}
+        <mesh position={[0, -1, -6.5]} rotation={[-0.4, 0, 0]}>
+          <boxGeometry args={[1.8, 0.3, 2]} />
+          <meshStandardMaterial color="#0a6a2e" metalness={0.55} roughness={0.3} />
         </mesh>
 
-        {/* Dorsal fin — tall */}
-        <mesh position={[0, 11, -0.5]} rotation={[0.2, 0, 0]}>
-          <coneGeometry args={[1.2, 3, 4]} />
-          <meshStandardMaterial color="#0a5a2a" metalness={0.5} roughness={0.4} />
+        {/* Dorsal fin — top, along the back */}
+        <mesh position={[0, 2.8, 1]} rotation={[0.15, 0, 0]}>
+          <coneGeometry args={[1, 2.5, 4]} />
+          <meshStandardMaterial color="#0a5a2a" metalness={0.55} roughness={0.35} />
+        </mesh>
+        <mesh position={[0, 2.5, -1.5]} rotation={[0.15, 0, 0]}>
+          <coneGeometry args={[0.7, 1.8, 4]} />
+          <meshStandardMaterial color="#0a5a2a" metalness={0.55} roughness={0.35} />
         </mesh>
 
-        {/* Tail fin — wide V at bottom */}
-        <mesh position={[-1.5, -0.5, -1]} rotation={[0.3, 0.3, -0.5]}>
-          <boxGeometry args={[2.5, 0.4, 1.5]} />
-          <meshStandardMaterial color="#0a5a2a" metalness={0.5} roughness={0.4} />
+        {/* Pectoral fins — sides */}
+        <mesh position={[-2.2, -0.5, 3]} rotation={[0, 0.3, -0.7]}>
+          <coneGeometry args={[0.6, 2.5, 4]} />
+          <meshStandardMaterial color="#1a7a3e" metalness={0.5} roughness={0.35} />
         </mesh>
-        <mesh position={[1.5, -0.5, -1]} rotation={[0.3, -0.3, 0.5]}>
-          <boxGeometry args={[2.5, 0.4, 1.5]} />
-          <meshStandardMaterial color="#0a5a2a" metalness={0.5} roughness={0.4} />
-        </mesh>
-
-        {/* Side fins */}
-        <mesh position={[-2.8, 4, 0]} rotation={[0, 0, -0.6]}>
-          <coneGeometry args={[0.8, 2, 4]} />
-          <meshStandardMaterial color="#1a7a3e" metalness={0.5} roughness={0.4} />
-        </mesh>
-        <mesh position={[2.8, 4, 0]} rotation={[0, 0, 0.6]}>
-          <coneGeometry args={[0.8, 2, 4]} />
-          <meshStandardMaterial color="#1a7a3e" metalness={0.5} roughness={0.4} />
+        <mesh position={[2.2, -0.5, 3]} rotation={[0, -0.3, 0.7]}>
+          <coneGeometry args={[0.6, 2.5, 4]} />
+          <meshStandardMaterial color="#1a7a3e" metalness={0.5} roughness={0.35} />
         </mesh>
 
-        {/* Crown — golden, because this fish is king */}
-        <mesh position={[0, 10.8, 0.5]}>
-          <cylinderGeometry args={[1.2, 1, 0.6, 5]} />
+        {/* Anal fin — bottom rear */}
+        <mesh position={[0, -2, -3]} rotation={[-0.2, 0, 0]}>
+          <coneGeometry args={[0.5, 1.5, 4]} />
+          <meshStandardMaterial color="#0a5a2a" metalness={0.55} roughness={0.35} />
+        </mesh>
+
+        {/* Spots / scales */}
+        {[
+          [0.8, 1, 2], [-1, 0.5, 0], [0.5, 0.8, -2], [-0.7, 1.2, 3],
+          [1.2, 0, -1], [-1.3, -0.3, 1], [0, 1.5, -3], [1, -0.5, 4],
+        ].map(([x, y, z], i) => (
+          <mesh key={i} position={[x, y, z]}>
+            <sphereGeometry args={[0.2, 6, 6]} />
+            <meshStandardMaterial color="#0a4a1e" metalness={0.7} roughness={0.2} />
+          </mesh>
+        ))}
+
+        {/* Golden crown on head */}
+        <mesh position={[0, 2.2, 5]}>
+          <cylinderGeometry args={[1, 0.8, 0.5, 5]} />
           <meshStandardMaterial color="#ffd700" metalness={0.8} roughness={0.2} emissive="#ffaa00" emissiveIntensity={0.3} />
         </mesh>
-        {/* Crown spikes */}
         {[0, 1.26, 2.51, 3.77, 5.03].map((angle, i) => (
-          <mesh key={i} position={[Math.cos(angle) * 1.1, 11.3, Math.sin(angle) * 1.1 + 0.5]}>
-            <coneGeometry args={[0.2, 0.6, 4]} />
+          <mesh key={`spike-${i}`} position={[Math.cos(angle) * 0.9, 2.7, Math.sin(angle) * 0.9 + 5]}>
+            <coneGeometry args={[0.15, 0.5, 4]} />
             <meshStandardMaterial color="#ffd700" metalness={0.8} roughness={0.2} emissive="#ffaa00" emissiveIntensity={0.3} />
           </mesh>
         ))}
@@ -129,7 +171,7 @@ export const FishStatue = () => {
 
       {/* Lights */}
       <pointLight ref={glowRef} position={[0, 16, 0]} color="#44ff88" intensity={3} distance={50} />
-      <pointLight position={[0, 6, 3]} color="#ffd700" intensity={2} distance={25} />
+      <pointLight position={[0, 8, 5]} color="#ffd700" intensity={2} distance={25} />
     </group>
   );
 };
