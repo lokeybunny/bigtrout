@@ -183,16 +183,28 @@ const Game = () => {
 
           {/* Token info */}
           <div className="rounded-xl p-4 mb-8 text-center" style={{
-            background: 'rgba(68,255,136,0.05)',
-            border: '1px solid rgba(68,255,136,0.15)',
+            background: 'rgba(0,0,0,0.7)',
+            border: '1px solid rgba(68,255,136,0.3)',
+            backdropFilter: 'blur(12px)',
           }}>
-            <div className="text-xs mb-1" style={{ fontFamily: 'Rajdhani', color: '#44ff88' }}>
+            <div className="text-sm font-bold mb-2" style={{ fontFamily: 'Bangers, cursive', color: '#44ff88', letterSpacing: '0.05em' }}>
               $BIGTROUT CONTRACT
             </div>
-            <div className="text-xs font-mono break-all" style={{ color: '#666' }}>
-              EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG
-            </div>
-            <div className="text-xs mt-2" style={{ fontFamily: 'Rajdhani', color: '#555' }}>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText('EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG');
+              }}
+              className="text-sm font-mono break-all px-3 py-2 rounded-lg transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
+              style={{
+                color: '#fff',
+                background: 'rgba(68,255,136,0.1)',
+                border: '1px solid rgba(68,255,136,0.2)',
+              }}
+              title="Click to copy"
+            >
+              EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG 📋
+            </button>
+            <div className="text-xs mt-2" style={{ fontFamily: 'Rajdhani', color: '#ccc' }}>
               0% Tax • 100% Locked Liquidity
             </div>
           </div>
