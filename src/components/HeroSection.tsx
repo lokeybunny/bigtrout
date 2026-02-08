@@ -22,7 +22,7 @@ export const HeroSection = () => {
     <section ref={sectionRef} className="relative flex flex-col items-center justify-end overflow-hidden" style={{ minHeight: isMobile ? 'auto' : '100svh' }}>
       {/* Mobile: static full image, no effects */}
       {isMobile ? (
-        <div className="w-full">
+        <div className="w-full pt-16">
           <img src={heroBanner} alt="BigTrout Hero" className="w-full h-auto block" />
         </div>
       ) : (
