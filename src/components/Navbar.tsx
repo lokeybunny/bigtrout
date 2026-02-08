@@ -50,10 +50,6 @@ export const Navbar = () => {
           ))}
           <Link to="/news" className={`${linkColor} hover:scale-110 transition-all duration-300 font-bold text-sm tracking-wide`}>News</Link>
           <Link to="/lore" className={`${linkColor} hover:scale-110 transition-all duration-300 font-bold text-sm tracking-wide`}>Lore</Link>
-          <Link to="/live" className={`${linkColor} hover:scale-110 transition-all duration-300 font-bold relative text-sm tracking-wide`}>
-            Live
-            <span className="absolute -top-1 -right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-          </Link>
         </div>
 
         {/* Mobile menu button */}
@@ -83,10 +79,6 @@ export const Navbar = () => {
             <a href="#community" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={(e) => { handleAnchorClick(e, '#community'); setIsMenuOpen(false); }}>Community</a>
             <Link to="/news" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={() => setIsMenuOpen(false)}>News</Link>
             <Link to="/lore" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={() => setIsMenuOpen(false)}>Lore</Link>
-            <Link to="/live" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg relative`} onClick={() => setIsMenuOpen(false)}>
-              Live
-              <span className="absolute -top-1 -right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            </Link>
             <a href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG" target="_blank" rel="noopener noreferrer" className="btn-fire text-sm py-2 px-4 w-full max-w-[200px] text-center" onClick={() => setIsMenuOpen(false)}>Buy Now</a>
           </div>
         </div>
