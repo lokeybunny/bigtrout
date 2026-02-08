@@ -10,20 +10,42 @@ interface RaceTrackProps {
 const CheckpointBuoy = ({ position, index, passed }: { position: [number, number]; index: number; passed: boolean }) => {
   const lightRef = useRef<THREE.PointLight>(null);
   const glowRef = useRef<THREE.Mesh>(null);
-  const flashRef = useRef(0);
+  const buoyRef = useRef<THREE.Mesh>(null);
+  const wasPassedRef = useRef(false);
+  const blinkStartRef = useRef(0);
 
-  useFrame((_, delta) => {
-    if (!lightRef.current || !glowRef.current) return;
+  useFrame(() => {
+    if (!lightRef.current || !glowRef.current || !buoyRef.current) return;
     
+    if (passed && !wasPassedRef.current) {
+      // Just passed — start blink timer
+      wasPassedRef.current = true;
+      blinkStartRef.current = performance.now();
+    }
+
     if (passed) {
-      // Bright green glow when passed
-      flashRef.current = Math.min(flashRef.current + delta * 4, 1);
-      const intensity = 3 + Math.sin(performance.now() * 0.003) * 0.5;
-      lightRef.current.intensity = intensity * flashRef.current;
-      lightRef.current.color.setHex(0x44ff88);
-      lightRef.current.distance = 25;
-      glowRef.current.scale.setScalar(1 + flashRef.current * 0.8);
-      (glowRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.8 * flashRef.current;
+      const elapsed = performance.now() - blinkStartRef.current;
+      const blinkDuration = 1200; // 3 blinks over 1.2s (400ms each)
+      
+      if (elapsed < blinkDuration) {
+        // Blink 3 times: on/off every 200ms
+        const blinkOn = Math.floor(elapsed / 200) % 2 === 0;
+        const brightness = blinkOn ? 8 : 0.5;
+        lightRef.current.intensity = brightness;
+        lightRef.current.color.setHex(0x44ff88);
+        lightRef.current.distance = blinkOn ? 35 : 10;
+        glowRef.current.scale.setScalar(blinkOn ? 2.2 : 1);
+        (glowRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = blinkOn ? 1.5 : 0.1;
+        (buoyRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = blinkOn ? 1.0 : 0.3;
+      } else {
+        // After blinking, settle to steady green
+        lightRef.current.intensity = 2;
+        lightRef.current.color.setHex(0x44ff88);
+        lightRef.current.distance = 20;
+        glowRef.current.scale.setScalar(1.5);
+        (glowRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.6;
+        (buoyRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.5;
+      }
     }
   });
 
@@ -33,7 +55,7 @@ const CheckpointBuoy = ({ position, index, passed }: { position: [number, number
   return (
     <group position={[position[0], 0, position[1]]}>
       {/* Buoy */}
-      <mesh position={[0, 0.5, 0]}>
+      <mesh ref={buoyRef} position={[0, 0.5, 0]}>
         <cylinderGeometry args={[0.5, 0.6, 1, 8]} />
         <meshStandardMaterial 
           color={passed ? '#44ff88' : baseColor} 
