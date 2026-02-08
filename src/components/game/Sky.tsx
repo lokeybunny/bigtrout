@@ -21,15 +21,6 @@ export const Sky = () => {
         />
       </mesh>
       
-      {/* Horizon glow */}
-      <mesh position={[0, -5, -80]}>
-        <planeGeometry args={[200, 40]} />
-        <meshBasicMaterial 
-          color="#2a4060" 
-          transparent 
-          opacity={0.5}
-        />
-      </mesh>
 
       {/* Moon */}
       <mesh position={[30, 40, -60]}>
