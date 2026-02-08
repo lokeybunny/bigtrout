@@ -4,17 +4,47 @@ import { ParticleField } from '@/components/ParticleField';
 import { loreChapters } from '@/data/loreContent';
 import { ArrowLeft, BookOpen, Fish } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import sakuraGardenBg from '@/assets/sakura-garden-bg.jpg';
 import sakuraPathBg from '@/assets/sakura-path-bg.jpg';
 
+const LorePetals = () => {
+  const petals = useMemo(
+    () =>
+      Array.from({ length: 30 }, (_, i) => ({
+        left: `${Math.random() * 100}%`,
+        width: `${3 + Math.random() * 4}px`,
+        height: `${3 + Math.random() * 4}px`,
+        background: i % 2 === 0 ? 'hsl(345 55% 70% / 0.5)' : 'hsl(130 45% 38% / 0.4)',
+        animation: `snowFall ${6 + Math.random() * 6}s linear infinite`,
+        animationDelay: `${Math.random() * 8}s`,
+      })),
+    []
+  );
+
+  return (
+    <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+      {petals.map((style, i) => (
+        <div key={`petal-${i}`} className="absolute rounded-full" style={style} />
+      ))}
+    </div>
+  );
+};
+
 const Lore = () => {
   const [scrollY, setScrollY] = useState(0);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const handleScroll = () => {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => setScrollY(window.scrollY));
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   const dissolveProgress = Math.min(scrollY / 800, 1);
@@ -65,24 +95,7 @@ const Lore = () => {
       />
 
       {/* Sakura petal particles instead of snow */}
-      <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
-        {Array.from({ length: 30 }).map((_, i) => (
-          <div
-            key={`petal-${i}`}
-            className="absolute rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              width: `${3 + Math.random() * 4}px`,
-              height: `${3 + Math.random() * 4}px`,
-              background: i % 2 === 0
-                ? 'hsl(345 55% 70% / 0.5)'
-                : 'hsl(130 45% 38% / 0.4)',
-              animation: `snowFall ${6 + Math.random() * 6}s linear infinite`,
-              animationDelay: `${Math.random() * 8}s`,
-            }}
-          />
-        ))}
-      </div>
+      <LorePetals />
 
       <ParticleField />
       <Navbar />
