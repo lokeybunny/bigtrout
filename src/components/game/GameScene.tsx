@@ -6,7 +6,6 @@ import { Boat } from './Boat';
 import { FishEntity } from './FishEntity';
 import { NetCursor } from './NetCursor';
 import { Sky } from './Sky';
-import { WakeEffect } from './WakeEffect';
 import { useSolanaTransactions, GameEvent } from '@/hooks/useSolanaTransactions';
 
 interface GameState {
@@ -179,7 +178,7 @@ export const GameScene = () => {
           posRef={wakePosRef}
           headingRef={wakeHeadingRef}
         />
-        <WakeEffect boatPos={wakePosRef} boatHeading={wakeHeadingRef} boatSpeed={wakeSpeedRef} />
+        
         <NetCursor />
         
         {entities.map(entity => (
