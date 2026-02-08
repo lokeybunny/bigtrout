@@ -8,24 +8,24 @@ interface RadioStation {
 
 const STATIONS: RadioStation[] = [
   // Lo-Fi / Chill
-  { name: 'Lofi Girl', url: 'https://streams.ilovemusic.de/iloveradio17.mp3', genre: 'Lo-Fi' },
-  { name: 'Chillout', url: 'https://streams.ilovemusic.de/iloveradio7.mp3', genre: 'Lo-Fi' },
+  { name: 'Lofi Girl', url: 'https://usa9.fastcast4u.com/proxy/jamz?mp=/1', genre: 'Lo-Fi' },
+  { name: 'Chillout', url: 'https://ais-sa3.cdnstream1.com/2606_128.mp3', genre: 'Lo-Fi' },
   // Electronic / Dance
-  { name: 'Dance Radio', url: 'https://streams.ilovemusic.de/iloveradio2.mp3', genre: 'Electronic' },
-  { name: 'Hardstyle', url: 'https://streams.ilovemusic.de/iloveradio21.mp3', genre: 'Electronic' },
+  { name: 'Dance Wave!', url: 'https://dancewave.online/dance.mp3', genre: 'Electronic' },
+  { name: 'Electronic', url: 'https://0n-electroswing.radionetz.de/0n-electroswing.mp3', genre: 'Electronic' },
   // Hip Hop
-  { name: 'Hip Hop', url: 'https://streams.ilovemusic.de/iloveradio3.mp3', genre: 'Hip Hop' },
-  { name: 'Urban Club', url: 'https://streams.ilovemusic.de/iloveradio4.mp3', genre: 'Hip Hop' },
+  { name: 'Hip Hop Hits', url: 'https://streams.fluxfm.de/hiphop/mp3-320/streams.fluxfm.de/', genre: 'Hip Hop' },
+  { name: 'Rap Classics', url: 'https://0n-oldschoolrap.radionetz.de/0n-oldschoolrap.mp3', genre: 'Hip Hop' },
   // Rock
-  { name: 'Rock Radio', url: 'https://streams.ilovemusic.de/iloveradio29.mp3', genre: 'Rock' },
-  { name: 'Greatest Hits', url: 'https://streams.ilovemusic.de/iloveradio16.mp3', genre: 'Rock' },
+  { name: 'Classic Rock', url: 'https://0n-classicrock.radionetz.de/0n-classicrock.mp3', genre: 'Rock' },
+  { name: 'Rock Hits', url: 'https://0n-rock.radionetz.de/0n-rock.mp3', genre: 'Rock' },
   // Jazz
-  { name: 'Smooth Jazz', url: 'https://streaming.radio.co/s774887f7b/listen', genre: 'Jazz' },
-  { name: 'Jazz Radio', url: 'https://jazz-wr04.ice.infomaniak.ch/jazz-wr04-128.mp3', genre: 'Jazz' },
+  { name: 'Smooth Jazz', url: 'https://0n-smoothjazz.radionetz.de/0n-smoothjazz.mp3', genre: 'Jazz' },
+  { name: 'Jazz Cafe', url: 'https://0n-jazz.radionetz.de/0n-jazz.mp3', genre: 'Jazz' },
   // Reggae
-  { name: 'Reggae', url: 'https://streams.ilovemusic.de/iloveradio12.mp3', genre: 'Reggae' },
+  { name: 'Reggae', url: 'https://0n-reggae.radionetz.de/0n-reggae.mp3', genre: 'Reggae' },
   // Ambient
-  { name: 'Ambient', url: 'https://streams.ilovemusic.de/iloveradio15.mp3', genre: 'Ambient' },
+  { name: 'Ambient', url: 'https://0n-ambient.radionetz.de/0n-ambient.mp3', genre: 'Ambient' },
 ];
 
 const GENRES = [...new Set(STATIONS.map(s => s.genre))];
@@ -51,15 +51,22 @@ export const GameRadio = () => {
   const playStation = useCallback((station: RadioStation) => {
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.src = '';
+      audioRef.current.removeAttribute('src');
+      audioRef.current.load();
+      audioRef.current = null;
     }
-    const audio = new Audio(station.url);
+    const audio = new Audio();
+    audio.crossOrigin = 'anonymous';
     audio.volume = 0.5;
-    audio.play().catch(e => console.error('Radio playback failed:', e));
+    audio.src = station.url;
     audioRef.current = audio;
     setCurrentStation(station);
     setPlaying(true);
     setVinylSpin(true);
+    // Small delay to avoid AbortError race condition
+    setTimeout(() => {
+      audio.play().catch(e => console.warn('Radio playback failed:', e));
+    }, 100);
   }, []);
 
   const stopPlayback = useCallback(() => {
