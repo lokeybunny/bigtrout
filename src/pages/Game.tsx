@@ -1,5 +1,6 @@
 import { Suspense, useState } from 'react';
 import { GameScene } from '@/components/game/GameScene';
+import raceMenuBg from '@/assets/bigtrout-race-menu.jpeg';
 
 type Screen = 'menu' | 'howto' | 'playing';
 
@@ -42,15 +43,20 @@ const Game = () => {
   if (screen === 'menu') {
     return (
       <div className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center">
+        {/* Background image */}
+        <img
+          src={raceMenuBg}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-black/40" />
+        {/* Bottom vignette */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse at 50% 80%, #0a2a1a 0%, #050d08 50%, #000 100%)',
-        }} />
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%2344ff88\' fill-opacity=\'0.08\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 40%, transparent 70%)',
         }} />
 
-        <div className="relative z-10 text-center">
-          <div className="mb-2 text-6xl">🐟</div>
+        <div className="relative z-10 text-center mt-auto pb-12 md:pb-16 px-4">
           <h1 className="text-5xl md:text-7xl font-bold mb-2" style={{
             fontFamily: 'Bangers, cursive',
             color: '#44ff88',
@@ -59,9 +65,10 @@ const Game = () => {
           }}>
             $BIGTROUT RACE
           </h1>
-          <p className="text-lg mb-12" style={{
+          <p className="text-lg mb-10" style={{
             fontFamily: 'Rajdhani, sans-serif',
-            color: '#888',
+            color: '#ccc',
+            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
           }}>
             Race to the island. Collect boosts. Avoid obstacles. 🏁
           </p>
@@ -88,19 +95,24 @@ const Game = () => {
               className="px-8 py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
               style={{
                 fontFamily: 'Bangers, cursive',
-                background: 'rgba(255,255,255,0.05)',
-                color: '#888',
+                background: 'rgba(0,0,0,0.6)',
+                color: '#ccc',
                 letterSpacing: '0.08em',
                 cursor: 'pointer',
-                border: '1px solid rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.2)',
                 textDecoration: 'none',
+                backdropFilter: 'blur(4px)',
               }}
             >
               ← BACK TO HOME
             </a>
           </div>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-4 text-xs" style={{ fontFamily: 'Rajdhani', color: '#555' }}>
+          <div className="mt-8 flex flex-wrap justify-center gap-4 text-xs" style={{
+            fontFamily: 'Rajdhani',
+            color: '#aaa',
+            textShadow: '0 1px 4px rgba(0,0,0,0.8)',
+          }}>
             <span>⌨️ WASD to steer</span>
             <span>⇧ Shift to paddle</span>
             <span>⚡ Collect boosts</span>
