@@ -154,9 +154,9 @@ const Game = () => {
                 key={i}
                 className="rounded-xl p-4 transition-all duration-200 hover:scale-[1.02]"
                 style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  backdropFilter: 'blur(8px)',
+                  background: 'rgba(0,0,0,0.7)',
+                  border: '1px solid rgba(68,255,136,0.2)',
+                  backdropFilter: 'blur(12px)',
                 }}
               >
                 <div className="flex items-start gap-3">
@@ -171,7 +171,7 @@ const Game = () => {
                     </h3>
                     <p className="text-xs leading-relaxed" style={{
                       fontFamily: 'Rajdhani, sans-serif',
-                      color: '#999',
+                      color: '#ddd',
                     }}>
                       {item.desc}
                     </p>
