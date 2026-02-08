@@ -5,8 +5,8 @@ import { timelineEntries } from '@/data/newsTimeline';
 import { ArrowLeft, ExternalLink, Calendar, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
-import lavaTrailBg from '@/assets/lava-trail-bg.jpg';
-import lavaSnowMountain from '@/assets/lava-snow-mountain.jpg';
+import sakuraPathBg from '@/assets/sakura-path-bg.jpg';
+import sakuraGardenBg from '@/assets/sakura-garden-bg.jpg';
 
 const News = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -20,47 +20,48 @@ const News = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Calculate dissolve opacity based on scroll (dissolve over first 800px of scroll)
   const dissolveProgress = Math.min(scrollY / 800, 1);
 
   return (
     <div ref={containerRef} className="relative min-h-screen overflow-x-hidden">
-      {/* First parallax layer: lava trail (fades out) */}
+      {/* First parallax layer: sakura path (fades out) */}
       <div
         className="fixed inset-0 z-0 transition-opacity duration-100"
         style={{
-          backgroundImage: `url(${lavaTrailBg})`,
+          backgroundImage: `url(${sakuraPathBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           transform: `translateY(${scrollY * -0.15}px) scale(1.15)`,
           willChange: 'transform',
           opacity: 1 - dissolveProgress,
+          filter: 'saturate(0.8) brightness(0.6)',
         }}
       />
-      {/* Second parallax layer: lava snow mountain (fades in) */}
+      {/* Second parallax layer: sakura garden (fades in) */}
       <div
         className="fixed inset-0 z-0"
         style={{
-          backgroundImage: `url(${lavaSnowMountain})`,
+          backgroundImage: `url(${sakuraGardenBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           transform: `translateY(${scrollY * -0.08}px) scale(1.1)`,
           willChange: 'transform',
           opacity: dissolveProgress,
+          filter: 'saturate(0.7) brightness(0.5)',
         }}
       />
-      {/* Heavy dark overlay for readability */}
+      {/* Dark overlay for readability */}
       <div
         className="fixed inset-0 z-0"
         style={{
           background: `
-            radial-gradient(ellipse at 50% 20%, hsl(20 100% 50% / 0.08) 0%, transparent 60%),
-            radial-gradient(ellipse at 50% 80%, hsl(20 100% 45% / 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 20%, hsl(345 55% 70% / 0.06) 0%, transparent 60%),
+            radial-gradient(ellipse at 50% 80%, hsl(130 45% 38% / 0.05) 0%, transparent 50%),
             linear-gradient(180deg, 
-              hsl(220 30% 6% / 0.92) 0%, 
-              hsl(220 30% 6% / 0.88) 30%, 
-              hsl(220 30% 6% / 0.85) 60%, 
-              hsl(220 30% 6% / 0.9) 100%
+              hsl(210 25% 10% / 0.88) 0%, 
+              hsl(210 25% 10% / 0.82) 30%, 
+              hsl(210 25% 10% / 0.8) 60%, 
+              hsl(210 25% 10% / 0.88) 100%
             )
           `,
         }}
@@ -80,8 +81,8 @@ const News = () => {
           </Link>
 
           <h1 className="font-display text-5xl md:text-7xl font-black mb-4">
-            <span className="text-fire">TRUST</span>{' '}
-            <span className="text-ice">TIMELINE</span>
+            <span className="text-pepe">TRUST</span>{' '}
+            <span className="text-sakura">TIMELINE</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl">
             BigTrout's Trust-Building Adventure! Dive into this splashy summary of all the
@@ -105,7 +106,7 @@ const News = () => {
             className="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2"
             style={{
               background:
-                'linear-gradient(180deg, hsl(20 100% 50% / 0.6), hsl(195 90% 45% / 0.6), hsl(20 100% 50% / 0.3))',
+                'linear-gradient(180deg, hsl(130 45% 38% / 0.6), hsl(345 55% 70% / 0.6), hsl(130 45% 38% / 0.3))',
             }}
           />
 
@@ -125,12 +126,12 @@ const News = () => {
                   style={{
                     background:
                       index % 2 === 0
-                        ? 'linear-gradient(135deg, hsl(20 100% 50%), hsl(35 100% 55%))'
-                        : 'linear-gradient(135deg, hsl(195 90% 45%), hsl(190 100% 70%))',
+                        ? 'linear-gradient(135deg, hsl(130 45% 38%), hsl(130 55% 52%))'
+                        : 'linear-gradient(135deg, hsl(345 55% 70%), hsl(345 65% 82%))',
                     boxShadow:
                       index % 2 === 0
-                        ? '0 0 15px hsl(20 100% 50% / 0.8)'
-                        : '0 0 15px hsl(195 90% 45% / 0.8)',
+                        ? '0 0 15px hsl(130 45% 38% / 0.8)'
+                        : '0 0 15px hsl(345 55% 70% / 0.8)',
                   }}
                 />
 
