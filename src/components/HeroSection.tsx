@@ -101,8 +101,8 @@ export const HeroSection = () => {
           {/* Gradient overlays */}
           <div className="absolute inset-0 z-[4]" style={{
             background: `
-              linear-gradient(180deg, hsl(210 25% 10% / 0.5) 0%, transparent 18%, transparent 35%, hsl(210 25% 10% / 0.6) 48%, hsl(210 25% 10% / 0.9) 62%, hsl(210 25% 10% / 1) 75%, hsl(210 25% 10% / 1) 100%),
-              linear-gradient(90deg, hsl(210 25% 10% / 0.3) 0%, transparent 15%, transparent 85%, hsl(210 25% 10% / 0.3) 100%)
+              linear-gradient(180deg, hsl(210 25% 10% / 0.25) 0%, transparent 18%, transparent 40%, hsl(210 25% 10% / 0.3) 52%, hsl(210 25% 10% / 0.6) 68%, hsl(210 25% 10% / 0.85) 80%, hsl(210 25% 10% / 1) 100%),
+              linear-gradient(90deg, hsl(210 25% 10% / 0.15) 0%, transparent 15%, transparent 85%, hsl(210 25% 10% / 0.15) 100%)
             `,
           }} />
           <div className="absolute -bottom-4 left-0 right-0 h-96 z-[5]" style={{
