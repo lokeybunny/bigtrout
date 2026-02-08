@@ -72,8 +72,11 @@ export const GameRadio = () => {
   const stopPlayback = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.src = '';
+      audioRef.current.removeAttribute('src');
+      audioRef.current.load();
+      audioRef.current = null;
     }
+    setCurrentStation(null);
     setPlaying(false);
     setVinylSpin(false);
   }, []);
