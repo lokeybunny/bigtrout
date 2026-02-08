@@ -14,7 +14,7 @@ export const CHECKPOINTS: [number, number][] = [
   [-30, -50],
 ];
 
-export const TOTAL_LAPS = 3;
+export const TOTAL_LAPS = 10;
 
 interface AIBoatProps {
   id: number;

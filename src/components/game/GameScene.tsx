@@ -10,6 +10,7 @@ import { Sky } from './Sky';
 import { SpeedBoost, generateBoosts, BoostPickup } from './SpeedBoost';
 import { Obstacles, generateObstacles, Obstacle } from './Obstacles';
 import { Minimap } from './Minimap';
+import { useSolanaTransactions, GameEvent } from '../../hooks/useSolanaTransactions';
 
 interface RaceState {
   playerCheckpoint: number;
@@ -56,6 +57,33 @@ export const GameScene = () => {
   const [boostTimer, setBoostTimer] = useState(0);
   const [boostMessage, setBoostMessage] = useState<string | null>(null);
   const [hitMessage, setHitMessage] = useState<string | null>(null);
+
+  // $BIGTROUT points from Solana buys/sells
+  const [troutPoints, setTroutPoints] = useState(0);
+  const [tokenMultiplier, setTokenMultiplier] = useState(1);
+  const [tokenMessage, setTokenMessage] = useState<string | null>(null);
+
+  const handleGameEvent = useCallback((event: GameEvent) => {
+    if (event.kind === 'trout') {
+      // Big buy = +5 points
+      setTroutPoints(prev => prev + 5);
+      setTokenMultiplier(prev => Math.min(prev + 0.15, 2.5));
+      setTokenMessage('🐟 BIG BUY! +5 $BIGTROUT');
+    } else if (event.kind === 'goldfish') {
+      // Small buy = +1 point
+      setTroutPoints(prev => prev + 1);
+      setTokenMultiplier(prev => Math.min(prev + 0.05, 2.5));
+      setTokenMessage('🐠 BUY! +1 $BIGTROUT');
+    } else if (event.kind === 'octopus') {
+      // Sell streak = slow down
+      setTroutPoints(prev => Math.max(0, prev - 3));
+      setTokenMultiplier(prev => Math.max(0.5, prev - 0.2));
+      setTokenMessage('🐙 SELL STREAK! -3 $BIGTROUT');
+    }
+    setTimeout(() => setTokenMessage(null), 2500);
+  }, []);
+
+  const { connected } = useSolanaTransactions(handleGameEvent);
   
   const [state, setState] = useState<RaceState>({
     playerCheckpoint: 0,
@@ -368,6 +396,50 @@ export const GameScene = () => {
         </div>
       )}
 
+      {/* GMGN Chart - bottom left */}
+      <div className="absolute bottom-2 left-2 z-10" style={{ width: 280, height: 200 }}>
+        <div className="rounded-lg overflow-hidden border border-white/10" style={{ background: 'rgba(0,0,0,0.7)', width: '100%', height: '100%' }}>
+          <iframe
+            src="https://www.gmgn.cc/kline/sol/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG?theme=dark"
+            width="100%"
+            height="100%"
+            style={{ border: 'none' }}
+            title="$BIGTROUT Chart"
+          />
+        </div>
+      </div>
+
+      {/* $BIGTROUT Points HUD - above chart */}
+      <div className="absolute bottom-[215px] left-2 z-10 pointer-events-none">
+        <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2" style={{ minWidth: 180 }}>
+          <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#44ff88' }}>
+            $BIGTROUT POINTS
+          </div>
+          <div className="text-2xl font-bold" style={{ fontFamily: 'Bangers', color: '#ffcc44', textShadow: '2px 2px 0 #000' }}>
+            🐟 {troutPoints}
+          </div>
+          <div className="text-xs mt-1" style={{ fontFamily: 'Rajdhani', color: tokenMultiplier >= 1 ? '#44ff88' : '#ff6644' }}>
+            Speed: {(tokenMultiplier * 100).toFixed(0)}% {tokenMultiplier > 1 ? '🔥' : tokenMultiplier < 1 ? '🧊' : ''}
+          </div>
+          <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: connected ? '#44ff88' : '#888' }}>
+            {connected ? '● Live' : '○ Connecting...'}
+          </div>
+        </div>
+      </div>
+
+      {/* Token event message */}
+      {tokenMessage && (
+        <div className="absolute bottom-[280px] left-2 z-10 pointer-events-none">
+          <div className="text-lg font-bold" style={{
+            fontFamily: 'Bangers, cursive',
+            color: tokenMessage.includes('SELL') ? '#ff4444' : '#44ff88',
+            textShadow: '0 0 20px rgba(68,255,136,0.5), 2px 2px 0 #000',
+          }}>
+            {tokenMessage}
+          </div>
+        </div>
+      )}
+
       {/* Minimap */}
       <Minimap 
         playerPos={boatPosRef} 
@@ -393,7 +465,7 @@ export const GameScene = () => {
           posRef={wakePosRef}
           headingRef={wakeHeadingRef}
           raceStarted={state.raceStarted}
-          boostMultiplier={boostMultiplier}
+          boostMultiplier={boostMultiplier * tokenMultiplier}
         />
         
         {AI_BOATS.map((boat, i) => (
