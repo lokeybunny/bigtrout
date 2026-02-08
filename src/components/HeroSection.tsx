@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import heroBanner from '@/assets/bigtrout-hero-banner.avif';
 
 export const HeroSection = () => {
+  const isMobile = useIsMobile();
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -17,93 +19,86 @@ export const HeroSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative min-h-[100svh] flex flex-col items-center justify-end overflow-hidden">
-      {/* Full-width parallax banner — oversized to prevent edge reveal */}
-      <div
-        className="absolute inset-0 z-0 animate-ken-burns"
-        style={{
-          backgroundImage: `url(${heroBanner})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          transform: `translateY(${scrollY}px)`,
-          willChange: 'transform',
-        }}
-      />
+    <section ref={sectionRef} className="relative flex flex-col items-center justify-end overflow-hidden" style={{ minHeight: isMobile ? 'auto' : '100svh' }}>
+      {/* Mobile: static full image, no effects */}
+      {isMobile ? (
+        <div className="w-full">
+          <img src={heroBanner} alt="BigTrout Hero" className="w-full h-auto block" />
+        </div>
+      ) : (
+        <>
+          {/* Desktop: parallax banner with effects */}
+          <div
+            className="absolute inset-0 z-0 animate-ken-burns"
+            style={{
+              backgroundImage: `url(${heroBanner})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center center',
+              transform: `translateY(${scrollY}px)`,
+              willChange: 'transform',
+            }}
+          />
 
-      {/* Parchment texture overlay for ukiyo-e feel */}
-      <div className="absolute inset-0 z-[1] pointer-events-none mix-blend-overlay opacity-15" style={{
-        backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'200\' height=\'200\' filter=\'url(%23n)\' opacity=\'0.5\'/%3E%3C/svg%3E")',
-      }} />
+          {/* Parchment texture overlay */}
+          <div className="absolute inset-0 z-[1] pointer-events-none mix-blend-overlay opacity-15" style={{
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'200\' height=\'200\' filter=\'url(%23n)\' opacity=\'0.5\'/%3E%3C/svg%3E")',
+          }} />
 
-      {/* Animated water shimmer overlay */}
-      <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
-        <div
-          className="absolute bottom-0 left-0 w-[200%] h-[45%]"
-          style={{
-            background: 'linear-gradient(90deg, transparent 0%, hsl(200 50% 60% / 0.06) 15%, transparent 30%, hsl(190 45% 50% / 0.05) 45%, transparent 60%, hsl(200 50% 60% / 0.06) 75%, transparent 100%)',
-            animation: 'waterFlow 5s linear infinite',
-          }}
-        />
-        <div
-          className="absolute bottom-0 left-0 w-[200%] h-[40%]"
-          style={{
-            background: 'linear-gradient(90deg, transparent 0%, hsl(180 40% 65% / 0.04) 20%, transparent 40%, hsl(200 45% 55% / 0.05) 60%, transparent 80%)',
-            animation: 'waterFlow 7s linear infinite reverse',
-          }}
-        />
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[50%]"
-          style={{
-            background: 'repeating-linear-gradient(0deg, transparent, hsl(200 50% 70% / 0.02) 2px, transparent 4px)',
-            animation: 'waterWave 3.5s ease-in-out infinite',
-          }}
-        />
-      </div>
+          {/* Water shimmer */}
+          <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
+            <div className="absolute bottom-0 left-0 w-[200%] h-[45%]" style={{
+              background: 'linear-gradient(90deg, transparent 0%, hsl(200 50% 60% / 0.06) 15%, transparent 30%, hsl(190 45% 50% / 0.05) 45%, transparent 60%, hsl(200 50% 60% / 0.06) 75%, transparent 100%)',
+              animation: 'waterFlow 5s linear infinite',
+            }} />
+            <div className="absolute bottom-0 left-0 w-[200%] h-[40%]" style={{
+              background: 'linear-gradient(90deg, transparent 0%, hsl(180 40% 65% / 0.04) 20%, transparent 40%, hsl(200 45% 55% / 0.05) 60%, transparent 80%)',
+              animation: 'waterFlow 7s linear infinite reverse',
+            }} />
+            <div className="absolute bottom-0 left-0 right-0 h-[50%]" style={{
+              background: 'repeating-linear-gradient(0deg, transparent, hsl(200 50% 70% / 0.02) 2px, transparent 4px)',
+              animation: 'waterWave 3.5s ease-in-out infinite',
+            }} />
+          </div>
 
-      {/* Fish subtle movement */}
-      <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
-        <div
-          className="absolute bottom-[5%] left-[10%] w-[80%] h-[40%]"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 60%, hsl(200 40% 50% / 0.03), transparent 60%)',
-            animation: 'fishSway 5s ease-in-out infinite',
-          }}
-        />
-        <div
-          className="absolute bottom-[8%] left-[15%] w-[70%] h-[35%]"
-          style={{
-            background: 'radial-gradient(ellipse at 40% 50%, hsl(345 40% 55% / 0.02), transparent 50%)',
-            animation: 'fishSway 4s ease-in-out infinite 1s',
-          }}
-        />
-      </div>
+          {/* Fish movement */}
+          <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
+            <div className="absolute bottom-[5%] left-[10%] w-[80%] h-[40%]" style={{
+              background: 'radial-gradient(ellipse at 50% 60%, hsl(200 40% 50% / 0.03), transparent 60%)',
+              animation: 'fishSway 5s ease-in-out infinite',
+            }} />
+            <div className="absolute bottom-[8%] left-[15%] w-[70%] h-[35%]" style={{
+              background: 'radial-gradient(ellipse at 40% 50%, hsl(345 40% 55% / 0.02), transparent 50%)',
+              animation: 'fishSway 4s ease-in-out infinite 1s',
+            }} />
+          </div>
 
-      {/* Gradient overlays — dark edges, visible art center */}
-      <div className="absolute inset-0 z-[4]" style={{
-        background: `
-          linear-gradient(180deg, hsl(210 25% 10% / 0.5) 0%, transparent 18%, transparent 35%, hsl(210 25% 10% / 0.6) 48%, hsl(210 25% 10% / 0.9) 62%, hsl(210 25% 10% / 1) 75%, hsl(210 25% 10% / 1) 100%),
-          linear-gradient(90deg, hsl(210 25% 10% / 0.3) 0%, transparent 15%, transparent 85%, hsl(210 25% 10% / 0.3) 100%)
-        `,
-      }} />
-      {/* Extra bottom fade to fully cover image edge */}
-      <div className="absolute -bottom-4 left-0 right-0 h-96 z-[5]" style={{
-        background: 'hsl(210 25% 10%)',
-        maskImage: 'linear-gradient(to top, black 0%, black 50%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to top, black 0%, black 50%, transparent 100%)',
-      }} />
+          {/* Gradient overlays */}
+          <div className="absolute inset-0 z-[4]" style={{
+            background: `
+              linear-gradient(180deg, hsl(210 25% 10% / 0.5) 0%, transparent 18%, transparent 35%, hsl(210 25% 10% / 0.6) 48%, hsl(210 25% 10% / 0.9) 62%, hsl(210 25% 10% / 1) 75%, hsl(210 25% 10% / 1) 100%),
+              linear-gradient(90deg, hsl(210 25% 10% / 0.3) 0%, transparent 15%, transparent 85%, hsl(210 25% 10% / 0.3) 100%)
+            `,
+          }} />
+          <div className="absolute -bottom-4 left-0 right-0 h-96 z-[5]" style={{
+            background: 'hsl(210 25% 10%)',
+            maskImage: 'linear-gradient(to top, black 0%, black 50%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to top, black 0%, black 50%, transparent 100%)',
+          }} />
 
-      {/* Soft sakura glow accents */}
-      <div className="absolute inset-0 z-[4] pointer-events-none">
-        <div className="absolute top-[8%] left-[15%] w-48 h-48 rounded-full blur-3xl opacity-20" style={{
-          background: 'radial-gradient(circle, hsl(345 55% 75%), transparent)',
-        }} />
-        <div className="absolute top-[5%] right-[10%] w-40 h-40 rounded-full blur-3xl opacity-15" style={{
-          background: 'radial-gradient(circle, hsl(345 50% 80%), transparent)',
-        }} />
-      </div>
+          {/* Sakura glow accents */}
+          <div className="absolute inset-0 z-[4] pointer-events-none">
+            <div className="absolute top-[8%] left-[15%] w-48 h-48 rounded-full blur-3xl opacity-20" style={{
+              background: 'radial-gradient(circle, hsl(345 55% 75%), transparent)',
+            }} />
+            <div className="absolute top-[5%] right-[10%] w-40 h-40 rounded-full blur-3xl opacity-15" style={{
+              background: 'radial-gradient(circle, hsl(345 50% 80%), transparent)',
+            }} />
+          </div>
+        </>
+      )}
 
-      {/* Main content overlaying the banner */}
-      <div className="relative z-10 text-center pb-20 md:pb-28 px-4 w-full max-w-4xl mx-auto overflow-visible">
+      {/* Main content */}
+      <div className={`${isMobile ? 'relative' : 'relative z-10'} text-center ${isMobile ? 'py-8' : 'pb-20 md:pb-28'} px-4 w-full max-w-4xl mx-auto overflow-visible`} style={isMobile ? { background: 'hsl(210 25% 10%)' } : undefined}>
         {/* Ticker badge */}
         <div className="inline-flex items-center gap-2 px-5 py-2 mb-6 rounded-full border border-primary/40 bg-card/50 backdrop-blur-lg">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -143,12 +138,14 @@ export const HeroSection = () => {
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-        <div className="w-6 h-10 rounded-full border-2 border-foreground/30 flex justify-center pt-2">
-          <div className="w-1 h-2 rounded-full bg-primary animate-pulse" />
+      {/* Scroll indicator — desktop only */}
+      {!isMobile && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+          <div className="w-6 h-10 rounded-full border-2 border-foreground/30 flex justify-center pt-2">
+            <div className="w-1 h-2 rounded-full bg-primary animate-pulse" />
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };
