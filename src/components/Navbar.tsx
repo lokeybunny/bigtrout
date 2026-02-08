@@ -57,15 +57,24 @@ export const Navbar = () => {
           {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
-        {/* CTA */}
-        <a
-          href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden sm:block btn-fire text-sm py-2 px-4"
-        >
-          Buy Now
-        </a>
+        {/* CTAs */}
+        <div className="hidden sm:flex items-center gap-2">
+          <a
+            href="#listings"
+            onClick={(e) => handleAnchorClick(e, '#listings')}
+            className="text-sm py-2 px-4 font-bold border border-pepe/50 rounded-md text-pepe hover:bg-pepe/10 transition-all duration-300"
+          >
+            Listings
+          </a>
+          <a
+            href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-fire text-sm py-2 px-4"
+          >
+            Buy Now
+          </a>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -79,6 +88,7 @@ export const Navbar = () => {
             <a href="#community" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={(e) => { handleAnchorClick(e, '#community'); setIsMenuOpen(false); }}>Community</a>
             <Link to="/news" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={() => setIsMenuOpen(false)}>News</Link>
             <Link to="/lore" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={() => setIsMenuOpen(false)}>Lore</Link>
+            <a href="#listings" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={(e) => { handleAnchorClick(e, '#listings'); setIsMenuOpen(false); }}>Listings</a>
             <a href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG" target="_blank" rel="noopener noreferrer" className="btn-fire text-sm py-2 px-4 w-full max-w-[200px] text-center" onClick={() => setIsMenuOpen(false)}>Buy Now</a>
           </div>
         </div>
