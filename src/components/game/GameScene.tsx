@@ -6,6 +6,7 @@ import { Boat } from './Boat';
 import { FishEntity } from './FishEntity';
 import { NetCursor } from './NetCursor';
 import { Sky } from './Sky';
+import { WakeEffect } from './WakeEffect';
 import { useSolanaTransactions, GameEvent } from '@/hooks/useSolanaTransactions';
 
 interface GameState {
@@ -20,6 +21,11 @@ interface GameState {
 export const GameScene = () => {
   const [entities, setEntities] = useState<Array<GameEvent & { pos: [number, number, number] }>>([]);
   const boatPosRef = useRef(new THREE.Vector3(0, 0, 2));
+  const boatSpeedRef = useRef(0);
+  const boatHeadingRef = useRef(0);
+  const wakePosRef = useRef(new THREE.Vector3(0, 0, 2));
+  const wakeHeadingRef = useRef(0);
+  const wakeSpeedRef = useRef(0);
   const [state, setState] = useState<GameState>({
     score: 0,
     caughtTrout: 0,
@@ -167,7 +173,13 @@ export const GameScene = () => {
         
         <Sky />
         <Ocean />
-        <Boat onPositionUpdate={handleBoatPosition} />
+        <Boat 
+          onPositionUpdate={handleBoatPosition} 
+          speedRef={wakeSpeedRef}
+          posRef={wakePosRef}
+          headingRef={wakeHeadingRef}
+        />
+        <WakeEffect boatPos={wakePosRef} boatHeading={wakeHeadingRef} boatSpeed={wakeSpeedRef} />
         <NetCursor />
         
         {entities.map(entity => (

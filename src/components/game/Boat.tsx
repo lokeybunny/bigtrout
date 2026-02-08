@@ -1,13 +1,18 @@
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback, MutableRefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
 interface BoatProps {
   onPositionUpdate?: (pos: THREE.Vector3, rot: number) => void;
+  speedRef?: MutableRefObject<number>;
+  posRef?: MutableRefObject<THREE.Vector3>;
+  headingRef?: MutableRefObject<number>;
 }
 
-export const Boat = ({ onPositionUpdate }: BoatProps) => {
+export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef }: BoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
+  const sailRef = useRef<THREE.Group>(null);
+  const jibRef = useRef<THREE.Mesh>(null);
   const keysRef = useRef<Set<string>>(new Set());
   const velocityRef = useRef({ forward: 0, turn: 0 });
   const headingRef = useRef(0);
@@ -79,7 +84,27 @@ export const Boat = ({ onPositionUpdate }: BoatProps) => {
     groupRef.current.rotation.z = Math.sin(t * 0.6) * 0.02 - vel.turn * 0.08;
     groupRef.current.rotation.x = Math.cos(t * 0.5) * 0.01 + vel.forward * 0.005;
 
-    // Sail tilt based on speed
+    // Expose refs for wake effect
+    if (externalSpeedRef) externalSpeedRef.current = vel.forward;
+    if (externalPosRef) externalPosRef.current.copy(posRef.current);
+    if (externalHeadingRef) externalHeadingRef.current = headingRef.current;
+
+    // Animate sail billow based on speed
+    if (sailRef.current) {
+      const speedNorm = Math.abs(vel.forward) / maxSpeed;
+      const turnNorm = vel.turn / turnSpeed;
+      // Sail rotates based on wind (speed) and turning
+      sailRef.current.rotation.y = 0.1 + speedNorm * 0.4 + turnNorm * 0.3;
+      // Bulge effect via scale
+      sailRef.current.scale.x = 1 + speedNorm * 0.3;
+      sailRef.current.scale.z = 1 + speedNorm * 0.15;
+    }
+    if (jibRef.current) {
+      const speedNorm = Math.abs(vel.forward) / maxSpeed;
+      jibRef.current.scale.x = 1 + speedNorm * 0.25;
+      jibRef.current.rotation.y = Math.sin(t * 2) * 0.05 + speedNorm * 0.2;
+    }
+
     // Camera follow
     const camOffset = new THREE.Vector3(0, 3.5, 8);
     camOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), headingRef.current);
@@ -93,8 +118,6 @@ export const Boat = ({ onPositionUpdate }: BoatProps) => {
 
     onPositionUpdate?.(posRef.current.clone(), headingRef.current);
   });
-
-  const sailTilt = 0.15;
 
   return (
     <group ref={groupRef} position={[0, -0.3, 2]}>
@@ -138,10 +161,10 @@ export const Boat = ({ onPositionUpdate }: BoatProps) => {
         <meshStandardMaterial color="#4a3010" roughness={0.9} />
       </mesh>
 
-      {/* Main sail */}
-      <group rotation={[0, sailTilt, 0]}>
+      {/* Main sail — animated */}
+      <group ref={sailRef} rotation={[0, 0.15, 0]}>
         <mesh position={[0.7, 3.2, -0.3]}>
-          <planeGeometry args={[1.4, 3.5]} />
+          <planeGeometry args={[1.4, 3.5, 4, 6]} />
           <meshStandardMaterial 
             color="#f0e8d8" 
             side={THREE.DoubleSide} 
@@ -157,8 +180,8 @@ export const Boat = ({ onPositionUpdate }: BoatProps) => {
         </mesh>
       </group>
 
-      {/* Jib sail (front triangle) */}
-      <mesh position={[0, 2.8, -2]}>
+      {/* Jib sail (front triangle) — animated */}
+      <mesh ref={jibRef} position={[0, 2.8, -2]}>
         <coneGeometry args={[0.8, 2.5, 3]} />
         <meshStandardMaterial 
           color="#e8ddd0" 
