@@ -62,7 +62,7 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
         color="#0a4a3a"
         transparent
         opacity={0.85}
-        side={THREE.DoubleSide}
+        side={THREE.FrontSide}
         metalness={0.3}
         roughness={0.4}
       />
