@@ -34,13 +34,13 @@ export const Navbar = () => {
             { label: 'How to Buy', hash: '#how-to-buy' },
             { label: 'Community', hash: '#community' },
           ].map(item => (
-            <a key={item.hash} href={item.hash} onClick={(e) => handleAnchorClick(e, item.hash)} className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-sm tracking-wide">
+            <a key={item.hash} href={item.hash} onClick={(e) => handleAnchorClick(e, item.hash)} className="text-ukiyo-ink hover:scale-110 transition-transform font-bold text-sm tracking-wide">
               {item.label}
             </a>
           ))}
-          <Link to="/news" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-sm tracking-wide">News</Link>
-          <Link to="/lore" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-sm tracking-wide">Lore</Link>
-          <Link to="/live" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold relative text-sm tracking-wide">
+          <Link to="/news" className="text-ukiyo-ink hover:scale-110 transition-transform font-bold text-sm tracking-wide">News</Link>
+          <Link to="/lore" className="text-ukiyo-ink hover:scale-110 transition-transform font-bold text-sm tracking-wide">Lore</Link>
+          <Link to="/live" className="text-ukiyo-ink hover:scale-110 transition-transform font-bold relative text-sm tracking-wide">
             Live
             <span className="absolute -top-1 -right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
           </Link>
