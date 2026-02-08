@@ -17,12 +17,13 @@ const Game = () => {
       </Link>
 
       {/* Game title */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
-        <h1 className="text-2xl md:text-3xl font-bold" style={{ 
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+        <h1 className="text-2xl md:text-3xl font-bold px-4 py-1 rounded-lg" style={{ 
           fontFamily: 'Bangers, cursive',
           color: '#44ff88',
           textShadow: '0 0 20px rgba(68,255,136,0.4), 3px 3px 0 #000',
-          letterSpacing: '0.05em'
+          letterSpacing: '0.05em',
+          background: 'rgba(0,0,0,0.8)',
         }}>
           🏁 $BIGTROUT RACE
         </h1>
