@@ -1,6 +1,6 @@
 import { Wallet, ArrowRightLeft, Coins, Trophy } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
-import lavaTrailBg from '@/assets/lava-trail-bg.jpg';
+import sakuraPathBg from '@/assets/sakura-path-bg.jpg';
 
 const steps = [
   { icon: Wallet, step: '01', title: 'Get a Wallet', description: 'Download Phantom or Solflare wallet and set it up securely.' },
@@ -29,12 +29,12 @@ export const HowToBuySection = () => {
   return (
     <section ref={sectionRef} className="relative py-24 px-4 overflow-hidden">
       <div className="absolute inset-0 z-0" style={{
-        backgroundImage: `url(${lavaTrailBg})`,
+        backgroundImage: `url(${sakuraPathBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center top',
         transform: `translateY(${scrollY * -0.5}px) scale(1.2)`,
         willChange: 'transform',
-        filter: 'hue-rotate(100deg) saturate(0.5)',
+        filter: 'saturate(0.8) brightness(0.8)',
       }} />
       
       <div className="absolute top-0 left-0 right-0 h-48 z-[1] pointer-events-none" style={{

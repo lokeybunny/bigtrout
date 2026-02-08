@@ -1,7 +1,7 @@
 import { Lock, Unlock, Fish, Zap, TrendingUp, Clock, FileText } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import snowMountainBg from '@/assets/snow-mountain-bg.jpg';
+import sakuraGardenBg from '@/assets/sakura-garden-bg.jpg';
 
 interface VestingData {
   totalLocked: number;
@@ -67,12 +67,12 @@ export const TokenomicsSection = () => {
     <section ref={sectionRef} className="relative py-24 px-4 overflow-hidden">
       {/* Parallax background */}
       <div className="absolute inset-0 z-0" style={{
-        backgroundImage: `url(${snowMountainBg})`,
+        backgroundImage: `url(${sakuraGardenBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         transform: `translateY(${scrollY * -0.5}px) scale(1.2)`,
         willChange: 'transform',
-        filter: 'hue-rotate(80deg) saturate(0.6)',
+        filter: 'saturate(0.8) brightness(0.8)',
       }} />
       
       <div className="absolute inset-0 z-0" style={{
