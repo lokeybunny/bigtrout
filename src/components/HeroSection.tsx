@@ -81,9 +81,13 @@ export const HeroSection = () => {
       {/* Gradient overlays — dark edges, visible art center */}
       <div className="absolute inset-0 z-[4]" style={{
         background: `
-          linear-gradient(180deg, hsl(210 25% 10% / 0.5) 0%, transparent 20%, transparent 45%, hsl(210 25% 10% / 0.6) 65%, hsl(210 25% 10% / 0.95) 85%, hsl(210 25% 10% / 1) 100%),
+          linear-gradient(180deg, hsl(210 25% 10% / 0.5) 0%, transparent 20%, transparent 40%, hsl(210 25% 10% / 0.5) 55%, hsl(210 25% 10% / 0.85) 72%, hsl(210 25% 10% / 1) 85%, hsl(210 25% 10% / 1) 100%),
           linear-gradient(90deg, hsl(210 25% 10% / 0.3) 0%, transparent 15%, transparent 85%, hsl(210 25% 10% / 0.3) 100%)
         `,
+      }} />
+      {/* Extra bottom fade to fully cover image edge */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 z-[5]" style={{
+        background: 'linear-gradient(to top, hsl(210 25% 10% / 1) 0%, hsl(210 25% 10% / 0.8) 50%, transparent 100%)',
       }} />
 
       {/* Soft sakura glow accents */}
