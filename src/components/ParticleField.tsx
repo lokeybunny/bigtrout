@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { QualityLevel } from '@/hooks/usePerformanceMode';
 
 interface Particle {
   id: number;
@@ -9,11 +10,18 @@ interface Particle {
   type: 'petal' | 'firefly';
 }
 
-export const ParticleField = () => {
+interface ParticleFieldProps {
+  quality?: QualityLevel;
+}
+
+export const ParticleField = ({ quality = 'high' }: ParticleFieldProps) => {
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
-    const petals: Particle[] = Array.from({ length: 20 }, (_, i) => ({
+    const petalCount = quality === 'high' ? 20 : 8;
+    const fireflyCount = quality === 'high' ? 10 : 4;
+
+    const petals: Particle[] = Array.from({ length: petalCount }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       delay: Math.random() * 10,
@@ -22,8 +30,8 @@ export const ParticleField = () => {
       type: 'petal' as const,
     }));
 
-    const fireflies: Particle[] = Array.from({ length: 10 }, (_, i) => ({
-      id: i + 20,
+    const fireflies: Particle[] = Array.from({ length: fireflyCount }, (_, i) => ({
+      id: i + petalCount,
       x: Math.random() * 100,
       delay: Math.random() * 6,
       duration: 4 + Math.random() * 4,
@@ -32,7 +40,7 @@ export const ParticleField = () => {
     }));
 
     setParticles([...petals, ...fireflies]);
-  }, []);
+  }, [quality]);
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-10">

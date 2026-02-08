@@ -1,22 +1,39 @@
 import { useEffect, useState, useRef } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import heroBanner from '@/assets/bigtrout-hero-banner.avif';
+import type { QualityLevel } from '@/hooks/usePerformanceMode';
 
-export const HeroSection = () => {
+interface HeroSectionProps {
+  quality?: QualityLevel;
+}
+
+export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
   const isMobile = useIsMobile();
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const rafRef = useRef<number>(0);
+
+  const enableParallax = !isMobile && quality !== 'low';
+  const enableEffects = !isMobile && quality === 'high';
+  const enableLiteEffects = !isMobile && quality === 'medium';
 
   useEffect(() => {
+    if (!enableParallax) return;
     const handleScroll = () => {
-      if (sectionRef.current) {
-        const rect = sectionRef.current.getBoundingClientRect();
-        setScrollY(-rect.top * 0.35);
-      }
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => {
+        if (sectionRef.current) {
+          const rect = sectionRef.current.getBoundingClientRect();
+          setScrollY(-rect.top * 0.35);
+        }
+      });
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [enableParallax]);
 
   return (
     <section ref={sectionRef} className="relative flex flex-col items-center justify-end overflow-hidden" style={{ minHeight: isMobile ? 'auto' : '100svh' }}>
@@ -27,78 +44,85 @@ export const HeroSection = () => {
         </div>
       ) : (
         <>
-          {/* Desktop: parallax banner with effects */}
+          {/* Desktop: parallax banner (or static in low mode) */}
           <div
             className="absolute inset-0 z-0"
             style={{
               backgroundImage: `url(${heroBanner})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
-              transform: `translateY(${scrollY}px)`,
-              willChange: 'transform',
+              transform: enableParallax ? `translateY(${scrollY}px)` : undefined,
+              willChange: enableParallax ? 'transform' : undefined,
             }}
           />
 
-          {/* Drifting light rays */}
-          <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden opacity-[0.07]">
-            <div className="absolute top-0 left-[20%] w-[30%] h-full" style={{
-              background: 'linear-gradient(180deg, hsl(40 60% 90% / 0.8), transparent 70%)',
-              transform: 'skewX(-15deg)',
-              animation: 'lightRayDrift 8s ease-in-out infinite',
-            }} />
-            <div className="absolute top-0 left-[55%] w-[20%] h-full" style={{
-              background: 'linear-gradient(180deg, hsl(40 50% 85% / 0.6), transparent 60%)',
-              transform: 'skewX(-10deg)',
-              animation: 'lightRayDrift 10s ease-in-out infinite 3s',
-            }} />
-          </div>
+          {/* Animated overlays — HIGH quality only */}
+          {enableEffects && (
+            <>
+              {/* Drifting light rays */}
+              <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden opacity-[0.07]">
+                <div className="absolute top-0 left-[20%] w-[30%] h-full" style={{
+                  background: 'linear-gradient(180deg, hsl(40 60% 90% / 0.8), transparent 70%)',
+                  transform: 'skewX(-15deg)',
+                  animation: 'lightRayDrift 8s ease-in-out infinite',
+                }} />
+                <div className="absolute top-0 left-[55%] w-[20%] h-full" style={{
+                  background: 'linear-gradient(180deg, hsl(40 50% 85% / 0.6), transparent 60%)',
+                  transform: 'skewX(-10deg)',
+                  animation: 'lightRayDrift 10s ease-in-out infinite 3s',
+                }} />
+              </div>
 
-          {/* Slow fog/mist layer */}
-          <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-            <div className="absolute bottom-[10%] left-0 w-[250%] h-[30%] opacity-[0.04]" style={{
-              background: 'linear-gradient(90deg, transparent, hsl(200 30% 80%), transparent 40%, hsl(200 25% 75%), transparent)',
-              animation: 'mistDrift 20s linear infinite',
-            }} />
-            <div className="absolute bottom-[20%] left-0 w-[250%] h-[25%] opacity-[0.03]" style={{
-              background: 'linear-gradient(90deg, transparent 10%, hsl(345 30% 80%), transparent 50%, hsl(200 30% 75%), transparent 90%)',
-              animation: 'mistDrift 28s linear infinite reverse',
-            }} />
-          </div>
+              {/* Slow fog/mist layer */}
+              <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
+                <div className="absolute bottom-[10%] left-0 w-[250%] h-[30%] opacity-[0.04]" style={{
+                  background: 'linear-gradient(90deg, transparent, hsl(200 30% 80%), transparent 40%, hsl(200 25% 75%), transparent)',
+                  animation: 'mistDrift 20s linear infinite',
+                }} />
+                <div className="absolute bottom-[20%] left-0 w-[250%] h-[25%] opacity-[0.03]" style={{
+                  background: 'linear-gradient(90deg, transparent 10%, hsl(345 30% 80%), transparent 50%, hsl(200 30% 75%), transparent 90%)',
+                  animation: 'mistDrift 28s linear infinite reverse',
+                }} />
+              </div>
 
-          {/* Parchment texture overlay */}
-          <div className="absolute inset-0 z-[1] pointer-events-none mix-blend-overlay opacity-15" style={{
-            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'200\' height=\'200\' filter=\'url(%23n)\' opacity=\'0.5\'/%3E%3C/svg%3E")',
-          }} />
+              {/* Water shimmer */}
+              <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
+                <div className="absolute bottom-0 left-0 w-[200%] h-[45%]" style={{
+                  background: 'linear-gradient(90deg, transparent 0%, hsl(200 50% 60% / 0.06) 15%, transparent 30%, hsl(190 45% 50% / 0.05) 45%, transparent 60%, hsl(200 50% 60% / 0.06) 75%, transparent 100%)',
+                  animation: 'waterFlow 5s linear infinite',
+                }} />
+                <div className="absolute bottom-0 left-0 w-[200%] h-[40%]" style={{
+                  background: 'linear-gradient(90deg, transparent 0%, hsl(180 40% 65% / 0.04) 20%, transparent 40%, hsl(200 45% 55% / 0.05) 60%, transparent 80%)',
+                  animation: 'waterFlow 7s linear infinite reverse',
+                }} />
+                <div className="absolute bottom-0 left-0 right-0 h-[50%]" style={{
+                  background: 'repeating-linear-gradient(0deg, transparent, hsl(200 50% 70% / 0.02) 2px, transparent 4px)',
+                  animation: 'waterWave 3.5s ease-in-out infinite',
+                }} />
+              </div>
 
-          {/* Water shimmer */}
-          <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
-            <div className="absolute bottom-0 left-0 w-[200%] h-[45%]" style={{
-              background: 'linear-gradient(90deg, transparent 0%, hsl(200 50% 60% / 0.06) 15%, transparent 30%, hsl(190 45% 50% / 0.05) 45%, transparent 60%, hsl(200 50% 60% / 0.06) 75%, transparent 100%)',
-              animation: 'waterFlow 5s linear infinite',
-            }} />
-            <div className="absolute bottom-0 left-0 w-[200%] h-[40%]" style={{
-              background: 'linear-gradient(90deg, transparent 0%, hsl(180 40% 65% / 0.04) 20%, transparent 40%, hsl(200 45% 55% / 0.05) 60%, transparent 80%)',
-              animation: 'waterFlow 7s linear infinite reverse',
-            }} />
-            <div className="absolute bottom-0 left-0 right-0 h-[50%]" style={{
-              background: 'repeating-linear-gradient(0deg, transparent, hsl(200 50% 70% / 0.02) 2px, transparent 4px)',
-              animation: 'waterWave 3.5s ease-in-out infinite',
-            }} />
-          </div>
+              {/* Fish movement */}
+              <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
+                <div className="absolute bottom-[5%] left-[10%] w-[80%] h-[40%]" style={{
+                  background: 'radial-gradient(ellipse at 50% 60%, hsl(200 40% 50% / 0.03), transparent 60%)',
+                  animation: 'fishSway 5s ease-in-out infinite',
+                }} />
+                <div className="absolute bottom-[8%] left-[15%] w-[70%] h-[35%]" style={{
+                  background: 'radial-gradient(ellipse at 40% 50%, hsl(345 40% 55% / 0.02), transparent 50%)',
+                  animation: 'fishSway 4s ease-in-out infinite 1s',
+                }} />
+              </div>
+            </>
+          )}
 
-          {/* Fish movement */}
-          <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
-            <div className="absolute bottom-[5%] left-[10%] w-[80%] h-[40%]" style={{
-              background: 'radial-gradient(ellipse at 50% 60%, hsl(200 40% 50% / 0.03), transparent 60%)',
-              animation: 'fishSway 5s ease-in-out infinite',
+          {/* Parchment texture overlay — high & medium */}
+          {(enableEffects || enableLiteEffects) && (
+            <div className="absolute inset-0 z-[1] pointer-events-none mix-blend-overlay opacity-15" style={{
+              backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'200\' height=\'200\' filter=\'url(%23n)\' opacity=\'0.5\'/%3E%3C/svg%3E")',
             }} />
-            <div className="absolute bottom-[8%] left-[15%] w-[70%] h-[35%]" style={{
-              background: 'radial-gradient(ellipse at 40% 50%, hsl(345 40% 55% / 0.02), transparent 50%)',
-              animation: 'fishSway 4s ease-in-out infinite 1s',
-            }} />
-          </div>
+          )}
 
-          {/* Gradient overlays */}
+          {/* Gradient overlays — always on desktop */}
           <div className="absolute inset-0 z-[4]" style={{
             background: `
               linear-gradient(180deg, hsl(210 25% 10% / 0.15) 0%, transparent 12%, transparent 50%, hsl(210 25% 10% / 0.2) 62%, hsl(210 25% 10% / 0.5) 76%, hsl(210 25% 10% / 0.85) 88%, hsl(210 25% 10% / 1) 100%),
@@ -111,15 +135,17 @@ export const HeroSection = () => {
             WebkitMaskImage: 'linear-gradient(to top, black 0%, black 50%, transparent 100%)',
           }} />
 
-          {/* Sakura glow accents */}
-          <div className="absolute inset-0 z-[4] pointer-events-none">
-            <div className="absolute top-[8%] left-[15%] w-48 h-48 rounded-full blur-3xl opacity-20" style={{
-              background: 'radial-gradient(circle, hsl(345 55% 75%), transparent)',
-            }} />
-            <div className="absolute top-[5%] right-[10%] w-40 h-40 rounded-full blur-3xl opacity-15" style={{
-              background: 'radial-gradient(circle, hsl(345 50% 80%), transparent)',
-            }} />
-          </div>
+          {/* Sakura glow accents — high & medium */}
+          {(enableEffects || enableLiteEffects) && (
+            <div className="absolute inset-0 z-[4] pointer-events-none">
+              <div className="absolute top-[8%] left-[15%] w-48 h-48 rounded-full blur-3xl opacity-20" style={{
+                background: 'radial-gradient(circle, hsl(345 55% 75%), transparent)',
+              }} />
+              <div className="absolute top-[5%] right-[10%] w-40 h-40 rounded-full blur-3xl opacity-15" style={{
+                background: 'radial-gradient(circle, hsl(345 50% 80%), transparent)',
+              }} />
+            </div>
+          )}
         </>
       )}
 
