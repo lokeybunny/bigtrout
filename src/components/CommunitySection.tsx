@@ -157,7 +157,7 @@ export const CommunitySection = () => {
         </div>
 
         {/* Exchange Logos Section */}
-        <div className="mb-12">
+        <div id="listings" className="mb-12">
           <h3 className="text-lg md:text-xl font-bold text-foreground mb-10" style={{
             textShadow: '0 0 15px hsl(130 45% 38% / 0.3), 0 0 30px hsl(345 45% 55% / 0.15)',
           }}>
