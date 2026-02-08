@@ -105,8 +105,8 @@ export const HeroSection = () => {
         </div>
 
         {/* Title */}
-        <h1 className="font-display text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black mb-3 tracking-tight hero-title-glow animate-hero-pulse">
-          <span className="text-pepe-sakura">$BIGTROUT</span>
+        <h1 className="font-display text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black mb-3 tracking-tight animate-hero-pulse hero-title-stroke">
+          $BIGTROUT
         </h1>
 
         <p className="font-display text-lg sm:text-xl md:text-2xl text-foreground/90 max-w-2xl mx-auto mb-8 tracking-wider hero-subtitle-glow">
