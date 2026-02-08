@@ -86,8 +86,10 @@ export const HeroSection = () => {
         `,
       }} />
       {/* Extra bottom fade to fully cover image edge */}
-      <div className="absolute bottom-0 left-0 right-0 h-56 z-[5]" style={{
-        background: 'linear-gradient(to top, hsl(210 25% 10% / 1) 0%, hsl(210 25% 10% / 1) 30%, hsl(210 25% 10% / 0.9) 60%, transparent 100%)',
+      <div className="absolute -bottom-2 left-0 right-0 h-72 z-[5]" style={{
+        background: 'hsl(210 25% 10%)',
+        maskImage: 'linear-gradient(to top, black 0%, black 40%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to top, black 0%, black 40%, transparent 100%)',
       }} />
 
       {/* Soft sakura glow accents */}
