@@ -251,6 +251,7 @@ export const GameScene = () => {
       // Mark checkpoint as passed & show flash
       setPassedCheckpoints(prev => new Set(prev).add(cp));
       setCheckpointFlash(`✅ Checkpoint ${cp + 1} / ${totalCPs}`);
+      playSFX('checkpoint');
       setTimeout(() => setCheckpointFlash(null), 1500);
       
       if (playerLapRef.current >= TOTAL_LAPS && !finishOrderRef.current.includes('player')) {

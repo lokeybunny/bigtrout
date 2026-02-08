@@ -38,7 +38,7 @@ const playTone = (
   osc.stop(ctx.currentTime + duration);
 };
 
-export type SFXType = 'boost' | 'rock' | 'wave' | 'buy' | 'bigBuy' | 'sell';
+export type SFXType = 'boost' | 'rock' | 'wave' | 'buy' | 'bigBuy' | 'sell' | 'checkpoint';
 
 export const useGameSFX = () => {
   const ctxRef = useRef<AudioContext | null>(null);
@@ -91,6 +91,14 @@ export const useGameSFX = () => {
         // Descending minor
         playTone(ctx, 400, 0.15, 'square', 0.08, 'down');
         setTimeout(() => playTone(ctx, 300, 0.2, 'square', 0.06, 'down'), 120);
+        break;
+
+      case 'checkpoint':
+        // Success bling — bright ascending chime
+        playTone(ctx, 880, 0.1, 'sine', 0.15);
+        setTimeout(() => playTone(ctx, 1108, 0.1, 'sine', 0.13), 70);
+        setTimeout(() => playTone(ctx, 1318, 0.12, 'sine', 0.11), 140);
+        setTimeout(() => playTone(ctx, 1760, 0.2, 'sine', 0.09), 220);
         break;
     }
   }, [ensureCtx]);
