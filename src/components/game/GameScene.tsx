@@ -593,6 +593,28 @@ export const GameScene = () => {
         boosts={boosts}
       />
 
+      {/* CA Address - bottom center */}
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10">
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText('EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG');
+            const el = document.getElementById('ca-copied');
+            if (el) { el.textContent = '✅ Copied!'; setTimeout(() => { el.textContent = 'CA: EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG 📋'; }, 1500); }
+          }}
+          className="px-3 py-1.5 rounded-lg text-xs font-mono transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          style={{
+            background: 'rgba(0,0,0,0.7)',
+            color: '#44ff88',
+            border: '1px solid rgba(68,255,136,0.3)',
+            backdropFilter: 'blur(4px)',
+            textShadow: '0 0 8px rgba(68,255,136,0.4)',
+          }}
+          title="Click to copy CA"
+        >
+          <span id="ca-copied">CA: EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG 📋</span>
+        </button>
+      </div>
+
       {/* 3D Canvas */}
       <Canvas 
         camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 300 }} 
