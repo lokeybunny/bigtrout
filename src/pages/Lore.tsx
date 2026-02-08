@@ -2,10 +2,11 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ParticleField } from '@/components/ParticleField';
 import { loreChapters } from '@/data/loreContent';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { ArrowLeft, BookOpen, Fish } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import snowMountainBg from '@/assets/snow-mountain-bg.jpg';
+import sakuraGardenBg from '@/assets/sakura-garden-bg.jpg';
+import sakuraPathBg from '@/assets/sakura-path-bg.jpg';
 
 const Lore = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -16,46 +17,66 @@ const Lore = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const dissolveProgress = Math.min(scrollY / 800, 1);
+
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      {/* Parallax icy mountain background */}
+      {/* First parallax layer: sakura garden (fades out) */}
       <div
         className="fixed inset-0 z-0"
         style={{
-          backgroundImage: `url(${snowMountainBg})`,
+          backgroundImage: `url(${sakuraGardenBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center top',
-          transform: `translateY(${scrollY * -0.12}px) scale(1.15)`,
+          transform: `translateY(${scrollY * -0.15}px) scale(1.15)`,
           willChange: 'transform',
+          opacity: 1 - dissolveProgress,
+          filter: 'saturate(0.8) brightness(0.6)',
         }}
       />
-      {/* Dark icy overlay */}
+      {/* Second parallax layer: sakura path (fades in) */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          backgroundImage: `url(${sakuraPathBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transform: `translateY(${scrollY * -0.08}px) scale(1.1)`,
+          willChange: 'transform',
+          opacity: dissolveProgress,
+          filter: 'saturate(0.7) brightness(0.5)',
+        }}
+      />
+      {/* Dark overlay */}
       <div
         className="fixed inset-0 z-0"
         style={{
           background: `
-            radial-gradient(ellipse at 30% 15%, hsl(195 90% 45% / 0.1) 0%, transparent 50%),
-            radial-gradient(ellipse at 70% 70%, hsl(200 80% 40% / 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 30% 15%, hsl(345 55% 70% / 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 70% 70%, hsl(130 45% 38% / 0.05) 0%, transparent 50%),
             linear-gradient(180deg, 
-              hsl(220 30% 6% / 0.88) 0%, 
-              hsl(220 30% 6% / 0.82) 20%,
-              hsl(220 30% 6% / 0.85) 60%, 
-              hsl(220 30% 6% / 0.92) 100%
+              hsl(210 25% 10% / 0.88) 0%, 
+              hsl(210 25% 10% / 0.82) 20%,
+              hsl(210 25% 10% / 0.8) 60%, 
+              hsl(210 25% 10% / 0.88) 100%
             )
           `,
         }}
       />
 
-      {/* Snowfall particles */}
+      {/* Sakura petal particles instead of snow */}
       <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
-        {Array.from({ length: 40 }).map((_, i) => (
+        {Array.from({ length: 30 }).map((_, i) => (
           <div
-            key={`snow-${i}`}
-            className="absolute rounded-full bg-white/60"
+            key={`petal-${i}`}
+            className="absolute rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
-              width: `${2 + Math.random() * 3}px`,
-              height: `${2 + Math.random() * 3}px`,
+              width: `${3 + Math.random() * 4}px`,
+              height: `${3 + Math.random() * 4}px`,
+              background: i % 2 === 0
+                ? 'hsl(345 55% 70% / 0.5)'
+                : 'hsl(130 45% 38% / 0.4)',
               animation: `snowFall ${6 + Math.random() * 6}s linear infinite`,
               animationDelay: `${Math.random() * 8}s`,
             }}
@@ -79,16 +100,16 @@ const Lore = () => {
 
           <div className="flex items-center gap-4 mb-4">
             <div
-              className="w-14 h-14 rounded-xl flex items-center justify-center glow-ice"
+              className="w-14 h-14 rounded-xl flex items-center justify-center glow-ember"
               style={{
-                background: 'linear-gradient(135deg, hsl(195 90% 45%), hsl(190 100% 70%))',
+                background: 'linear-gradient(135deg, hsl(130 45% 38%), hsl(130 55% 52%))',
               }}
             >
-              <BookOpen className="w-7 h-7 text-storm-dark" />
+              <Fish className="w-7 h-7" style={{ color: 'hsl(210 25% 10%)' }} />
             </div>
             <h1 className="font-display text-5xl md:text-7xl font-black">
-              <span className="text-ice">THE</span>{' '}
-              <span className="text-fire">LORE</span>
+              <span className="text-sakura">THE</span>{' '}
+              <span className="text-pepe">LORE</span>
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl">
@@ -105,7 +126,9 @@ const Lore = () => {
               <span
                 className="font-display text-8xl font-black absolute -left-4 -top-6 opacity-[0.06] select-none pointer-events-none"
                 style={{
-                  background: 'linear-gradient(180deg, hsl(195 90% 45%), hsl(190 100% 70%))',
+                  background: index % 2 === 0
+                    ? 'linear-gradient(180deg, hsl(130 45% 38%), hsl(130 55% 52%))'
+                    : 'linear-gradient(180deg, hsl(345 55% 70%), hsl(345 65% 82%))',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -113,20 +136,20 @@ const Lore = () => {
                 {String(index + 1).padStart(2, '0')}
               </span>
 
-              <div className="card-volcanic p-8 relative overflow-hidden">
-                {/* Subtle ice shimmer on top edge */}
+              <div className="card-ukiyo p-8 relative overflow-hidden">
+                {/* Subtle shimmer on top edge */}
                 <div
                   className="absolute top-0 left-0 right-0 h-0.5"
                   style={{
                     background:
-                      'linear-gradient(90deg, transparent, hsl(195 90% 45% / 0.5), hsl(190 100% 70% / 0.3), transparent)',
+                      'linear-gradient(90deg, transparent, hsl(130 45% 38% / 0.4), hsl(345 55% 70% / 0.3), transparent)',
                   }}
                 />
 
                 {/* Title */}
                 <div className="flex items-center gap-3 mb-6">
                   <span className="text-3xl">{chapter.emoji}</span>
-                  <h2 className="font-display text-2xl md:text-3xl font-bold text-ice">
+                  <h2 className="font-display text-2xl md:text-3xl font-bold text-sakura">
                     {chapter.title}
                   </h2>
                 </div>
@@ -134,12 +157,11 @@ const Lore = () => {
                 {/* Paragraphs */}
                 <div className="space-y-4">
                   {chapter.paragraphs.map((para, pIdx) => {
-                    // Style quotes differently
                     const isQuote = para.startsWith('"') && para.endsWith('"');
                     return isQuote ? (
                       <blockquote
                         key={pIdx}
-                        className="border-l-2 border-primary/50 pl-4 py-1 italic text-fire font-display text-lg"
+                        className="border-l-2 border-primary/50 pl-4 py-1 italic text-pepe font-display text-lg"
                       >
                         {para}
                       </blockquote>
@@ -163,16 +185,16 @@ const Lore = () => {
           <p
             className="font-display text-2xl md:text-3xl font-bold mb-6"
             style={{
-              textShadow: '0 0 30px hsl(195 90% 45% / 0.3)',
+              textShadow: '0 0 30px hsl(130 45% 38% / 0.3)',
             }}
           >
-            <span className="text-ice">Trust is the ultimate bait.</span>
+            <span className="text-pepe-sakura">Trust is the ultimate bait.</span>
           </p>
           <a
             href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-ice inline-flex items-center gap-3"
+            className="btn-fire inline-flex items-center gap-3"
           >
             Join the Trout Squad
           </a>
