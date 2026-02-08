@@ -40,7 +40,7 @@ const GENRE_EMOJI: Record<string, string> = {
   'Ambient': '🌊',
 };
 
-export const GameRadio = () => {
+export const GameRadio = ({ chartExpanded = false }: { chartExpanded?: boolean }) => {
   const [open, setOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [currentStation, setCurrentStation] = useState<RadioStation | null>(null);
@@ -90,7 +90,7 @@ export const GameRadio = () => {
   return (
     <>
       {/* Vinyl DJ Button — next to chart icon */}
-      <div className="absolute bottom-2 left-16 z-10">
+      <div className="absolute bottom-2 z-10 transition-all duration-300" style={{ left: chartExpanded ? 576 : 64 }}>
         <button
           onClick={togglePanel}
           className="w-12 h-12 rounded-lg flex items-center justify-center relative"
@@ -133,7 +133,8 @@ export const GameRadio = () => {
 
       {/* Radio Panel */}
       {open && (
-        <div className="absolute bottom-16 left-16 z-20" style={{
+        <div className="absolute bottom-16 z-20 transition-all duration-300" style={{
+          left: chartExpanded ? 576 : 64,
           width: 280,
           background: 'rgba(0,0,0,0.9)',
           border: '1px solid rgba(255,204,68,0.3)',
