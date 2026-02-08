@@ -105,7 +105,7 @@ export const HeroSection = () => {
         </div>
 
         {/* Title */}
-        <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-3 tracking-tight hero-title-glow">
+        <h1 className="font-display text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black mb-3 tracking-tight hero-title-glow animate-hero-pulse">
           <span className="text-pepe-sakura">$BIGTROUT</span>
         </h1>
 
