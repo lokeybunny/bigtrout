@@ -17,7 +17,7 @@ export const HeroSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative min-h-[100svh] flex flex-col items-center justify-end overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-[100svh] flex flex-col items-center justify-end overflow-x-hidden overflow-y-visible">
       {/* Full-width parallax banner */}
       <div
         className="absolute inset-0 z-0"
@@ -97,7 +97,7 @@ export const HeroSection = () => {
       </div>
 
       {/* Main content overlaying the banner */}
-      <div className="relative z-10 text-center pb-20 md:pb-28 px-4 w-full max-w-4xl mx-auto">
+      <div className="relative z-10 text-center pb-20 md:pb-28 px-4 w-full max-w-4xl mx-auto overflow-visible">
         {/* Ticker badge */}
         <div className="inline-flex items-center gap-2 px-5 py-2 mb-6 rounded-full border border-primary/40 bg-card/50 backdrop-blur-lg">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
