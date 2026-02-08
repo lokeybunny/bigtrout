@@ -29,7 +29,7 @@ export const HeroSection = () => {
         <>
           {/* Desktop: parallax banner with effects */}
           <div
-            className="absolute inset-0 z-0 animate-ken-burns"
+            className="absolute inset-0 z-0"
             style={{
               backgroundImage: `url(${heroBanner})`,
               backgroundSize: 'cover',
@@ -38,6 +38,32 @@ export const HeroSection = () => {
               willChange: 'transform',
             }}
           />
+
+          {/* Drifting light rays */}
+          <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden opacity-[0.07]">
+            <div className="absolute top-0 left-[20%] w-[30%] h-full" style={{
+              background: 'linear-gradient(180deg, hsl(40 60% 90% / 0.8), transparent 70%)',
+              transform: 'skewX(-15deg)',
+              animation: 'lightRayDrift 8s ease-in-out infinite',
+            }} />
+            <div className="absolute top-0 left-[55%] w-[20%] h-full" style={{
+              background: 'linear-gradient(180deg, hsl(40 50% 85% / 0.6), transparent 60%)',
+              transform: 'skewX(-10deg)',
+              animation: 'lightRayDrift 10s ease-in-out infinite 3s',
+            }} />
+          </div>
+
+          {/* Slow fog/mist layer */}
+          <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
+            <div className="absolute bottom-[10%] left-0 w-[250%] h-[30%] opacity-[0.04]" style={{
+              background: 'linear-gradient(90deg, transparent, hsl(200 30% 80%), transparent 40%, hsl(200 25% 75%), transparent)',
+              animation: 'mistDrift 20s linear infinite',
+            }} />
+            <div className="absolute bottom-[20%] left-0 w-[250%] h-[25%] opacity-[0.03]" style={{
+              background: 'linear-gradient(90deg, transparent 10%, hsl(345 30% 80%), transparent 50%, hsl(200 30% 75%), transparent 90%)',
+              animation: 'mistDrift 28s linear infinite reverse',
+            }} />
+          </div>
 
           {/* Parchment texture overlay */}
           <div className="absolute inset-0 z-[1] pointer-events-none mix-blend-overlay opacity-15" style={{
