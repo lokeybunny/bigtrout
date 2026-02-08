@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { CHECKPOINTS } from './AIBoat';
+import { useAdaptivePerf } from './AdaptivePerformance';
 
 interface RaceTrackProps {
   passedCheckpoints?: Set<number>;
@@ -13,6 +14,8 @@ const CheckpointBuoy = ({ position, index, passed }: { position: [number, number
   const buoyRef = useRef<THREE.Mesh>(null);
   const wasPassedRef = useRef(false);
   const blinkStartRef = useRef(0);
+  const perfRef = useAdaptivePerf();
+  const perfAllowLights = perfRef.current.enableCheckpointLights;
 
   const settledRef = useRef(false);
 
@@ -83,8 +86,8 @@ const CheckpointBuoy = ({ position, index, passed }: { position: [number, number
           emissiveIntensity={passed ? 0.5 : 0.2}
         />
       </mesh>
-      {/* Light — only render for start or passed checkpoints to reduce light count */}
-      {(isStart || passed) && (
+      {/* Light — only render for start or passed checkpoints, and only if perf allows */}
+      {(isStart || passed) && perfAllowLights && (
         <pointLight 
           ref={lightRef}
           position={[0, 1.5, 0]} 
@@ -119,14 +122,16 @@ const CheckpointBuoy = ({ position, index, passed }: { position: [number, number
 };
 
 export const RaceTrack = ({ passedCheckpoints = new Set() }: RaceTrackProps) => {
+  const perfRef = useAdaptivePerf();
+
   return (
     <group>
       {CHECKPOINTS.map((cp, i) => (
         <CheckpointBuoy key={i} position={cp} index={i} passed={passedCheckpoints.has(i)} />
       ))}
       
-      {/* Track lane markers */}
-      {CHECKPOINTS.map((cp, i) => {
+      {/* Track lane markers — disabled at lower perf tiers */}
+      {perfRef.current.enableLaneMarkers && CHECKPOINTS.map((cp, i) => {
         const next = CHECKPOINTS[(i + 1) % CHECKPOINTS.length];
         const segments = 5;
         return Array.from({ length: segments }).map((_, j) => {
