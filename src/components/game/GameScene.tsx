@@ -57,6 +57,7 @@ export const GameScene = () => {
   const [boostTimer, setBoostTimer] = useState(0);
   const [boostMessage, setBoostMessage] = useState<string | null>(null);
   const [hitMessage, setHitMessage] = useState<string | null>(null);
+  const [chartExpanded, setChartExpanded] = useState(false);
 
   // $BIGTROUT points from Solana buys/sells
   const [troutPoints, setTroutPoints] = useState(0);
@@ -396,21 +397,47 @@ export const GameScene = () => {
         </div>
       )}
 
-      {/* GMGN Chart - bottom left */}
-      <div className="absolute bottom-2 left-2 z-10" style={{ width: 280, height: 200 }}>
-        <div className="rounded-lg overflow-hidden border border-white/10" style={{ background: 'rgba(0,0,0,0.7)', width: '100%', height: '100%' }}>
-          <iframe
-            src="https://www.gmgn.cc/kline/sol/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG?theme=dark"
-            width="100%"
-            height="100%"
-            style={{ border: 'none' }}
-            title="$BIGTROUT Chart"
-          />
-        </div>
+      {/* GMGN Chart - bottom left with expand toggle */}
+      <div className="absolute bottom-2 left-2 z-10 transition-all duration-300" style={{ 
+        width: chartExpanded ? 560 : 48, 
+        height: chartExpanded ? 400 : 48 
+      }}>
+        {chartExpanded ? (
+          <div className="rounded-lg overflow-hidden border border-white/10 relative" style={{ background: 'rgba(0,0,0,0.85)', width: '100%', height: '100%' }}>
+            <button
+              onClick={() => setChartExpanded(false)}
+              className="absolute top-2 right-2 z-20 w-8 h-8 flex items-center justify-center rounded-md"
+              style={{ background: 'rgba(0,0,0,0.7)', color: '#ffcc44', fontFamily: 'Bangers', fontSize: '14px', cursor: 'pointer', border: '1px solid rgba(255,204,68,0.3)' }}
+            >
+              ✕
+            </button>
+            <iframe
+              src="https://www.gmgn.cc/kline/sol/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG?theme=dark"
+              width="100%"
+              height="100%"
+              style={{ border: 'none' }}
+              title="$BIGTROUT Chart"
+            />
+          </div>
+        ) : (
+          <button
+            onClick={() => setChartExpanded(true)}
+            className="w-12 h-12 rounded-lg flex items-center justify-center"
+            style={{ 
+              background: 'rgba(0,0,0,0.7)', 
+              border: '1px solid rgba(255,204,68,0.4)', 
+              cursor: 'pointer',
+              boxShadow: '0 0 12px rgba(255,204,68,0.2)',
+            }}
+            title="Open $BIGTROUT Chart"
+          >
+            <span style={{ fontSize: '24px' }}>📊</span>
+          </button>
+        )}
       </div>
 
-      {/* $BIGTROUT Points HUD - above chart */}
-      <div className="absolute bottom-[215px] left-2 z-10 pointer-events-none">
+      {/* $BIGTROUT Points HUD - bottom left, above chart button */}
+      <div className="absolute left-2 z-10 pointer-events-none transition-all duration-300" style={{ bottom: chartExpanded ? 416 : 60 }}>
         <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2" style={{ minWidth: 180 }}>
           <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#44ff88' }}>
             $BIGTROUT POINTS
@@ -429,7 +456,7 @@ export const GameScene = () => {
 
       {/* Token event message */}
       {tokenMessage && (
-        <div className="absolute bottom-[280px] left-2 z-10 pointer-events-none">
+        <div className="absolute left-2 z-10 pointer-events-none transition-all duration-300" style={{ bottom: chartExpanded ? 520 : 164 }}>
           <div className="text-lg font-bold" style={{
             fontFamily: 'Bangers, cursive',
             color: tokenMessage.includes('SELL') ? '#ff4444' : '#44ff88',
@@ -455,7 +482,7 @@ export const GameScene = () => {
         <fog attach="fog" args={['#0a1525', 60, 250]} />
         
         <Sky />
-        <Ocean />
+        <Ocean tokenMultiplier={tokenMultiplier} />
         <TroutIsland />
         <RaceTrack />
         
