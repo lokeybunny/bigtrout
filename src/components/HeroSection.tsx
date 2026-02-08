@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import heroBanner from '@/assets/bigtrout-hero-banner.jpg';
+import heroBanner from '@/assets/bigtrout-hero-banner.avif';
 
 export const HeroSection = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -105,11 +105,11 @@ export const HeroSection = () => {
         </div>
 
         {/* Title */}
-        <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-3 tracking-tight">
+        <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-3 tracking-tight hero-title-glow">
           <span className="text-pepe-sakura">$BIGTROUT</span>
         </h1>
 
-        <p className="font-body text-lg sm:text-xl md:text-2xl text-foreground/70 max-w-2xl mx-auto mb-8">
+        <p className="font-display text-lg sm:text-xl md:text-2xl text-foreground/90 max-w-2xl mx-auto mb-8 tracking-wider hero-subtitle-glow">
           The Legendary Warrior Fish has emerged from the depths.
           <span className="text-pepe"> Based</span> and <span className="text-sakura">Beautiful</span>.
         </p>

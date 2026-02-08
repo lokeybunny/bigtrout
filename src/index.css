@@ -339,6 +339,16 @@
   75% { transform: translateX(-8px) rotate(-0.3deg); }
 }
 
+/* Hero title glow — Japan/Pepe neon */
+.hero-title-glow {
+  filter: drop-shadow(0 0 12px hsl(var(--pepe-glow) / 0.6)) drop-shadow(0 0 40px hsl(var(--pepe-core) / 0.35));
+  text-shadow: 0 0 30px hsl(var(--pepe-glow) / 0.5), 0 0 60px hsl(var(--sakura-mid) / 0.2);
+}
+
+.hero-subtitle-glow {
+  text-shadow: 0 0 15px hsl(var(--pepe-glow) / 0.3), 0 2px 8px hsl(0 0% 0% / 0.6);
+}
+
 /* Ink brush stroke decoration */
 @keyframes brushReveal {
   0% { clip-path: inset(0 100% 0 0); }
