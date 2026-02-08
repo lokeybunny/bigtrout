@@ -13,21 +13,21 @@ export const ParticleField = () => {
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
-    const petals: Particle[] = Array.from({ length: 25 }, (_, i) => ({
+    const petals: Particle[] = Array.from({ length: 20 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       delay: Math.random() * 10,
       duration: 6 + Math.random() * 6,
-      size: 6 + Math.random() * 8,
+      size: 5 + Math.random() * 7,
       type: 'petal' as const,
     }));
 
-    const fireflies: Particle[] = Array.from({ length: 15 }, (_, i) => ({
-      id: i + 25,
+    const fireflies: Particle[] = Array.from({ length: 10 }, (_, i) => ({
+      id: i + 20,
       x: Math.random() * 100,
       delay: Math.random() * 6,
       duration: 4 + Math.random() * 4,
-      size: 3 + Math.random() * 4,
+      size: 2 + Math.random() * 3,
       type: 'firefly' as const,
     }));
 
@@ -48,10 +48,10 @@ export const ParticleField = () => {
             height: `${particle.size}px`,
             borderRadius: particle.type === 'petal' ? '50% 0 50% 0' : '50%',
             background: particle.type === 'petal' 
-              ? `radial-gradient(circle, hsl(340 80% 80%) 0%, hsl(340 70% 65% / 0.6) 70%)`
-              : `radial-gradient(circle, hsl(130 70% 60%) 0%, hsl(130 60% 40%) 50%, transparent 70%)`,
+              ? `radial-gradient(circle, hsl(345 65% 82%) 0%, hsl(345 55% 70% / 0.5) 70%)`
+              : `radial-gradient(circle, hsl(130 55% 58%) 0%, hsl(130 50% 42%) 50%, transparent 70%)`,
             boxShadow: particle.type === 'firefly' 
-              ? '0 0 10px hsl(130 70% 50% / 0.8), 0 0 20px hsl(130 60% 45% / 0.5)'
+              ? '0 0 8px hsl(130 55% 50% / 0.6), 0 0 16px hsl(130 50% 45% / 0.3)'
               : 'none',
             animationDelay: `${particle.delay}s`,
             animationDuration: `${particle.duration}s`,

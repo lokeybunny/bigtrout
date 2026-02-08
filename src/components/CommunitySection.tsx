@@ -1,5 +1,6 @@
 import { Twitter } from 'lucide-react';
 import { useState } from 'react';
+import heroBanner from '@/assets/bigtrout-hero-banner.jpg';
 
 // Import logo images
 import mexcLogo from '@/assets/logos/mexc.png';
@@ -72,29 +73,41 @@ const generatePetals = (count: number) => {
 };
 
 export const CommunitySection = () => {
-  const [fireflies] = useState(() => generateFireflies(20));
-  const [petals] = useState(() => generatePetals(15));
+  const [fireflies] = useState(() => generateFireflies(15));
+  const [petals] = useState(() => generatePetals(10));
 
   return (
     <section className="relative py-24 px-4 overflow-hidden">
-      {/* Japanese garden night background */}
+      {/* Background — faded hero art as ambient texture */}
+      <div className="absolute inset-0 z-0" style={{
+        backgroundImage: `url(${heroBanner})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 60%',
+        filter: 'blur(40px) saturate(0.4) brightness(0.2)',
+        transform: 'scale(1.3)',
+      }} />
+      
+      {/* Dark overlay */}
       <div className="absolute inset-0 z-0" style={{
         background: `
-          radial-gradient(ellipse at 20% 30%, hsl(130 40% 12% / 0.5) 0%, transparent 50%),
-          radial-gradient(ellipse at 80% 70%, hsl(340 30% 10% / 0.5) 0%, transparent 50%),
-          linear-gradient(180deg, hsl(150 30% 6%) 0%, hsl(140 30% 5%) 20%, hsl(150 25% 4%) 60%, hsl(150 30% 6%) 100%)
+          radial-gradient(ellipse at 20% 30%, hsl(200 30% 18% / 0.4) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 70%, hsl(345 25% 15% / 0.4) 0%, transparent 50%),
+          linear-gradient(180deg, hsl(210 25% 10% / 0.9) 0%, hsl(210 22% 9% / 0.85) 50%, hsl(210 25% 10% / 0.9) 100%)
         `,
       }} />
 
+      {/* Brush stroke divider at top */}
+      <div className="absolute top-0 left-0 right-0 h-1 z-[1] divider-brush" />
+
       {/* Fireflies */}
       {fireflies.map((fly) => (
-        <div key={`fly-${fly.id}`} className="absolute z-0 rounded-full" style={{
+        <div key={`fly-${fly.id}`} className="absolute z-[2] rounded-full" style={{
           left: `${fly.left}%`,
           top: `${fly.top}%`,
           width: `${fly.size}px`,
           height: `${fly.size}px`,
-          background: `radial-gradient(circle, hsl(130 80% 60%), hsl(130 60% 40% / 0.5), transparent)`,
-          boxShadow: `0 0 ${fly.size * 3}px hsl(130 70% 50% / 0.6)`,
+          background: `radial-gradient(circle, hsl(130 60% 60%), hsl(130 50% 45% / 0.5), transparent)`,
+          boxShadow: `0 0 ${fly.size * 3}px hsl(130 55% 50% / 0.5)`,
           animation: `twinkle ${fly.duration}s ease-in-out infinite`,
           animationDelay: `${fly.delay}s`,
         }} />
@@ -102,13 +115,13 @@ export const CommunitySection = () => {
 
       {/* Sakura petals */}
       {petals.map((petal) => (
-        <div key={`petal-${petal.id}`} className="absolute z-0 animate-petal" style={{
+        <div key={`petal-${petal.id}`} className="absolute z-[2] animate-petal" style={{
           left: `${petal.left}%`,
           top: '-10px',
           width: `${petal.size}px`,
           height: `${petal.size}px`,
           borderRadius: '50% 0 50% 0',
-          background: `radial-gradient(circle, hsl(340 80% 80%), hsl(340 60% 65% / 0.5))`,
+          background: `radial-gradient(circle, hsl(345 65% 82%), hsl(345 55% 70% / 0.5))`,
           animationDelay: `${petal.delay}s`,
           animationDuration: `${petal.duration}s`,
           transform: 'rotate(45deg)',
@@ -127,11 +140,11 @@ export const CommunitySection = () => {
         {/* Social links */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20">
           {socialLinks.map((social, index) => (
-            <a key={index} href={social.url} target="_blank" rel="noopener noreferrer" className="card-volcanic px-8 py-6 flex items-center gap-4 group cursor-pointer">
+            <a key={index} href={social.url} target="_blank" rel="noopener noreferrer" className="card-ukiyo px-8 py-6 flex items-center gap-4 group cursor-pointer">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center glow-fire group-hover:scale-110 transition-all" style={{
-                background: 'linear-gradient(135deg, hsl(130 60% 35%), hsl(130 70% 50%))',
+                background: 'linear-gradient(135deg, hsl(130 45% 38%), hsl(130 55% 52%))',
               }}>
-                <social.icon className="w-6 h-6 text-garden-dark" />
+                <social.icon className="w-6 h-6" style={{ color: 'hsl(210 25% 10%)' }} />
               </div>
               <div className="text-left">
                 <p className="font-display font-bold text-foreground">{social.name}</p>
@@ -144,7 +157,7 @@ export const CommunitySection = () => {
         {/* Exchange Logos Section */}
         <div className="mb-12">
           <h3 className="text-lg md:text-xl font-bold text-foreground mb-10" style={{
-            textShadow: '0 0 20px hsl(130 60% 40% / 0.4), 0 0 40px hsl(340 60% 50% / 0.2)',
+            textShadow: '0 0 15px hsl(130 45% 38% / 0.3), 0 0 30px hsl(345 45% 55% / 0.15)',
           }}>
             Trade $BIGTROUT on These Platforms:
           </h3>
@@ -157,7 +170,7 @@ export const CommunitySection = () => {
                     src={exchange.logo}
                     alt={exchange.alt}
                     className={`h-10 md:h-12 lg:h-14 w-auto max-w-[120px] md:max-w-[150px] object-contain transition-all duration-300 brightness-90 grayscale-[30%] group-hover:brightness-110 group-hover:grayscale-0 ${(exchange as any).hasBorder ? 'border-2 border-white/80 rounded-lg p-1' : ''}`}
-                    style={{ filter: 'drop-shadow(0 0 8px hsl(0 0% 100% / 0.2))' }}
+                    style={{ filter: 'drop-shadow(0 0 6px hsl(0 0% 100% / 0.15))' }}
                   />
                 ) : (
                   <div className="px-4 py-2 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 group-hover:bg-card/80">
@@ -165,7 +178,7 @@ export const CommunitySection = () => {
                   </div>
                 )}
                 <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{
-                  background: 'radial-gradient(circle, hsl(130 60% 40% / 0.25), transparent 70%)',
+                  background: 'radial-gradient(circle, hsl(130 45% 42% / 0.2), transparent 70%)',
                   filter: 'blur(15px)',
                 }} />
               </a>
@@ -179,6 +192,8 @@ export const CommunitySection = () => {
           </p>
         </div>
       </div>
+
+      <div className="absolute bottom-0 left-0 right-0 h-1 z-[1] divider-brush" />
     </section>
   );
 };

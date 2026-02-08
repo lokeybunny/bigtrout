@@ -84,6 +84,12 @@ export default {
           pond: "hsl(var(--garden-pond))",
           wood: "hsl(var(--garden-wood))",
         },
+        // Ukiyo-e colors
+        ukiyo: {
+          sky: "hsl(var(--ukiyo-sky))",
+          parchment: "hsl(var(--ukiyo-parchment))",
+          ink: "hsl(var(--ukiyo-ink))",
+        },
         // Legacy aliases
         lava: {
           deep: "hsl(var(--pepe-dark))",
