@@ -1,6 +1,7 @@
 import { Wallet, ArrowRightLeft, Coins, Trophy } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import sakuraPathBg from '@/assets/sakura-path-bg.jpg';
+import type { QualityLevel } from '@/hooks/usePerformanceMode';
 
 const steps = [
   { icon: Wallet, step: '01', title: 'Get a Wallet', description: 'Download Phantom or Solflare wallet and set it up securely.' },
@@ -9,22 +10,35 @@ const steps = [
   { icon: Trophy, step: '04', title: 'HODL & Win', description: 'Join the legendary army and hold for based gains.' },
 ];
 
-export const HowToBuySection = () => {
+interface HowToBuySectionProps {
+  quality?: QualityLevel;
+}
+
+export const HowToBuySection = ({ quality = 'high' }: HowToBuySectionProps) => {
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const rafRef = useRef<number>(0);
+  const enableParallax = quality !== 'low';
 
   useEffect(() => {
+    if (!enableParallax) return;
     const handleScroll = () => {
-      if (sectionRef.current) {
-        const rect = sectionRef.current.getBoundingClientRect();
-        const parallaxOffset = (window.innerHeight - rect.top) * 0.3;
-        setScrollY(parallaxOffset);
-      }
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => {
+        if (sectionRef.current) {
+          const rect = sectionRef.current.getBoundingClientRect();
+          const parallaxOffset = (window.innerHeight - rect.top) * 0.3;
+          setScrollY(parallaxOffset);
+        }
+      });
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [enableParallax]);
 
   return (
     <section ref={sectionRef} className="relative py-24 px-4 overflow-hidden">
@@ -32,8 +46,8 @@ export const HowToBuySection = () => {
         backgroundImage: `url(${sakuraPathBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center top',
-        transform: `translateY(${scrollY * -0.5}px) scale(1.2)`,
-        willChange: 'transform',
+        transform: enableParallax ? `translateY(${scrollY * -0.5}px) scale(1.2)` : 'scale(1.2)',
+        willChange: enableParallax ? 'transform' : undefined,
         filter: 'saturate(0.7) brightness(0.45)',
       }} />
       

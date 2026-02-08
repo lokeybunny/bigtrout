@@ -9,9 +9,11 @@ import { NewsLoreSection } from '@/components/NewsLoreSection';
 import { Footer } from '@/components/Footer';
 import { ParticleField } from '@/components/ParticleField';
 import { MusicPlayer } from '@/components/MusicPlayer';
+import { usePerformanceMode } from '@/hooks/usePerformanceMode';
 
 const Index = () => {
   const location = useLocation();
+  const quality = usePerformanceMode();
 
   useEffect(() => {
     if (location.hash) {
@@ -23,16 +25,16 @@ const Index = () => {
   }, [location.hash]);
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <ParticleField />
+      {quality !== 'low' && <ParticleField quality={quality} />}
       <Navbar />
       <main>
-        <HeroSection />
+        <HeroSection quality={quality} />
         <div id="tokenomics" className="relative z-10 -mt-8" style={{ background: 'hsl(210 25% 10%)' }}>
           <div className="divider-brush h-1" />
           <TokenomicsSection />
         </div>
         <div id="how-to-buy">
-          <HowToBuySection />
+          <HowToBuySection quality={quality} />
         </div>
         <div id="community">
           <CommunitySection />
