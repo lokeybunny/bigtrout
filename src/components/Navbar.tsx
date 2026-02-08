@@ -18,8 +18,8 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-border/20" style={{
-      background: 'linear-gradient(180deg, hsl(210 25% 10% / 0.85), hsl(210 25% 10% / 0.7))',
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-white/10" style={{
+      background: 'linear-gradient(180deg, hsl(200 30% 85% / 0.35), hsl(210 25% 75% / 0.2))',
     }}>
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
@@ -70,8 +70,8 @@ export const Navbar = () => {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 backdrop-blur-xl border-b border-border/20 py-4" style={{
-          background: 'hsl(210 25% 10% / 0.95)',
+        <div className="md:hidden absolute top-16 left-0 right-0 backdrop-blur-md border-b border-white/10 py-4" style={{
+          background: 'hsl(200 30% 85% / 0.4)',
         }}>
           <div className="flex flex-col items-center gap-4">
             <a href="#tokenomics" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={(e) => { handleAnchorClick(e, '#tokenomics'); setIsMenuOpen(false); }}>Tokenomics</a>
