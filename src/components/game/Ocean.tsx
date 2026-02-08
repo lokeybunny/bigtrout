@@ -1,6 +1,7 @@
 import { useRef, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useAdaptivePerf } from './AdaptivePerformance';
 
 interface OceanProps {
   tokenMultiplier?: number;
@@ -11,6 +12,7 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   const matRef = useRef<THREE.MeshStandardMaterial>(null);
   const { camera } = useThree();
   const frameSkip = useRef(0);
+  const perfRef = useAdaptivePerf();
   
   const geometry = useMemo(() => {
     // Reduced from 100x100 (10K verts) to 40x40 (1.6K verts) — 6x fewer
@@ -24,9 +26,10 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
     meshRef.current.position.x = camera.position.x;
     meshRef.current.position.z = camera.position.z;
     
-    // Only update wave vertices every 2nd frame
+    // Dynamic frame skipping based on performance tier
+    const skip = perfRef.current.oceanFrameSkip;
     frameSkip.current++;
-    if (frameSkip.current % 2 !== 0) return;
+    if (frameSkip.current % skip !== 0) return;
     
     const positions = (meshRef.current.geometry as THREE.PlaneGeometry).attributes.position;
     const time = clock.getElapsedTime();
