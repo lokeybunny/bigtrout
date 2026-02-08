@@ -60,6 +60,8 @@ export const GameScene = () => {
   const [boostMessage, setBoostMessage] = useState<string | null>(null);
   const [hitMessage, setHitMessage] = useState<string | null>(null);
   const [chartExpanded, setChartExpanded] = useState(false);
+  const [passedCheckpoints, setPassedCheckpoints] = useState<Set<number>>(new Set());
+  const [checkpointFlash, setCheckpointFlash] = useState<string | null>(null);
 
   // $BIGTROUT points from Solana buys/sells
   const [troutPoints, setTroutPoints] = useState(0);
@@ -182,6 +184,11 @@ export const GameScene = () => {
       }
       lastCheckpointRef.current = cp;
       playerProgressRef.current = playerLapRef.current * totalCPs + cp;
+      
+      // Mark checkpoint as passed & show flash
+      setPassedCheckpoints(prev => new Set(prev).add(cp));
+      setCheckpointFlash(`✅ Checkpoint ${cp + 1} / ${totalCPs}`);
+      setTimeout(() => setCheckpointFlash(null), 1500);
       
       if (playerLapRef.current >= TOTAL_LAPS && !finishOrderRef.current.includes('player')) {
         finishOrderRef.current.push('player');
@@ -350,6 +357,20 @@ export const GameScene = () => {
         </div>
       )}
 
+      {/* Checkpoint flash */}
+      {checkpointFlash && (
+        <div className="absolute top-40 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+          <div className="text-2xl font-bold px-4 py-2 rounded-lg" style={{
+            fontFamily: 'Bangers, cursive',
+            color: '#44ff88',
+            textShadow: '0 0 20px rgba(68,255,136,0.6), 2px 2px 0 #000',
+            background: 'rgba(0,0,0,0.4)',
+          }}>
+            {checkpointFlash}
+          </div>
+        </div>
+      )}
+
       {countdownDisplay && (
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
           <div className="text-8xl font-bold" style={{
@@ -487,7 +508,7 @@ export const GameScene = () => {
         <Sky />
         <Ocean tokenMultiplier={tokenMultiplier} />
         <TroutIsland />
-        <RaceTrack />
+        <RaceTrack passedCheckpoints={passedCheckpoints} />
         
         <Boat 
           onPositionUpdate={handleBoatPosition}
