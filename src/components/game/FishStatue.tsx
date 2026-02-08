@@ -169,9 +169,8 @@ export const FishStatue = () => {
         <meshStandardMaterial color="#44ff88" emissive="#44ff88" emissiveIntensity={0.4} transparent opacity={0.3} side={THREE.DoubleSide} />
       </mesh>
 
-      {/* Lights */}
-      <pointLight ref={glowRef} position={[0, 16, 0]} color="#44ff88" intensity={3} distance={50} />
-      <pointLight position={[0, 8, 5]} color="#ffd700" intensity={2} distance={25} />
+      {/* Single light instead of two */}
+      <pointLight ref={glowRef} position={[0, 12, 2]} color="#44ff88" intensity={4} distance={40} />
     </group>
   );
 };
