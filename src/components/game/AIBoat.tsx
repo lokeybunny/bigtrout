@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Obstacle } from './Obstacles';
+import { resolveCollisions, CircleCollider } from './Colliders';
 
 // Race track checkpoint positions (oval circuit)
 export const CHECKPOINTS: [number, number][] = [
@@ -24,9 +25,10 @@ interface AIBoatProps {
   speed: number;
   onProgress: (id: number, checkpoint: number, lap: number) => void;
   obstacles: Obstacle[];
+  obstacleColliders: CircleCollider[];
 }
 
-export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles }: AIBoatProps) => {
+export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, obstacleColliders }: AIBoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const progressRef = useRef(startOffset); // 0..CHECKPOINTS.length * TOTAL_LAPS
   const checkpointRef = useRef(0);
@@ -72,27 +74,20 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles }:
     const baseZ = curr[1] + (next[1] - curr[1]) * frac;
 
     // Apply deflection offset from obstacle collisions
-    const x = baseX + deflectRef.current[0];
-    const z = baseZ + deflectRef.current[1];
+    let x = baseX + deflectRef.current[0];
+    let z = baseZ + deflectRef.current[1];
 
-    // Check obstacle collisions (only when not already slowed)
-    if (slowdownRef.current <= 0) {
-      for (let i = 0; i < obstacles.length; i++) {
-        const obs = obstacles[i];
-        const odx = x - obs.position[0];
-        const odz = z - obs.position[2];
-        const distSq = odx * odx + odz * odz;
-        const rSq = obs.radius * obs.radius;
-        if (distSq < rSq) {
-          // Hit! Apply slowdown (same as player: 1.5s)
-          slowdownRef.current = 1.5;
-          // Push AI boat away from obstacle center
-          const dist = Math.sqrt(distSq) || 1;
-          deflectRef.current[0] += (odx / dist) * 4;
-          deflectRef.current[1] += (odz / dist) * 4;
-          break;
-        }
-      }
+    // Resolve solid collisions against world objects + obstacles
+    const resolved = resolveCollisions(x, z, 2, obstacleColliders);
+    x = resolved.x;
+    z = resolved.z;
+
+    // Check obstacle collisions for slowdown (only when not already slowed)
+    if (resolved.hit && slowdownRef.current <= 0) {
+      slowdownRef.current = 1.5;
+      // Push deflection away from resolved position
+      deflectRef.current[0] += (x - baseX) * 0.5;
+      deflectRef.current[1] += (z - baseZ) * 0.5;
     }
 
     // Heading

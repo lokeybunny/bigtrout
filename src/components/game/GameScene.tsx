@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { Ocean } from './Ocean';
 import { FishStatue } from './FishStatue';
@@ -13,6 +13,7 @@ import { SpeedBoost, generateBoosts, BoostPickup } from './SpeedBoost';
 import { Obstacles, generateObstacles, Obstacle } from './Obstacles';
 import { AdaptivePerformanceProvider } from './AdaptivePerformance';
 import { Minimap } from './Minimap';
+import { CircleCollider } from './Colliders';
 import { useSolanaTransactions, GameEvent } from '../../hooks/useSolanaTransactions';
 import { useGameSFX } from '../../hooks/useGameSFX';
 
@@ -62,6 +63,16 @@ export const GameScene = () => {
 
   const [boosts, setBoosts] = useState<BoostPickup[]>(() => generateBoosts());
   const [obstacles] = useState<Obstacle[]>(() => generateObstacles());
+  // Convert obstacles to circle colliders for solid collision resolution
+  const obstacleColliders = useMemo<CircleCollider[]>(() => 
+    obstacles.map(obs => ({
+      x: obs.position[0],
+      z: obs.position[2],
+      radius: obs.radius,
+      label: obs.type,
+    })),
+    [obstacles]
+  );
   const [boostMultiplier, setBoostMultiplier] = useState(1);
   const [boostTimer, setBoostTimer] = useState(0);
   const [boostMessage, setBoostMessage] = useState<string | null>(null);
@@ -609,6 +620,7 @@ export const GameScene = () => {
             raceStarted={state.raceStarted}
             boostMultiplier={boostMultiplier * tokenMultiplier}
             paddleDisabled={paddleDisabled}
+            obstacleColliders={obstacleColliders}
           />
           
           {AI_BOATS.map((boat, i) => (
@@ -620,6 +632,7 @@ export const GameScene = () => {
               startOffset={i * 0.3}
               onProgress={handleAIProgress}
               obstacles={obstacles}
+              obstacleColliders={obstacleColliders}
             />
           ))}
 

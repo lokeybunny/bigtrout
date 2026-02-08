@@ -1,6 +1,7 @@
 import { useRef, useEffect, useCallback, MutableRefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { resolveCollisions, CircleCollider } from './Colliders';
 
 interface BoatProps {
   onPositionUpdate?: (pos: THREE.Vector3, rot: number) => void;
@@ -11,6 +12,7 @@ interface BoatProps {
   boostMultiplier?: number;
   paddleDisabled?: boolean;
   onPaddleChange?: (active: boolean) => void;
+  obstacleColliders?: CircleCollider[];
 }
 
 // Pre-allocated vectors to avoid per-frame GC
@@ -19,7 +21,7 @@ const _targetCamPos = new THREE.Vector3();
 const _lookTarget = new THREE.Vector3();
 const _yAxis = new THREE.Vector3(0, 1, 0);
 
-export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true, boostMultiplier = 1, paddleDisabled = false, onPaddleChange }: BoatProps) => {
+export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true, boostMultiplier = 1, paddleDisabled = false, onPaddleChange, obstacleColliders }: BoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const sailRef = useRef<THREE.Group>(null);
   const jibRef = useRef<THREE.Mesh>(null);
@@ -97,6 +99,15 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     const dz = -Math.cos(headingRef.current) * vel.forward * delta;
     posRef.current.x += dx;
     posRef.current.z += dz;
+
+    // Resolve solid collisions (world objects + obstacles)
+    const resolved = resolveCollisions(posRef.current.x, posRef.current.z, 2.5, obstacleColliders);
+    posRef.current.x = resolved.x;
+    posRef.current.z = resolved.z;
+    if (resolved.hit) {
+      // Kill forward speed on collision to prevent sliding through
+      vel.forward *= 0.3;
+    }
 
     // Clamp to play area — wide enough for the full race track
     posRef.current.x = Math.max(-120, Math.min(120, posRef.current.x));
