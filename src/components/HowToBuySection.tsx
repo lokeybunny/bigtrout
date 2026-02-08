@@ -83,7 +83,7 @@ export const HowToBuySection = () => {
                   <item.icon className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-display text-xl font-bold text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted-foreground text-sm">{item.description}</p>
+                <p className="text-sakura text-sm">{item.description}</p>
               </div>
             </div>
           ))}
