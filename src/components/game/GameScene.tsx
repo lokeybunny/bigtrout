@@ -532,7 +532,7 @@ export const GameScene = () => {
       </div>
 
       {/* Radio Player */}
-      <GameRadio />
+      <GameRadio chartExpanded={chartExpanded} />
 
       {/* $BIGTROUT Points HUD - bottom left, above chart button */}
       <div className="absolute left-2 z-10 pointer-events-none transition-all duration-300" style={{ bottom: chartExpanded ? 416 : 60 }}>
