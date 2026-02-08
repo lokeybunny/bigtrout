@@ -25,14 +25,13 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
     const positions = (meshRef.current.geometry as THREE.PlaneGeometry).attributes.position;
     const time = clock.getElapsedTime();
     
-    // Wave intensity scales with token multiplier — buys = calmer green seas, sells = rough dark seas
+    // Wave intensity varies but keep it subtle to avoid submerging the boat
     const intensity = tokenMultiplier >= 1 
-      ? 0.8 + (tokenMultiplier - 1) * 0.3  // buys: slightly bigger waves
-      : 0.8 + (1 - tokenMultiplier) * 1.5;  // sells: much rougher
+      ? 0.6 + (tokenMultiplier - 1) * 0.15
+      : 0.6 + (1 - tokenMultiplier) * 0.4;
     
-    // Water level rises slightly with buys, drops with sells
-    const waterLevel = -1 + (tokenMultiplier - 1) * 0.3;
-    meshRef.current.position.y = waterLevel;
+    // Keep water level fixed so the boat never sinks below the surface
+    meshRef.current.position.y = -1.2;
     
     for (let i = 0; i < positions.count; i++) {
       const x = positions.getX(i) + camera.position.x;
