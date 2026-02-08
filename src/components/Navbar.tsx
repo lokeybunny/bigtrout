@@ -23,11 +23,11 @@ export const Navbar = () => {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center glow-fire" style={{
-            background: 'linear-gradient(135deg, hsl(20 100% 50%), hsl(35 100% 55%))'
+            background: 'linear-gradient(135deg, hsl(130 60% 35%), hsl(130 70% 50%))'
           }}>
-            <Fish className="w-6 h-6 text-storm-dark" />
+            <Fish className="w-6 h-6 text-garden-dark" />
           </div>
-          <Link to="/" className="font-display text-xl font-bold text-fire-ice">$BIGTROUT</Link>
+          <Link to="/" className="font-display text-xl font-bold text-pepe-sakura">$BIGTROUT</Link>
         </div>
 
         {/* Desktop Navigation links */}
@@ -76,58 +76,16 @@ export const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border/30 py-4">
           <div className="flex flex-col items-center gap-4">
-            <a 
-              href="#tokenomics" 
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-              onClick={(e) => { handleAnchorClick(e, '#tokenomics'); setIsMenuOpen(false); }}
-            >
-              Tokenomics
-            </a>
-            <a 
-              href="#how-to-buy" 
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-              onClick={(e) => { handleAnchorClick(e, '#how-to-buy'); setIsMenuOpen(false); }}
-            >
-              How to Buy
-            </a>
-            <a 
-              href="#community" 
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-              onClick={(e) => { handleAnchorClick(e, '#community'); setIsMenuOpen(false); }}
-            >
-              Community
-            </a>
-            <Link 
-              to="/news" 
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              News
-            </Link>
-            <Link 
-              to="/lore" 
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Lore
-            </Link>
-            <Link 
-              to="/live" 
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium relative"
-              onClick={() => setIsMenuOpen(false)}
-            >
+            <a href="#tokenomics" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={(e) => { handleAnchorClick(e, '#tokenomics'); setIsMenuOpen(false); }}>Tokenomics</a>
+            <a href="#how-to-buy" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={(e) => { handleAnchorClick(e, '#how-to-buy'); setIsMenuOpen(false); }}>How to Buy</a>
+            <a href="#community" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={(e) => { handleAnchorClick(e, '#community'); setIsMenuOpen(false); }}>Community</a>
+            <Link to="/news" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={() => setIsMenuOpen(false)}>News</Link>
+            <Link to="/lore" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={() => setIsMenuOpen(false)}>Lore</Link>
+            <Link to="/live" className="text-muted-foreground hover:text-foreground transition-colors font-medium relative" onClick={() => setIsMenuOpen(false)}>
               Live
               <span className="absolute -top-1 -right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             </Link>
-            <a 
-              href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-fire text-sm py-2 px-4"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Buy Now
-            </a>
+            <a href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG" target="_blank" rel="noopener noreferrer" className="btn-fire text-sm py-2 px-4" onClick={() => setIsMenuOpen(false)}>Buy Now</a>
           </div>
         </div>
       )}

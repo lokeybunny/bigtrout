@@ -5,36 +5,36 @@ import heroImage from '@/assets/bigtrout-hero.png';
 export const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
-      {/* Full background image with blur */}
+      {/* Background with Japanese garden feel */}
       <div 
         className="absolute inset-0 z-0"
         style={{
           backgroundImage: `url(${heroImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          filter: 'blur(20px) brightness(0.4)',
+          filter: 'blur(20px) brightness(0.3) saturate(0.5)',
           transform: 'scale(1.1)',
         }}
       />
       
-      {/* Dark overlay for readability */}
+      {/* Dark green overlay */}
       <div 
         className="absolute inset-0 z-0"
         style={{
-          background: 'linear-gradient(180deg, hsl(220 30% 6% / 0.7) 0%, hsl(220 30% 6% / 0.5) 50%, hsl(220 30% 6% / 0.8) 100%)',
+          background: 'linear-gradient(180deg, hsl(150 30% 6% / 0.8) 0%, hsl(130 40% 8% / 0.5) 50%, hsl(150 30% 6% / 0.8) 100%)',
         }}
       />
       
-      {/* Lava glow effects */}
+      {/* Green & pink ambient glow */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div 
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-40 animate-pulse"
-          style={{ background: 'radial-gradient(circle, hsl(20 100% 50%), transparent)' }}
+          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse"
+          style={{ background: 'radial-gradient(circle, hsl(130 60% 40%), transparent)' }}
         />
         <div 
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse"
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl opacity-25 animate-pulse"
           style={{ 
-            background: 'radial-gradient(circle, hsl(195 90% 45%), transparent)',
+            background: 'radial-gradient(circle, hsl(340 70% 60%), transparent)',
             animationDelay: '1s',
           }}
         />
@@ -50,12 +50,12 @@ export const HeroSection = () => {
 
         {/* Title */}
         <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-black mb-4 tracking-tight">
-          <span className="text-fire-ice">$BIGTROUT</span>
+          <span className="text-pepe-sakura">$BIGTROUT</span>
         </h1>
         
         <p className="font-body text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-8">
-          The Legendary Warrior Fish has emerged from the volcanic depths. 
-          <span className="text-fire"> Fire</span> and <span className="text-ice">Ice</span> collide.
+          The Legendary Warrior Fish has emerged from the depths. 
+          <span className="text-pepe"> Based</span> and <span className="text-sakura">Beautiful</span>.
         </p>
 
         {/* CTA Buttons */}
@@ -81,7 +81,7 @@ export const HeroSection = () => {
         </div>
       </div>
 
-      {/* 3D Hologram Model with mouse parallax */}
+      {/* 3D Hologram Model with mouse parallax — KEPT AS-IS */}
       <div className="relative z-20">
         <Parallax3D intensity={15}>
           <HologramModel />

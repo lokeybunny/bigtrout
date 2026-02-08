@@ -19,7 +19,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Orbitron", "monospace"],
+        display: ["Bangers", "Orbitron", "monospace"],
         body: ["Rajdhani", "sans-serif"],
       },
       colors: {
@@ -66,26 +66,45 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        pepe: {
+          dark: "hsl(var(--pepe-dark))",
+          core: "hsl(var(--pepe-core))",
+          glow: "hsl(var(--pepe-glow))",
+          light: "hsl(var(--pepe-light))",
+        },
+        sakura: {
+          deep: "hsl(var(--sakura-deep))",
+          mid: "hsl(var(--sakura-mid))",
+          glow: "hsl(var(--sakura-glow))",
+          light: "hsl(var(--sakura-light))",
+        },
+        garden: {
+          dark: "hsl(var(--garden-dark))",
+          mid: "hsl(var(--garden-mid))",
+          pond: "hsl(var(--garden-pond))",
+          wood: "hsl(var(--garden-wood))",
+        },
+        // Legacy aliases
         lava: {
-          deep: "hsl(var(--lava-deep))",
-          core: "hsl(var(--lava-core))",
-          glow: "hsl(var(--lava-glow))",
+          deep: "hsl(var(--pepe-dark))",
+          core: "hsl(var(--pepe-core))",
+          glow: "hsl(var(--pepe-glow))",
         },
-        ember: "hsl(var(--ember))",
-        fire: "hsl(var(--fire-orange))",
+        ember: "hsl(var(--pepe-glow))",
+        fire: "hsl(var(--pepe-core))",
         ice: {
-          deep: "hsl(var(--ice-deep))",
-          mid: "hsl(var(--ice-mid))",
-          glow: "hsl(var(--ice-glow))",
+          deep: "hsl(var(--sakura-deep))",
+          mid: "hsl(var(--sakura-mid))",
+          glow: "hsl(var(--sakura-glow))",
         },
-        snow: "hsl(var(--snow))",
-        frost: "hsl(var(--frost))",
+        snow: "hsl(var(--sakura-light))",
+        frost: "hsl(var(--sakura-glow))",
         storm: {
-          dark: "hsl(var(--storm-dark))",
-          mid: "hsl(var(--storm-mid))",
-          cloud: "hsl(var(--storm-cloud))",
+          dark: "hsl(var(--garden-dark))",
+          mid: "hsl(var(--garden-mid))",
+          cloud: "hsl(var(--garden-pond))",
         },
-        ash: "hsl(var(--ash))",
+        ash: "hsl(var(--muted-foreground))",
       },
       borderRadius: {
         lg: "var(--radius)",
