@@ -105,8 +105,8 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     posRef.current.x = resolved.x;
     posRef.current.z = resolved.z;
     if (resolved.hit) {
-      // Kill forward speed on collision to prevent sliding through
-      vel.forward *= 0.3;
+      // Full stop + slight bounce to prevent pushing through
+      vel.forward = Math.min(vel.forward, 0) - 0.5;
     }
 
     // Clamp to play area — wide enough for the full race track
