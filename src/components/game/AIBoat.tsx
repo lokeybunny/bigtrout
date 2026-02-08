@@ -77,17 +77,19 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
     let x = baseX + deflectRef.current[0];
     let z = baseZ + deflectRef.current[1];
 
-    // Resolve solid collisions against world objects + obstacles
+    // Resolve solid collisions against world objects + obstacles — always active
     const resolved = resolveCollisions(x, z, 2, obstacleColliders);
     x = resolved.x;
     z = resolved.z;
 
-    // Check obstacle collisions for slowdown (only when not already slowed)
-    if (resolved.hit && slowdownRef.current <= 0) {
-      slowdownRef.current = 1.5;
-      // Push deflection away from resolved position
-      deflectRef.current[0] += (x - baseX) * 0.5;
-      deflectRef.current[1] += (z - baseZ) * 0.5;
+    if (resolved.hit) {
+      // Strong deflection to steer AI away from the obstacle
+      deflectRef.current[0] += (x - baseX) * 0.8;
+      deflectRef.current[1] += (z - baseZ) * 0.8;
+      // Apply slowdown if not already slowed
+      if (slowdownRef.current <= 0) {
+        slowdownRef.current = 1.5;
+      }
     }
 
     // Heading
