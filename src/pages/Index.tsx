@@ -27,7 +27,7 @@ const Index = () => {
       <Navbar />
       <main>
         <HeroSection />
-        <div id="tokenomics">
+        <div id="tokenomics" className="relative z-10" style={{ background: 'hsl(210 25% 10%)' }}>
           <TokenomicsSection />
         </div>
         <div id="how-to-buy">
