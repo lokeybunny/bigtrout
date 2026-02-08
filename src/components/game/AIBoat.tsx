@@ -70,8 +70,44 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
     const curr = CHECKPOINTS[idx % totalCheckpoints];
     const next = CHECKPOINTS[(idx + 1) % totalCheckpoints];
 
-    const baseX = curr[0] + (next[0] - curr[0]) * frac + Math.sin(t * 1.5 + id) * 2;
+    let baseX = curr[0] + (next[0] - curr[0]) * frac + Math.sin(t * 1.5 + id) * 2;
     const baseZ = curr[1] + (next[1] - curr[1]) * frac;
+
+    // --- Lookahead obstacle avoidance ---
+    // Check if any obstacle is ahead and steer laterally to avoid it
+    const lookDist = 12; // how far ahead to scan
+    const trackDx = next[0] - curr[0];
+    const trackDz = next[1] - curr[1];
+    const trackLen = Math.sqrt(trackDx * trackDx + trackDz * trackDz) || 1;
+    const fwdX = trackDx / trackLen;
+    const fwdZ = trackDz / trackLen;
+    // Perpendicular (left)
+    const perpX = -fwdZ;
+    const perpZ = fwdX;
+
+    let avoidOffset = 0;
+    for (let i = 0; i < obstacleColliders.length; i++) {
+      const col = obstacleColliders[i];
+      // Vector from boat to obstacle
+      const toObsX = col.x - baseX;
+      const toObsZ = col.z - baseZ;
+      // Project onto forward direction
+      const forwardDot = toObsX * fwdX + toObsZ * fwdZ;
+      // Only avoid obstacles ahead of us within lookahead range
+      if (forwardDot > 0 && forwardDot < lookDist) {
+        // Lateral distance from our path to obstacle center
+        const lateralDot = toObsX * perpX + toObsZ * perpZ;
+        const avoidRadius = col.radius + 4; // boat width + margin
+        if (Math.abs(lateralDot) < avoidRadius) {
+          // Steer away: if obstacle is to our left (negative lateral), steer right, and vice versa
+          const urgency = 1 - (forwardDot / lookDist); // closer = more urgent
+          const steerDir = lateralDot >= 0 ? -1 : 1;
+          avoidOffset += steerDir * avoidRadius * urgency * 0.8;
+        }
+      }
+    }
+
+    baseX += avoidOffset;
 
     // Apply deflection offset from obstacle collisions
     let x = baseX + deflectRef.current[0];
