@@ -20,12 +20,12 @@ export const HeroSection = () => {
     <section ref={sectionRef} className="relative min-h-[100svh] flex flex-col items-center justify-end overflow-x-hidden overflow-y-visible">
       {/* Full-width parallax banner */}
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 animate-ken-burns"
         style={{
           backgroundImage: `url(${heroBanner})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 40%',
-          transform: `translateY(${scrollY}px) scale(1.1)`,
+          transform: `translateY(${scrollY}px)`,
           willChange: 'transform',
         }}
       />
