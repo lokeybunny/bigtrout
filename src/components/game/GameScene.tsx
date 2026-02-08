@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { useState, useCallback, useRef } from 'react';
+import * as THREE from 'three';
 import { Ocean } from './Ocean';
 import { Boat } from './Boat';
 import { FishEntity } from './FishEntity';
@@ -18,6 +19,7 @@ interface GameState {
 
 export const GameScene = () => {
   const [entities, setEntities] = useState<Array<GameEvent & { pos: [number, number, number] }>>([]);
+  const boatPosRef = useRef(new THREE.Vector3(0, 0, 2));
   const [state, setState] = useState<GameState>({
     score: 0,
     caughtTrout: 0,
@@ -27,10 +29,19 @@ export const GameScene = () => {
     inventory: 0,
   });
   const [messages, setMessages] = useState<Array<{ text: string; color: string; id: string }>>([]);
+
+  const handleBoatPosition = useCallback((pos: THREE.Vector3) => {
+    boatPosRef.current.copy(pos);
+  }, []);
+
   const { connected } = useSolanaTransactions(
     useCallback((event: GameEvent) => {
-      const spawnX = (Math.random() - 0.5) * 12;
-      const spawnZ = -3 - Math.random() * 10;
+      // Spawn fish near the boat
+      const bp = boatPosRef.current;
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 4 + Math.random() * 8;
+      const spawnX = bp.x + Math.cos(angle) * dist;
+      const spawnZ = bp.z + Math.sin(angle) * dist;
       setEntities(prev => [...prev, { ...event, pos: [spawnX, 0, spawnZ] }]);
     }, [])
   );
@@ -140,7 +151,10 @@ export const GameScene = () => {
       {/* Instructions */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-center pointer-events-none">
         <p className="text-white/40 text-sm" style={{ fontFamily: 'Rajdhani', textShadow: '1px 1px 2px #000' }}>
-          Click fish to catch them with your net! • Buys spawn fish • Sells spawn octopuses
+          WASD / Arrow keys to sail • Click fish to catch them • Buys spawn fish • Sells spawn octopuses
+        </p>
+        <p className="text-white/30 text-xs mt-1" style={{ fontFamily: 'Rajdhani', textShadow: '1px 1px 2px #000' }}>
+          W = Forward • S = Reverse • A/D = Turn
         </p>
       </div>
 
@@ -153,7 +167,7 @@ export const GameScene = () => {
         
         <Sky />
         <Ocean />
-        <Boat />
+        <Boat onPositionUpdate={handleBoatPosition} />
         <NetCursor />
         
         {entities.map(entity => (
