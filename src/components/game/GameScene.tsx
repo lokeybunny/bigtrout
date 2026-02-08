@@ -619,6 +619,7 @@ export const GameScene = () => {
               speed={state.raceStarted ? boat.speed : 0}
               startOffset={i * 0.3}
               onProgress={handleAIProgress}
+              obstacles={obstacles}
             />
           ))}
 

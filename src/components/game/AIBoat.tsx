@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { Obstacle } from './Obstacles';
 
 // Race track checkpoint positions (oval circuit)
 export const CHECKPOINTS: [number, number][] = [
@@ -22,21 +23,36 @@ interface AIBoatProps {
   startOffset: number;
   speed: number;
   onProgress: (id: number, checkpoint: number, lap: number) => void;
+  obstacles: Obstacle[];
 }
 
-export const AIBoat = ({ id, color, startOffset, speed, onProgress }: AIBoatProps) => {
+export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles }: AIBoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const progressRef = useRef(startOffset); // 0..CHECKPOINTS.length * TOTAL_LAPS
   const checkpointRef = useRef(0);
   const lapRef = useRef(0);
+  const slowdownRef = useRef(0); // remaining slowdown time in seconds
+  const deflectRef = useRef<[number, number]>([0, 0]); // lateral push from obstacle
 
   useFrame(({ clock }, delta) => {
     if (!groupRef.current) return;
     const t = clock.getElapsedTime();
 
+    // Decay slowdown timer
+    if (slowdownRef.current > 0) {
+      slowdownRef.current = Math.max(0, slowdownRef.current - delta);
+    }
+
+    // Decay deflection
+    deflectRef.current[0] *= 0.96;
+    deflectRef.current[1] *= 0.96;
+
+    // Apply slowdown from obstacle hits (same penalty as player: 0.3x speed for ~1.5s)
+    const speedMult = slowdownRef.current > 0 ? 0.3 : 1;
+
     // Advance along track
     const wobble = Math.sin(t * 2 + id * 1.5) * 0.15;
-    progressRef.current += delta * (speed + wobble) * 0.12;
+    progressRef.current += delta * (speed + wobble) * 0.12 * speedMult;
 
     const totalCheckpoints = CHECKPOINTS.length;
     const totalProgress = totalCheckpoints * TOTAL_LAPS;
@@ -52,8 +68,32 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress }: AIBoatProp
     const curr = CHECKPOINTS[idx % totalCheckpoints];
     const next = CHECKPOINTS[(idx + 1) % totalCheckpoints];
 
-    const x = curr[0] + (next[0] - curr[0]) * frac + Math.sin(t * 1.5 + id) * 2;
-    const z = curr[1] + (next[1] - curr[1]) * frac;
+    const baseX = curr[0] + (next[0] - curr[0]) * frac + Math.sin(t * 1.5 + id) * 2;
+    const baseZ = curr[1] + (next[1] - curr[1]) * frac;
+
+    // Apply deflection offset from obstacle collisions
+    const x = baseX + deflectRef.current[0];
+    const z = baseZ + deflectRef.current[1];
+
+    // Check obstacle collisions (only when not already slowed)
+    if (slowdownRef.current <= 0) {
+      for (let i = 0; i < obstacles.length; i++) {
+        const obs = obstacles[i];
+        const odx = x - obs.position[0];
+        const odz = z - obs.position[2];
+        const distSq = odx * odx + odz * odz;
+        const rSq = obs.radius * obs.radius;
+        if (distSq < rSq) {
+          // Hit! Apply slowdown (same as player: 1.5s)
+          slowdownRef.current = 1.5;
+          // Push AI boat away from obstacle center
+          const dist = Math.sqrt(distSq) || 1;
+          deflectRef.current[0] += (odx / dist) * 4;
+          deflectRef.current[1] += (odz / dist) * 4;
+          break;
+        }
+      }
+    }
 
     // Heading
     const dx = next[0] - curr[0];
