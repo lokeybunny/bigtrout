@@ -114,7 +114,64 @@ export const GameScene = () => {
   );
   const finishOrderRef = useRef<(number | 'player')[]>([]);
 
-  // Countdown
+  // Reset race
+  const resetRace = useCallback(() => {
+    // Reset refs
+    playerProgressRef.current = 0;
+    lastCheckpointRef.current = 0;
+    playerLapRef.current = 0;
+    aiProgressRef.current = Object.fromEntries(AI_BOATS.map(b => [b.id, 0]));
+    finishOrderRef.current = [];
+    boatPosRef.current.set(0, 0, -15);
+    boostEndTimeRef.current = 0;
+
+    // Reset state
+    setBoosts(generateBoosts());
+    setBoostMultiplier(1);
+    setBoostTimer(0);
+    setBoostMessage(null);
+    setHitMessage(null);
+    setPassedCheckpoints(new Set());
+    setCheckpointFlash(null);
+    setPaddleDisabled(false);
+    setTroutPoints(0);
+    setTokenMultiplier(1);
+    setTokenMessage(null);
+
+    // Restart countdown
+    setCountdownDisplay('3');
+    setState({
+      playerCheckpoint: 0,
+      playerLap: 0,
+      positions: [
+        { id: 'player', progress: 0 },
+        ...AI_BOATS.map(b => ({ id: b.id, progress: 0 })),
+      ],
+      finished: false,
+      finishPlace: null,
+      countdown: 3,
+      raceStarted: false,
+    });
+
+    setTimeout(() => setCountdownDisplay('2'), 1000);
+    setTimeout(() => setCountdownDisplay('1'), 2000);
+    setTimeout(() => {
+      setCountdownDisplay('GO!');
+      setState(prev => ({ ...prev, raceStarted: true, countdown: null }));
+    }, 3000);
+    setTimeout(() => setCountdownDisplay(null), 3800);
+  }, []);
+
+  // R key to reset
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'r' || e.key === 'R') resetRace();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [resetRace]);
+
+  // Countdown (initial only)
   const [countdownDisplay, setCountdownDisplay] = useState<string | null>('3');
   const countdownStarted = useRef(false);
 
@@ -270,7 +327,7 @@ export const GameScene = () => {
               Checkpoint: {lastCheckpointRef.current + 1} / {CHECKPOINTS.length}
             </div>
             <div className="text-sm mt-1" style={{ fontFamily: 'Rajdhani', color: '#aaa' }}>
-              ⌨️ WASD to steer • ⇧ Shift to paddle • Collect ⚡ • Avoid 🪨!
+              ⌨️ WASD to steer • ⇧ Shift to paddle • Collect ⚡ • Avoid 🪨 • R to restart
             </div>
             {/* Boost indicator */}
             {boostMultiplier > 1 && (
