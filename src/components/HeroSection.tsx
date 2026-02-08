@@ -125,11 +125,6 @@ export const HeroSection = () => {
 
       {/* Main content */}
       <div className={`${isMobile ? 'relative' : 'relative z-10'} text-center ${isMobile ? 'py-8' : 'pb-20 md:pb-28'} px-4 w-full max-w-4xl mx-auto overflow-visible`} style={isMobile ? { background: 'hsl(210 25% 10%)' } : undefined}>
-        {/* Ticker badge */}
-        <div className="inline-flex items-center gap-2 px-5 py-2 mb-6 rounded-full border border-primary/40 bg-card/50 backdrop-blur-lg">
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          <span className="font-display text-xs sm:text-sm tracking-[0.2em] text-primary">LIVE ON SOLANA</span>
-        </div>
 
         {/* Title */}
         <h1 className="font-display text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black mb-3 tracking-tight animate-hero-pulse hero-title-stroke">
