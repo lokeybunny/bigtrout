@@ -322,15 +322,16 @@
   background: linear-gradient(180deg, hsl(var(--pepe-glow)), hsl(var(--sakura-mid)));
 }
 
-/* Ken Burns slow zoom */
-@keyframes kenBurns {
-  0% { transform: scale(1.05); }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1.05); }
+/* Light ray drift */
+@keyframes lightRayDrift {
+  0%, 100% { opacity: 0.5; transform: skewX(-15deg) translateX(0); }
+  50% { opacity: 1; transform: skewX(-12deg) translateX(30px); }
 }
 
-.animate-ken-burns {
-  animation: kenBurns 25s ease-in-out infinite;
+/* Mist drift */
+@keyframes mistDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-60%); }
 }
 
 /* Hero water & fish animations */
