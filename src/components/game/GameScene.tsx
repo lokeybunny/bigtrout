@@ -62,6 +62,7 @@ export const GameScene = () => {
   const [chartExpanded, setChartExpanded] = useState(false);
   const [passedCheckpoints, setPassedCheckpoints] = useState<Set<number>>(new Set());
   const [checkpointFlash, setCheckpointFlash] = useState<string | null>(null);
+  const [paddleDisabled, setPaddleDisabled] = useState(false);
 
   // $BIGTROUT points from Solana buys/sells
   const [troutPoints, setTroutPoints] = useState(0);
@@ -168,7 +169,8 @@ export const GameScene = () => {
     boostEndTimeRef.current = performance.now() + 1500;
     setHitMessage(type === 'rock' ? '🪨 ROCK HIT! Slowed!' : '🌊 ROUGH WAVES! Slowed!');
     playSFX(type);
-    setTimeout(() => setHitMessage(null), 1500);
+    setPaddleDisabled(true);
+    setTimeout(() => { setHitMessage(null); setPaddleDisabled(false); }, 1500);
   }, [playSFX]);
 
   const handleBoatPosition = useCallback((pos: THREE.Vector3) => {
@@ -266,7 +268,7 @@ export const GameScene = () => {
               Checkpoint: {lastCheckpointRef.current + 1} / {CHECKPOINTS.length}
             </div>
             <div className="text-sm mt-1" style={{ fontFamily: 'Rajdhani', color: '#aaa' }}>
-              ⌨️ WASD to steer • Collect ⚡ • Avoid 🪨!
+              ⌨️ WASD to steer • ⇧ Shift to paddle • Collect ⚡ • Avoid 🪨!
             </div>
             {/* Boost indicator */}
             {boostMultiplier > 1 && (
@@ -517,6 +519,7 @@ export const GameScene = () => {
           headingRef={wakeHeadingRef}
           raceStarted={state.raceStarted}
           boostMultiplier={boostMultiplier * tokenMultiplier}
+          paddleDisabled={paddleDisabled}
         />
         
         {AI_BOATS.map((boat, i) => (
