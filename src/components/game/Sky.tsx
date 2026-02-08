@@ -33,10 +33,17 @@ export const Sky = () => {
 
       {/* Moon */}
       <mesh position={[30, 40, -60]}>
-        <sphereGeometry args={[4, 16, 16]} />
-        <meshBasicMaterial color="#eeeedd" />
+        <sphereGeometry args={[5, 16, 16]} />
+        <meshBasicMaterial color="#ffffee" />
       </mesh>
-      <pointLight position={[30, 40, -60]} color="#aabbcc" intensity={0.5} />
+      {/* Moon glow halo */}
+      <mesh position={[30, 40, -61]}>
+        <sphereGeometry args={[8, 16, 16]} />
+        <meshBasicMaterial color="#aabbdd" transparent opacity={0.15} />
+      </mesh>
+      {/* Bright moonlight */}
+      <directionalLight position={[30, 40, -60]} intensity={1.8} color="#ccddef" castShadow />
+      <pointLight position={[30, 40, -60]} color="#aaccee" intensity={3} distance={200} />
 
       {/* Clouds */}
       <group ref={cloudsRef}>
