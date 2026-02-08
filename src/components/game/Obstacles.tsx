@@ -27,7 +27,7 @@ export const generateObstacles = (): Obstacle[] => {
       id: `obs-${id++}`,
       position: [rx, 0, rz],
       type: 'rock',
-      radius: 3,
+      radius: 1.8,
     });
 
     const waveT = 0.5 + Math.random() * 0.3;
@@ -37,7 +37,7 @@ export const generateObstacles = (): Obstacle[] => {
       id: `obs-${id++}`,
       position: [wx, 0, wz],
       type: 'wave',
-      radius: 4,
+      radius: 2.2,
     });
   }
 

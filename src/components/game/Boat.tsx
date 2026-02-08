@@ -101,7 +101,7 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     posRef.current.z += dz;
 
     // Resolve solid collisions (world objects + obstacles)
-    const resolved = resolveCollisions(posRef.current.x, posRef.current.z, 2.5, obstacleColliders);
+    const resolved = resolveCollisions(posRef.current.x, posRef.current.z, 1.2, obstacleColliders);
     posRef.current.x = resolved.x;
     posRef.current.z = resolved.z;
     if (resolved.hit) {
