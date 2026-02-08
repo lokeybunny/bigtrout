@@ -255,7 +255,7 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
           <meshStandardMaterial color="#f0f0f0" />
         </mesh>
         {/* ===== BIG FISH HEAD ===== */}
-        <group position={[0, 1.45, 0]}>
+        <group position={[0, 1.45, 0]} rotation={[0, Math.PI, 0]}>
           {/* Main fish head — large oval */}
           <mesh>
             <sphereGeometry args={[0.3, 10, 8]} />
