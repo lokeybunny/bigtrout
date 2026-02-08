@@ -2,7 +2,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ParticleField } from '@/components/ParticleField';
 import { timelineEntries } from '@/data/newsTimeline';
-import { ArrowLeft, ExternalLink, Calendar, Clock } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Calendar, Clock, Fish } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import sakuraPathBg from '@/assets/sakura-path-bg.jpg';
@@ -120,9 +120,9 @@ const News = () => {
                   isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
                 } flex-row`}
               >
-                {/* Dot on the line */}
+                {/* Fish icon on the line */}
                 <div
-                  className="absolute left-6 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full z-10 mt-8"
+                  className="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full z-10 mt-6 flex items-center justify-center"
                   style={{
                     background:
                       index % 2 === 0
@@ -133,7 +133,9 @@ const News = () => {
                         ? '0 0 15px hsl(130 45% 38% / 0.8)'
                         : '0 0 15px hsl(345 55% 70% / 0.8)',
                   }}
-                />
+                >
+                  <Fish className="w-4 h-4" style={{ color: 'hsl(210 25% 10%)' }} />
+                </div>
 
                 {/* Card */}
                 <div
