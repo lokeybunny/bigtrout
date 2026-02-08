@@ -223,33 +223,28 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
 
       {/* ===== FISHERMAN ===== */}
       <group position={[0, 0.22, 0.8]}>
-        {/* Legs */}
+        {/* Legs — black pants */}
         <mesh position={[-0.12, 0.45, 0]}>
           <boxGeometry args={[0.18, 0.7, 0.18]} />
-          <meshStandardMaterial color="#2a3a5a" />
+          <meshStandardMaterial color="#1a1a1a" />
         </mesh>
         <mesh position={[0.12, 0.45, 0]}>
           <boxGeometry args={[0.18, 0.7, 0.18]} />
-          <meshStandardMaterial color="#2a3a5a" />
+          <meshStandardMaterial color="#1a1a1a" />
         </mesh>
         {/* Boots */}
         <mesh position={[-0.12, 0.08, 0.05]}>
           <boxGeometry args={[0.2, 0.16, 0.28]} />
-          <meshStandardMaterial color="#3a2a10" />
+          <meshStandardMaterial color="#2a2a2a" />
         </mesh>
         <mesh position={[0.12, 0.08, 0.05]}>
           <boxGeometry args={[0.2, 0.16, 0.28]} />
-          <meshStandardMaterial color="#3a2a10" />
+          <meshStandardMaterial color="#2a2a2a" />
         </mesh>
-        {/* Torso */}
+        {/* Torso — white t-shirt */}
         <mesh position={[0, 1.0, 0]}>
           <boxGeometry args={[0.45, 0.6, 0.25]} />
-          <meshStandardMaterial color="#cc8822" />
-        </mesh>
-        {/* Vest */}
-        <mesh position={[0, 1.05, 0.05]}>
-          <boxGeometry args={[0.48, 0.5, 0.15]} />
-          <meshStandardMaterial color="#5a7a3a" />
+          <meshStandardMaterial color="#f0f0f0" />
         </mesh>
         {/* Head */}
         <mesh position={[0, 1.5, 0]}>
