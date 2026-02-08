@@ -6,32 +6,32 @@ interface Particle {
   delay: number;
   duration: number;
   size: number;
-  type: 'snow' | 'ember';
+  type: 'petal' | 'firefly';
 }
 
 export const ParticleField = () => {
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
-    const snowParticles: Particle[] = Array.from({ length: 30 }, (_, i) => ({
+    const petals: Particle[] = Array.from({ length: 25 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
-      delay: Math.random() * 8,
-      duration: 6 + Math.random() * 4,
-      size: 2 + Math.random() * 4,
-      type: 'snow' as const,
+      delay: Math.random() * 10,
+      duration: 6 + Math.random() * 6,
+      size: 6 + Math.random() * 8,
+      type: 'petal' as const,
     }));
 
-    const emberParticles: Particle[] = Array.from({ length: 20 }, (_, i) => ({
-      id: i + 30,
+    const fireflies: Particle[] = Array.from({ length: 15 }, (_, i) => ({
+      id: i + 25,
       x: Math.random() * 100,
-      delay: Math.random() * 4,
-      duration: 3 + Math.random() * 3,
-      size: 3 + Math.random() * 5,
-      type: 'ember' as const,
+      delay: Math.random() * 6,
+      duration: 4 + Math.random() * 4,
+      size: 3 + Math.random() * 4,
+      type: 'firefly' as const,
     }));
 
-    setParticles([...snowParticles, ...emberParticles]);
+    setParticles([...petals, ...fireflies]);
   }, []);
 
   return (
@@ -39,22 +39,23 @@ export const ParticleField = () => {
       {particles.map((particle) => (
         <div
           key={particle.id}
-          className={particle.type === 'snow' ? 'animate-snow' : 'animate-ember'}
+          className={particle.type === 'petal' ? 'animate-petal' : 'animate-firefly'}
           style={{
             position: 'absolute',
             left: `${particle.x}%`,
-            top: particle.type === 'snow' ? '-10px' : '100%',
+            top: particle.type === 'petal' ? '-10px' : '100%',
             width: `${particle.size}px`,
             height: `${particle.size}px`,
-            borderRadius: '50%',
-            background: particle.type === 'snow' 
-              ? 'radial-gradient(circle, hsl(200 30% 95%) 0%, transparent 70%)'
-              : 'radial-gradient(circle, hsl(30 100% 60%) 0%, hsl(20 100% 50%) 50%, transparent 70%)',
-            boxShadow: particle.type === 'ember' 
-              ? '0 0 10px hsl(25 100% 50% / 0.8), 0 0 20px hsl(35 100% 55% / 0.5)'
-              : '0 0 5px hsl(200 30% 95% / 0.5)',
+            borderRadius: particle.type === 'petal' ? '50% 0 50% 0' : '50%',
+            background: particle.type === 'petal' 
+              ? `radial-gradient(circle, hsl(340 80% 80%) 0%, hsl(340 70% 65% / 0.6) 70%)`
+              : `radial-gradient(circle, hsl(130 70% 60%) 0%, hsl(130 60% 40%) 50%, transparent 70%)`,
+            boxShadow: particle.type === 'firefly' 
+              ? '0 0 10px hsl(130 70% 50% / 0.8), 0 0 20px hsl(130 60% 45% / 0.5)'
+              : 'none',
             animationDelay: `${particle.delay}s`,
             animationDuration: `${particle.duration}s`,
+            transform: particle.type === 'petal' ? 'rotate(45deg)' : undefined,
           }}
         />
       ))}

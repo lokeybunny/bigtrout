@@ -21,281 +21,117 @@ import poloniexLogo from '@/assets/logos/poloniex.png';
 import bitrueLogo from '@/assets/logos/bitrue.svg';
 import moontokLogo from '@/assets/logos/moontok.svg';
 
-
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
 const socialLinks = [
-  {
-    icon: Twitter,
-    name: 'Community',
-    handle: 'Join on X',
-    url: 'https://x.com/i/communities/2019176023888187687',
-    color: 'fire',
-  },
+  { icon: Twitter, name: 'Community', handle: 'Join on X', url: 'https://x.com/i/communities/2019176023888187687', color: 'green' },
 ];
 
 const exchangeLogos = [
-  {
-    name: 'MEXC',
-    logo: mexcLogo,
-    url: 'https://www.mexc.com/exchange/BIGTROUT_USDT?_from=search_spot_trade',
-    alt: 'Trade BIGTROUT on MEXC',
-  },
-  {
-    name: 'LBank',
-    logo: lbankLogo,
-    url: 'https://www.lbank.com/trade/bigtrout_usdt',
-    alt: 'Trade BIGTROUT on LBank',
-  },
-  {
-    name: 'Moonshot',
-    logo: moonshotLogo,
-    url: 'https://moonshot.money',
-    alt: 'Trade BIGTROUT on Moonshot',
-  },
-  {
-    name: 'PocketFi',
-    logo: pocketfiLogo,
-    url: 'https://pocketfi.org/en/',
-    alt: 'Trade BIGTROUT on PocketFi',
-  },
-  {
-    name: 'MobyAgent',
-    logo: mobyagentLogo,
-    url: 'https://www.mobyscreener.com/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG',
-    alt: 'Trade BIGTROUT on MobyAgent',
-  },
-  {
-    name: 'Jupiter',
-    logo: jupiterLogo,
-    url: `https://jup.ag/tokens/${CONTRACT_ADDRESS}`,
-    alt: 'Trade BIGTROUT on Jupiter',
-  },
-  {
-    name: 'CoinMarketCap',
-    logo: coinmarketcapLogo,
-    url: 'https://coinmarketcap.com/mobile/',
-    alt: 'View BIGTROUT on CoinMarketCap',
-  },
-  {
-    name: 'CoinGecko',
-    logo: coingeckoLogo,
-    url: 'https://www.coingecko.com/en/coins/bigtrout',
-    alt: 'View BIGTROUT on CoinGecko',
-  },
-  {
-    name: 'BTSE',
-    logo: btseLogo,
-    url: 'https://www.btse.com/en/trading/BIGTROUT-USDT',
-    alt: 'Trade BIGTROUT on BTSE',
-  },
-  {
-    name: 'BitMart',
-    logo: bitmartLogo,
-    url: 'https://www.bitmart.com/en-US/trade/BIGTROUT_USDT?type=spot',
-    alt: 'Trade BIGTROUT on BitMart',
-  },
-  {
-    name: 'Blynex',
-    logo: blynexLogo,
-    url: 'https://blynex.com/spot/TheBigTrout_USDT',
-    alt: 'Trade BIGTROUT on Blynex',
-  },
-  {
-    name: 'WEEX',
-    logo: weexLogo,
-    url: 'https://www.weex.com/spot/BIGTROUT-USDT?vipCode=ipqs',
-    alt: 'Trade BIGTROUT on WEEX',
-  },
-  {
-    name: 'Coindar',
-    logo: coindarLogo,
-    url: 'https://coindar.org/en/event/the-big-trout-to-be-listed-on-weex-140441',
-    alt: 'View BIGTROUT on Coindar',
-  },
-  {
-    name: 'KuCoin',
-    logo: kucoinLogo,
-    url: 'https://www.kucoin.com/announcement/en-kucoin-alpha-has-listed-token-bigtrout-and-usor?utm_source=social_listing_2026_twitter&utm_medium=social_media_pos',
-    alt: 'Trade BIGTROUT on KuCoin',
-  },
-  {
-    name: 'DexScreener',
-    logo: dexscreenerLogo,
-    url: 'https://dexscreener.com/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG',
-    alt: 'View BIGTROUT on DexScreener',
-  },
-  {
-    name: 'Poloniex',
-    logo: poloniexLogo,
-    url: 'https://www.poloniex.com/trade/BIGTROUT_USDT',
-    alt: 'Trade BIGTROUT on Poloniex',
-  },
-  {
-    name: 'Bitrue',
-    logo: bitrueLogo,
-    url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG',
-    alt: 'Trade BIGTROUT on Bitrue',
-    hasBorder: true,
-  },
-  {
-    name: 'Moontok',
-    logo: moontokLogo,
-    url: 'https://moontok.io/coins/the-big-trout',
-    alt: 'View BIGTROUT on Moontok',
-  },
+  { name: 'MEXC', logo: mexcLogo, url: 'https://www.mexc.com/exchange/BIGTROUT_USDT?_from=search_spot_trade', alt: 'Trade BIGTROUT on MEXC' },
+  { name: 'LBank', logo: lbankLogo, url: 'https://www.lbank.com/trade/bigtrout_usdt', alt: 'Trade BIGTROUT on LBank' },
+  { name: 'Moonshot', logo: moonshotLogo, url: 'https://moonshot.money', alt: 'Trade BIGTROUT on Moonshot' },
+  { name: 'PocketFi', logo: pocketfiLogo, url: 'https://pocketfi.org/en/', alt: 'Trade BIGTROUT on PocketFi' },
+  { name: 'MobyAgent', logo: mobyagentLogo, url: 'https://www.mobyscreener.com/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on MobyAgent' },
+  { name: 'Jupiter', logo: jupiterLogo, url: `https://jup.ag/tokens/${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on Jupiter' },
+  { name: 'CoinMarketCap', logo: coinmarketcapLogo, url: 'https://coinmarketcap.com/mobile/', alt: 'View BIGTROUT on CoinMarketCap' },
+  { name: 'CoinGecko', logo: coingeckoLogo, url: 'https://www.coingecko.com/en/coins/bigtrout', alt: 'View BIGTROUT on CoinGecko' },
+  { name: 'BTSE', logo: btseLogo, url: 'https://www.btse.com/en/trading/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BTSE' },
+  { name: 'BitMart', logo: bitmartLogo, url: 'https://www.bitmart.com/en-US/trade/BIGTROUT_USDT?type=spot', alt: 'Trade BIGTROUT on BitMart' },
+  { name: 'Blynex', logo: blynexLogo, url: 'https://blynex.com/spot/TheBigTrout_USDT', alt: 'Trade BIGTROUT on Blynex' },
+  { name: 'WEEX', logo: weexLogo, url: 'https://www.weex.com/spot/BIGTROUT-USDT?vipCode=ipqs', alt: 'Trade BIGTROUT on WEEX' },
+  { name: 'Coindar', logo: coindarLogo, url: 'https://coindar.org/en/event/the-big-trout-to-be-listed-on-weex-140441', alt: 'View BIGTROUT on Coindar' },
+  { name: 'KuCoin', logo: kucoinLogo, url: 'https://www.kucoin.com/announcement/en-kucoin-alpha-has-listed-token-bigtrout-and-usor?utm_source=social_listing_2026_twitter&utm_medium=social_media_pos', alt: 'Trade BIGTROUT on KuCoin' },
+  { name: 'DexScreener', logo: dexscreenerLogo, url: 'https://dexscreener.com/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'View BIGTROUT on DexScreener' },
+  { name: 'Poloniex', logo: poloniexLogo, url: 'https://www.poloniex.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Poloniex' },
+  { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue', hasBorder: true },
+  { name: 'Moontok', logo: moontokLogo, url: 'https://moontok.io/coins/the-big-trout', alt: 'View BIGTROUT on Moontok' },
 ];
 
-// Generate random shooting stars
-const generateShootingStars = (count: number) => {
+// Generate fireflies
+const generateFireflies = (count: number) => {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
-    top: Math.random() * 50,
-    delay: Math.random() * 8,
-    duration: 1 + Math.random() * 2,
+    top: 20 + Math.random() * 60,
+    delay: Math.random() * 5,
+    duration: 3 + Math.random() * 4,
+    size: 2 + Math.random() * 3,
   }));
 };
 
-// Generate fire dust particles
-const generateFireDust = (count: number) => {
+// Generate sakura petals
+const generatePetals = (count: number) => {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
-    size: 2 + Math.random() * 4,
-    delay: Math.random() * 6,
-    duration: 4 + Math.random() * 4,
-    hue: 15 + Math.random() * 25,
+    size: 4 + Math.random() * 6,
+    delay: Math.random() * 8,
+    duration: 6 + Math.random() * 6,
   }));
 };
 
 export const CommunitySection = () => {
-  const [shootingStars] = useState(() => generateShootingStars(8));
-  const [fireDust] = useState(() => generateFireDust(30));
+  const [fireflies] = useState(() => generateFireflies(20));
+  const [petals] = useState(() => generatePetals(15));
 
   return (
     <section className="relative py-24 px-4 overflow-hidden">
-      {/* Night sky background */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          background: `
-            radial-gradient(ellipse at 20% 30%, hsl(240 60% 15% / 0.5) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 70%, hsl(260 50% 12% / 0.5) 0%, transparent 50%),
-            linear-gradient(180deg, 
-              hsl(235 35% 8%) 0%, 
-              hsl(240 35% 6%) 20%,
-              hsl(250 30% 5%) 60%,
-              hsl(220 30% 6%) 100%
-            )
-          `,
-        }}
-      />
+      {/* Japanese garden night background */}
+      <div className="absolute inset-0 z-0" style={{
+        background: `
+          radial-gradient(ellipse at 20% 30%, hsl(130 40% 12% / 0.5) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 70%, hsl(340 30% 10% / 0.5) 0%, transparent 50%),
+          linear-gradient(180deg, hsl(150 30% 6%) 0%, hsl(140 30% 5%) 20%, hsl(150 25% 4%) 60%, hsl(150 30% 6%) 100%)
+        `,
+      }} />
 
-      {/* Top transition from lava/fire section */}
-      <div 
-        className="absolute top-0 left-0 right-0 h-48 z-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(180deg, hsl(20 100% 45% / 0.12) 0%, hsl(25 90% 40% / 0.06) 40%, transparent 100%)',
-        }}
-      />
-
-      {/* Static stars */}
-      <div className="absolute inset-0 z-0">
-        {Array.from({ length: 100 }).map((_, i) => (
-          <div
-            key={`star-${i}`}
-            className="absolute rounded-full bg-white"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${1 + Math.random() * 2}px`,
-              height: `${1 + Math.random() * 2}px`,
-              opacity: 0.3 + Math.random() * 0.7,
-              animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 3}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Shooting stars */}
-      {shootingStars.map((star) => (
-        <div
-          key={`shooting-${star.id}`}
-          className="absolute z-0"
-          style={{
-            left: `${star.left}%`,
-            top: `${star.top}%`,
-            width: '100px',
-            height: '2px',
-            background: 'linear-gradient(90deg, hsl(200 100% 90%), hsl(200 100% 70% / 0.5), transparent)',
-            borderRadius: '2px',
-            transform: 'rotate(-45deg)',
-            animation: `shootingStar ${star.duration}s ease-out infinite`,
-            animationDelay: `${star.delay}s`,
-            boxShadow: '0 0 10px hsl(200 100% 80% / 0.8), 0 0 20px hsl(200 100% 70% / 0.4)',
-          }}
-        />
+      {/* Fireflies */}
+      {fireflies.map((fly) => (
+        <div key={`fly-${fly.id}`} className="absolute z-0 rounded-full" style={{
+          left: `${fly.left}%`,
+          top: `${fly.top}%`,
+          width: `${fly.size}px`,
+          height: `${fly.size}px`,
+          background: `radial-gradient(circle, hsl(130 80% 60%), hsl(130 60% 40% / 0.5), transparent)`,
+          boxShadow: `0 0 ${fly.size * 3}px hsl(130 70% 50% / 0.6)`,
+          animation: `twinkle ${fly.duration}s ease-in-out infinite`,
+          animationDelay: `${fly.delay}s`,
+        }} />
       ))}
 
-      {/* Fire dust particles */}
-      {fireDust.map((dust) => (
-        <div
-          key={`dust-${dust.id}`}
-          className="absolute z-0 rounded-full"
-          style={{
-            left: `${dust.left}%`,
-            bottom: '-20px',
-            width: `${dust.size}px`,
-            height: `${dust.size}px`,
-            background: `radial-gradient(circle, hsl(${dust.hue} 100% 60%), hsl(${dust.hue} 100% 40% / 0.5), transparent)`,
-            boxShadow: `0 0 ${dust.size * 2}px hsl(${dust.hue} 100% 50% / 0.6)`,
-            animation: `fireDustRise ${dust.duration}s ease-out infinite`,
-            animationDelay: `${dust.delay}s`,
-          }}
-        />
+      {/* Sakura petals */}
+      {petals.map((petal) => (
+        <div key={`petal-${petal.id}`} className="absolute z-0 animate-petal" style={{
+          left: `${petal.left}%`,
+          top: '-10px',
+          width: `${petal.size}px`,
+          height: `${petal.size}px`,
+          borderRadius: '50% 0 50% 0',
+          background: `radial-gradient(circle, hsl(340 80% 80%), hsl(340 60% 65% / 0.5))`,
+          animationDelay: `${petal.delay}s`,
+          animationDuration: `${petal.duration}s`,
+          transform: 'rotate(45deg)',
+        }} />
       ))}
-
-      {/* Fire glow at bottom */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-64 z-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at center bottom, hsl(20 100% 50% / 0.15), hsl(30 100% 40% / 0.08) 40%, transparent 70%)',
-        }}
-      />
 
       <div className="relative z-10 max-w-5xl mx-auto text-center">
-        {/* Section header */}
         <h2 className="font-display text-4xl md:text-6xl font-bold mb-4">
-          <span className="text-ice">JOIN THE</span>{' '}
-          <span className="text-fire">ARMY</span>
+          <span className="text-sakura">JOIN THE</span>{' '}
+          <span className="text-pepe">ARMY</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-12">
-          The BIGTROUT community is growing stronger. Join us on our quest for volcanic gains.
+          The BIGTROUT community is growing stronger. Join the most based army in crypto.
         </p>
 
         {/* Social links */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20">
           {socialLinks.map((social, index) => (
-            <a
-              key={index}
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="card-volcanic px-8 py-6 flex items-center gap-4 group cursor-pointer"
-            >
-              <div 
-                className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-                  social.color === 'fire' ? 'glow-fire group-hover:scale-110' : 'glow-ice group-hover:scale-110'
-                }`}
-                style={{
-                  background: social.color === 'fire' 
-                    ? 'linear-gradient(135deg, hsl(20 100% 50%), hsl(35 100% 55%))'
-                    : 'linear-gradient(135deg, hsl(195 90% 45%), hsl(190 100% 70%))',
-                }}
-              >
-                <social.icon className="w-6 h-6 text-storm-dark" />
+            <a key={index} href={social.url} target="_blank" rel="noopener noreferrer" className="card-volcanic px-8 py-6 flex items-center gap-4 group cursor-pointer">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center glow-fire group-hover:scale-110 transition-all" style={{
+                background: 'linear-gradient(135deg, hsl(130 60% 35%), hsl(130 70% 50%))',
+              }}>
+                <social.icon className="w-6 h-6 text-garden-dark" />
               </div>
               <div className="text-left">
                 <p className="font-display font-bold text-foreground">{social.name}</p>
@@ -307,62 +143,38 @@ export const CommunitySection = () => {
 
         {/* Exchange Logos Section */}
         <div className="mb-12">
-          <h3 
-            className="text-lg md:text-xl font-bold text-foreground mb-10"
-            style={{
-              textShadow: '0 0 20px hsl(200 100% 70% / 0.4), 0 0 40px hsl(20 100% 50% / 0.2)',
-            }}
-          >
+          <h3 className="text-lg md:text-xl font-bold text-foreground mb-10" style={{
+            textShadow: '0 0 20px hsl(130 60% 40% / 0.4), 0 0 40px hsl(340 60% 50% / 0.2)',
+          }}>
             Trade $BIGTROUT on These Platforms:
           </h3>
 
-          {/* Logos Grid */}
           <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 lg:gap-12 mb-10">
             {exchangeLogos.map((exchange, index) => (
-              <a
-                key={index}
-                href={exchange.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110"
-                title={exchange.alt}
-              >
+              <a key={index} href={exchange.url} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110" title={exchange.alt}>
                 {exchange.logo ? (
                   <img
                     src={exchange.logo}
                     alt={exchange.alt}
                     className={`h-10 md:h-12 lg:h-14 w-auto max-w-[120px] md:max-w-[150px] object-contain transition-all duration-300 brightness-90 grayscale-[30%] group-hover:brightness-110 group-hover:grayscale-0 ${(exchange as any).hasBorder ? 'border-2 border-white/80 rounded-lg p-1' : ''}`}
-                    style={{
-                      filter: 'drop-shadow(0 0 8px hsl(0 0% 100% / 0.2))',
-                    }}
+                    style={{ filter: 'drop-shadow(0 0 8px hsl(0 0% 100% / 0.2))' }}
                   />
                 ) : (
-                  // Text fallback for logos that couldn't be downloaded
                   <div className="px-4 py-2 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 group-hover:border-primary/50 group-hover:bg-card/80">
-                    <span className="font-display font-bold text-sm md:text-base text-foreground/80 group-hover:text-foreground transition-colors">
-                      {exchange.name}
-                    </span>
+                    <span className="font-display font-bold text-sm md:text-base text-foreground/80 group-hover:text-foreground transition-colors">{exchange.name}</span>
                   </div>
                 )}
-                
-                {/* Hover glow effect */}
-                <div 
-                  className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(circle, hsl(20 100% 50% / 0.25), transparent 70%)',
-                    filter: 'blur(15px)',
-                  }}
-                />
+                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{
+                  background: 'radial-gradient(circle, hsl(130 60% 40% / 0.25), transparent 70%)',
+                  filter: 'blur(15px)',
+                }} />
               </a>
             ))}
           </div>
 
-          {/* Disclaimer */}
           <p className="text-muted-foreground/70 text-xs md:text-sm max-w-2xl mx-auto">
             Always verify the contract address{' '}
-            <code className="text-fire/80 font-mono text-xs break-all">
-              {CONTRACT_ADDRESS}
-            </code>{' '}
+            <code className="text-pepe/80 font-mono text-xs break-all">{CONTRACT_ADDRESS}</code>{' '}
             before trading. DYOR.
           </p>
         </div>

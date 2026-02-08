@@ -1,14 +1,8 @@
 export const Footer = () => {
   return (
-    <footer 
-      className="relative py-12 px-4 border-t border-border/30"
-      style={{
-        background: 'hsl(220 30% 5%)',
-      }}
-    >
+    <footer className="relative py-12 px-4 border-t border-border/30" style={{ background: 'hsl(150 30% 5%)' }}>
       <div className="max-w-6xl mx-auto text-center">
-        {/* Logo */}
-        <h3 className="font-display text-3xl font-black text-fire-ice mb-4">
+        <h3 className="font-display text-3xl font-black text-pepe-sakura mb-4">
           $BIGTROUT
         </h3>
         
@@ -22,9 +16,9 @@ export const Footer = () => {
           <span className="hidden sm:inline">•</span>
           <span>All Rights Reserved</span>
           <span className="hidden sm:inline">•</span>
-          <span className="text-fire">Fire</span>
+          <span className="text-pepe">Based</span>
           <span>&</span>
-          <span className="text-ice">Ice</span>
+          <span className="text-sakura">Beautiful</span>
         </div>
       </div>
     </footer>

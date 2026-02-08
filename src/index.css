@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,56 +6,54 @@
 
 @layer base {
   :root {
-    /* Volcanic Fire Colors */
-    --lava-deep: 15 90% 20%;
-    --lava-core: 20 100% 50%;
-    --lava-glow: 30 100% 60%;
-    --ember: 35 100% 55%;
-    --fire-orange: 25 100% 50%;
+    /* Pepe Green Colors */
+    --pepe-dark: 130 50% 15%;
+    --pepe-core: 130 60% 35%;
+    --pepe-glow: 130 70% 50%;
+    --pepe-light: 130 50% 65%;
     
-    /* Ice/Snow Colors */
-    --ice-deep: 200 80% 25%;
-    --ice-mid: 195 90% 45%;
-    --ice-glow: 190 100% 70%;
-    --snow: 200 30% 95%;
-    --frost: 210 50% 85%;
+    /* Cherry Blossom Colors */
+    --sakura-deep: 340 60% 45%;
+    --sakura-mid: 340 70% 65%;
+    --sakura-glow: 340 80% 80%;
+    --sakura-light: 340 60% 90%;
     
-    /* Storm/Dark Colors */
-    --storm-dark: 220 30% 8%;
-    --storm-mid: 220 25% 15%;
-    --storm-cloud: 215 20% 25%;
-    --ash: 220 10% 40%;
+    /* Japanese Garden Colors */
+    --garden-dark: 150 30% 8%;
+    --garden-mid: 140 25% 15%;
+    --garden-pond: 190 50% 35%;
+    --garden-wood: 25 40% 30%;
     
     /* Base theme */
-    --background: 220 30% 6%;
-    --foreground: 200 30% 95%;
-    --card: 220 25% 10%;
-    --card-foreground: 200 30% 95%;
-    --popover: 220 25% 10%;
-    --popover-foreground: 200 30% 95%;
-    --primary: 25 100% 50%;
-    --primary-foreground: 220 30% 8%;
-    --secondary: 195 90% 45%;
-    --secondary-foreground: 220 30% 8%;
-    --muted: 220 20% 18%;
-    --muted-foreground: 220 15% 60%;
-    --accent: 30 100% 60%;
-    --accent-foreground: 220 30% 8%;
+    --background: 150 30% 6%;
+    --foreground: 60 30% 92%;
+    --card: 140 25% 10%;
+    --card-foreground: 60 30% 92%;
+    --popover: 140 25% 10%;
+    --popover-foreground: 60 30% 92%;
+    --primary: 130 60% 35%;
+    --primary-foreground: 150 30% 6%;
+    --secondary: 340 70% 65%;
+    --secondary-foreground: 150 30% 6%;
+    --muted: 140 20% 18%;
+    --muted-foreground: 130 15% 55%;
+    --accent: 340 80% 80%;
+    --accent-foreground: 150 30% 6%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 220 20% 20%;
-    --input: 220 20% 18%;
-    --ring: 25 100% 50%;
+    --border: 140 20% 20%;
+    --input: 140 20% 18%;
+    --ring: 130 60% 35%;
     --radius: 0.75rem;
     
-    --sidebar-background: 220 30% 8%;
-    --sidebar-foreground: 200 30% 95%;
-    --sidebar-primary: 25 100% 50%;
-    --sidebar-primary-foreground: 220 30% 8%;
-    --sidebar-accent: 220 20% 18%;
-    --sidebar-accent-foreground: 200 30% 95%;
-    --sidebar-border: 220 20% 20%;
-    --sidebar-ring: 25 100% 50%;
+    --sidebar-background: 150 30% 8%;
+    --sidebar-foreground: 60 30% 92%;
+    --sidebar-primary: 130 60% 35%;
+    --sidebar-primary-foreground: 150 30% 6%;
+    --sidebar-accent: 140 20% 18%;
+    --sidebar-accent-foreground: 60 30% 92%;
+    --sidebar-border: 140 20% 20%;
+    --sidebar-ring: 130 60% 35%;
   }
 }
 
@@ -67,11 +65,11 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Rajdhani', sans-serif;
     background: linear-gradient(180deg, 
-      hsl(var(--storm-dark)) 0%, 
-      hsl(220 30% 4%) 30%,
-      hsl(var(--lava-deep) / 0.3) 60%,
-      hsl(220 30% 4%) 80%,
-      hsl(var(--storm-dark)) 100%
+      hsl(var(--garden-dark)) 0%, 
+      hsl(150 30% 4%) 30%,
+      hsl(var(--pepe-dark) / 0.3) 60%,
+      hsl(150 30% 4%) 80%,
+      hsl(var(--garden-dark)) 100%
     );
     min-height: 100vh;
   }
@@ -79,59 +77,81 @@
 
 @layer utilities {
   /* Text Effects */
-  .text-fire {
-    background: linear-gradient(135deg, hsl(var(--lava-core)), hsl(var(--fire-orange)), hsl(var(--ember)));
+  .text-pepe {
+    background: linear-gradient(135deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)), hsl(var(--pepe-light)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   
-  .text-ice {
-    background: linear-gradient(135deg, hsl(var(--ice-deep)), hsl(var(--ice-mid)), hsl(var(--ice-glow)));
+  .text-sakura {
+    background: linear-gradient(135deg, hsl(var(--sakura-deep)), hsl(var(--sakura-mid)), hsl(var(--sakura-glow)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   
-  .text-fire-ice {
-    background: linear-gradient(90deg, hsl(var(--lava-core)), hsl(var(--ember)), hsl(var(--ice-mid)), hsl(var(--ice-glow)));
+  .text-pepe-sakura {
+    background: linear-gradient(90deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)), hsl(var(--sakura-mid)), hsl(var(--sakura-glow)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   
   .text-hero {
-    background: linear-gradient(180deg, hsl(var(--snow)), hsl(var(--ember)), hsl(var(--lava-core)));
+    background: linear-gradient(180deg, hsl(var(--sakura-light)), hsl(var(--pepe-glow)), hsl(var(--pepe-core)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 30px hsl(var(--ember) / 0.5));
+    filter: drop-shadow(0 0 30px hsl(var(--pepe-glow) / 0.5));
+  }
+
+  /* Legacy aliases for components that use text-fire / text-ice */
+  .text-fire {
+    background: linear-gradient(135deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)), hsl(var(--pepe-light)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-ice {
+    background: linear-gradient(135deg, hsl(var(--sakura-deep)), hsl(var(--sakura-mid)), hsl(var(--sakura-glow)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-fire-ice {
+    background: linear-gradient(90deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)), hsl(var(--sakura-mid)), hsl(var(--sakura-glow)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
   /* Glow Effects */
   .glow-fire {
-    box-shadow: 0 0 30px hsl(var(--lava-core) / 0.6), 0 0 60px hsl(var(--fire-orange) / 0.4);
+    box-shadow: 0 0 30px hsl(var(--pepe-core) / 0.6), 0 0 60px hsl(var(--pepe-glow) / 0.4);
   }
   
   .glow-ice {
-    box-shadow: 0 0 30px hsl(var(--ice-glow) / 0.6), 0 0 60px hsl(var(--ice-mid) / 0.4);
+    box-shadow: 0 0 30px hsl(var(--sakura-glow) / 0.6), 0 0 60px hsl(var(--sakura-mid) / 0.4);
   }
   
   .glow-ember {
-    box-shadow: 0 0 20px hsl(var(--ember) / 0.8);
+    box-shadow: 0 0 20px hsl(var(--pepe-glow) / 0.8);
   }
   
-  /* Lava pulse animation */
+  /* Pulse animation */
   .bg-lava-pulse {
     animation: lavaPulse 3s ease-in-out infinite;
   }
   
   @keyframes lavaPulse {
     0%, 100% { 
-      box-shadow: 0 0 30px hsl(var(--lava-core) / 0.4), 0 0 60px hsl(var(--fire-orange) / 0.2);
+      box-shadow: 0 0 30px hsl(var(--pepe-core) / 0.4), 0 0 60px hsl(var(--pepe-glow) / 0.2);
     }
     50% { 
-      box-shadow: 0 0 50px hsl(var(--lava-core) / 0.6), 0 0 100px hsl(var(--fire-orange) / 0.4);
+      box-shadow: 0 0 50px hsl(var(--pepe-core) / 0.6), 0 0 100px hsl(var(--pepe-glow) / 0.4);
     }
   }
   
@@ -145,12 +165,34 @@
     50% { transform: translateY(-20px); }
   }
   
-  /* Ember rise animation */
-  .animate-ember {
-    animation: emberRise 4s ease-out infinite;
+  /* Cherry blossom petal fall */
+  .animate-petal {
+    animation: petalFall 8s ease-in-out infinite;
   }
   
-  @keyframes emberRise {
+  @keyframes petalFall {
+    0% { 
+      transform: translateY(-10vh) translateX(0) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 0.8;
+    }
+    100% { 
+      transform: translateY(100vh) translateX(40px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+  
+  /* Firefly float animation */
+  .animate-firefly {
+    animation: fireflyFloat 6s ease-in-out infinite;
+  }
+  
+  @keyframes fireflyFloat {
     0% { 
       transform: translateY(100vh) scale(0);
       opacity: 0;
@@ -167,28 +209,6 @@
     }
   }
   
-  /* Snow fall animation */
-  .animate-snow {
-    animation: snowFall 8s linear infinite;
-  }
-  
-  @keyframes snowFall {
-    0% { 
-      transform: translateY(-10vh) translateX(0);
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 0.8;
-    }
-    100% { 
-      transform: translateY(100vh) translateX(20px);
-      opacity: 0;
-    }
-  }
-  
   /* Pulse glow */
   .animate-pulse-glow {
     animation: pulseGlow 2s ease-in-out infinite;
@@ -196,14 +216,14 @@
   
   @keyframes pulseGlow {
     0%, 100% { 
-      filter: drop-shadow(0 0 10px hsl(var(--lava-core) / 0.5));
+      filter: drop-shadow(0 0 10px hsl(var(--pepe-core) / 0.5));
     }
     50% { 
-      filter: drop-shadow(0 0 30px hsl(var(--ember) / 0.8));
+      filter: drop-shadow(0 0 30px hsl(var(--pepe-glow) / 0.8));
     }
   }
   
-  /* Card volcanic effect */
+  /* Card style */
   .card-volcanic {
     @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -212,12 +232,12 @@
   .card-volcanic:hover {
     @apply border-primary/50;
     box-shadow: 
-      0 0 30px hsl(var(--lava-core) / 0.2),
-      inset 0 0 30px hsl(var(--lava-core) / 0.05);
+      0 0 30px hsl(var(--pepe-core) / 0.2),
+      inset 0 0 30px hsl(var(--pepe-core) / 0.05);
     transform: translateY(-5px);
   }
 
-  /* Hologram animations */
+  /* Hologram animations (kept for hero sphere) */
   @keyframes hologramPulse {
     0%, 100% {
       opacity: 0.6;
@@ -230,15 +250,10 @@
   }
   
   @keyframes scanLines {
-    0% {
-      background-position: 0 0;
-    }
-    100% {
-      background-position: 0 100px;
-    }
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
   }
   
-  /* Dissolve loop transition - fades out and back in */
   @keyframes dissolveLoop {
     0%, 85% {
       opacity: 1;
@@ -254,7 +269,6 @@
     }
   }
   
-  /* Intense blue flame animation */
   @keyframes blueFlameIntense {
     0%, 100% {
       opacity: 0.7;
@@ -274,7 +288,6 @@
     }
   }
   
-  /* Intense fire/orange flame animation */
   @keyframes fireFlameIntense {
     0%, 100% {
       opacity: 0.75;
@@ -294,7 +307,7 @@
     }
   }
   
-  /* Twinkling stars animation */
+  /* Twinkling fireflies */
   @keyframes twinkle {
     0%, 100% {
       opacity: 0.3;
@@ -306,71 +319,51 @@
     }
   }
   
-  /* Shooting star animation */
   @keyframes shootingStar {
-    0% {
-      opacity: 0;
-      transform: rotate(-45deg) translateX(0);
-    }
-    10% {
-      opacity: 1;
-    }
-    70% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-      transform: rotate(-45deg) translateX(500px);
-    }
+    0% { opacity: 0; transform: rotate(-45deg) translateX(0); }
+    10% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; transform: rotate(-45deg) translateX(500px); }
   }
   
-  /* Fire dust rising animation */
   @keyframes fireDustRise {
-    0% {
-      opacity: 0;
-      transform: translateY(0) scale(0.5);
-    }
-    10% {
-      opacity: 1;
-    }
-    80% {
-      opacity: 0.6;
-    }
-    100% {
-      opacity: 0;
-      transform: translateY(-80vh) scale(0.2);
-    }
+    0% { opacity: 0; transform: translateY(0) scale(0.5); }
+    10% { opacity: 1; }
+    80% { opacity: 0.6; }
+    100% { opacity: 0; transform: translateY(-80vh) scale(0.2); }
   }
   
-  /* Button fire style */
+  /* Button styles */
   .btn-fire {
     @apply px-8 py-4 font-bold text-lg uppercase tracking-wider rounded-lg;
-    font-family: 'Orbitron', monospace;
-    background: linear-gradient(135deg, hsl(var(--lava-core)), hsl(var(--fire-orange)), hsl(var(--ember)));
-    border: 2px solid hsl(var(--ember));
-    box-shadow: 0 0 30px hsl(var(--lava-core) / 0.6), 0 0 60px hsl(var(--fire-orange) / 0.4);
-    color: hsl(var(--storm-dark));
+    font-family: 'Bangers', 'Orbitron', monospace;
+    background: linear-gradient(135deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)));
+    border: 2px solid hsl(var(--pepe-glow));
+    box-shadow: 0 0 30px hsl(var(--pepe-core) / 0.6), 0 0 60px hsl(var(--pepe-glow) / 0.4);
+    color: hsl(var(--garden-dark));
     transition: all 0.3s ease;
+    letter-spacing: 0.15em;
   }
   
   .btn-fire:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 50px hsl(var(--lava-core) / 0.8), 0 0 100px hsl(var(--fire-orange) / 0.5);
+    box-shadow: 0 0 50px hsl(var(--pepe-core) / 0.8), 0 0 100px hsl(var(--pepe-glow) / 0.5);
   }
   
   .btn-ice {
     @apply px-8 py-4 font-bold text-lg uppercase tracking-wider rounded-lg;
-    font-family: 'Orbitron', monospace;
-    background: linear-gradient(135deg, hsl(var(--ice-deep)), hsl(var(--ice-mid)), hsl(var(--ice-glow)));
-    border: 2px solid hsl(var(--ice-glow));
-    box-shadow: 0 0 30px hsl(var(--ice-glow) / 0.6), 0 0 60px hsl(var(--ice-mid) / 0.4);
-    color: hsl(var(--storm-dark));
+    font-family: 'Bangers', 'Orbitron', monospace;
+    background: linear-gradient(135deg, hsl(var(--sakura-deep)), hsl(var(--sakura-mid)));
+    border: 2px solid hsl(var(--sakura-glow));
+    box-shadow: 0 0 30px hsl(var(--sakura-glow) / 0.6), 0 0 60px hsl(var(--sakura-mid) / 0.4);
+    color: hsl(var(--garden-dark));
     transition: all 0.3s ease;
+    letter-spacing: 0.15em;
   }
   
   .btn-ice:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 50px hsl(var(--ice-glow) / 0.8), 0 0 100px hsl(var(--ice-mid) / 0.5);
+    box-shadow: 0 0 50px hsl(var(--sakura-glow) / 0.8), 0 0 100px hsl(var(--sakura-mid) / 0.5);
   }
 }
 
@@ -380,14 +373,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--storm-dark));
+  background: hsl(var(--garden-dark));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, hsl(var(--lava-core)), hsl(var(--ember)));
+  background: linear-gradient(180deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, hsl(var(--ember)), hsl(var(--lava-glow)));
+  background: linear-gradient(180deg, hsl(var(--pepe-glow)), hsl(var(--sakura-mid)));
 }
