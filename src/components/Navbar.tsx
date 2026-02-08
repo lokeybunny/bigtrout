@@ -40,13 +40,13 @@ export const Navbar = () => {
             { label: 'How to Buy', hash: '#how-to-buy' },
             { label: 'Community', hash: '#community' },
           ].map(item => (
-            <a key={item.hash} href={item.hash} onClick={(e) => handleAnchorClick(e, item.hash)} className="text-muted-foreground hover:text-foreground transition-colors font-medium text-sm tracking-wide">
+            <a key={item.hash} href={item.hash} onClick={(e) => handleAnchorClick(e, item.hash)} className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold text-sm tracking-wide">
               {item.label}
             </a>
           ))}
-          <Link to="/news" className="text-muted-foreground hover:text-foreground transition-colors font-medium text-sm tracking-wide">News</Link>
-          <Link to="/lore" className="text-muted-foreground hover:text-foreground transition-colors font-medium text-sm tracking-wide">Lore</Link>
-          <Link to="/live" className="text-muted-foreground hover:text-foreground transition-colors font-medium relative text-sm tracking-wide">
+          <Link to="/news" className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold text-sm tracking-wide">News</Link>
+          <Link to="/lore" className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold text-sm tracking-wide">Lore</Link>
+          <Link to="/live" className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold relative text-sm tracking-wide">
             Live
             <span className="absolute -top-1 -right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
           </Link>
@@ -74,12 +74,12 @@ export const Navbar = () => {
           background: 'hsl(200 30% 85% / 0.4)',
         }}>
           <div className="flex flex-col items-center gap-4">
-            <a href="#tokenomics" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={(e) => { handleAnchorClick(e, '#tokenomics'); setIsMenuOpen(false); }}>Tokenomics</a>
-            <a href="#how-to-buy" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={(e) => { handleAnchorClick(e, '#how-to-buy'); setIsMenuOpen(false); }}>How to Buy</a>
-            <a href="#community" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={(e) => { handleAnchorClick(e, '#community'); setIsMenuOpen(false); }}>Community</a>
-            <Link to="/news" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={() => setIsMenuOpen(false)}>News</Link>
-            <Link to="/lore" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={() => setIsMenuOpen(false)}>Lore</Link>
-            <Link to="/live" className="text-muted-foreground hover:text-foreground transition-colors font-medium relative" onClick={() => setIsMenuOpen(false)}>
+            <a href="#tokenomics" className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold" onClick={(e) => { handleAnchorClick(e, '#tokenomics'); setIsMenuOpen(false); }}>Tokenomics</a>
+            <a href="#how-to-buy" className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold" onClick={(e) => { handleAnchorClick(e, '#how-to-buy'); setIsMenuOpen(false); }}>How to Buy</a>
+            <a href="#community" className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold" onClick={(e) => { handleAnchorClick(e, '#community'); setIsMenuOpen(false); }}>Community</a>
+            <Link to="/news" className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold" onClick={() => setIsMenuOpen(false)}>News</Link>
+            <Link to="/lore" className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold" onClick={() => setIsMenuOpen(false)}>Lore</Link>
+            <Link to="/live" className="text-garden-dark hover:text-ukiyo-ink transition-colors font-bold relative" onClick={() => setIsMenuOpen(false)}>
               Live
               <span className="absolute -top-1 -right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             </Link>
