@@ -254,20 +254,56 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
           <boxGeometry args={[0.45, 0.6, 0.25]} />
           <meshStandardMaterial color="#f0f0f0" />
         </mesh>
-        {/* Head */}
-        <mesh position={[0, 1.5, 0]}>
-          <boxGeometry args={[0.28, 0.3, 0.28]} />
-          <meshStandardMaterial color="#d4a574" />
-        </mesh>
-        {/* Hat (bucket hat) */}
-        <mesh position={[0, 1.72, 0]}>
-          <cylinderGeometry args={[0.25, 0.2, 0.15, 8]} />
-          <meshStandardMaterial color="#5a7a3a" />
-        </mesh>
-        <mesh position={[0, 1.67, 0]}>
-          <cylinderGeometry args={[0.32, 0.32, 0.04, 8]} />
-          <meshStandardMaterial color="#4a6a2a" />
-        </mesh>
+        {/* ===== BIG FISH HEAD ===== */}
+        <group position={[0, 1.45, 0]}>
+          {/* Main fish head — large oval */}
+          <mesh>
+            <sphereGeometry args={[0.3, 10, 8]} />
+            <meshStandardMaterial color="#2d8a4e" metalness={0.25} roughness={0.5} />
+          </mesh>
+          {/* Fish belly / lighter underside */}
+          <mesh position={[0, -0.08, 0.05]} scale={[0.9, 0.7, 0.85]}>
+            <sphereGeometry args={[0.28, 8, 6]} />
+            <meshStandardMaterial color="#6ecf8a" metalness={0.15} roughness={0.6} />
+          </mesh>
+          {/* Left eye — big googly */}
+          <mesh position={[-0.2, 0.08, 0.18]}>
+            <sphereGeometry args={[0.1, 8, 8]} />
+            <meshStandardMaterial color="#ffffff" />
+          </mesh>
+          <mesh position={[-0.22, 0.08, 0.26]}>
+            <sphereGeometry args={[0.05, 8, 8]} />
+            <meshStandardMaterial color="#111111" />
+          </mesh>
+          {/* Right eye — big googly */}
+          <mesh position={[0.2, 0.08, 0.18]}>
+            <sphereGeometry args={[0.1, 8, 8]} />
+            <meshStandardMaterial color="#ffffff" />
+          </mesh>
+          <mesh position={[0.22, 0.08, 0.26]}>
+            <sphereGeometry args={[0.05, 8, 8]} />
+            <meshStandardMaterial color="#111111" />
+          </mesh>
+          {/* Mouth — wide grin */}
+          <mesh position={[0, -0.1, 0.25]} rotation={[0.2, 0, 0]}>
+            <boxGeometry args={[0.25, 0.04, 0.06]} />
+            <meshStandardMaterial color="#cc3333" />
+          </mesh>
+          {/* Dorsal fin on top */}
+          <mesh position={[0, 0.28, -0.05]} rotation={[0.3, 0, 0]}>
+            <coneGeometry args={[0.12, 0.25, 4]} />
+            <meshStandardMaterial color="#1a6b3a" />
+          </mesh>
+          {/* Side fins (like ears) */}
+          <mesh position={[-0.28, 0, 0]} rotation={[0, 0, -0.6]}>
+            <coneGeometry args={[0.08, 0.2, 4]} />
+            <meshStandardMaterial color="#2d8a4e" />
+          </mesh>
+          <mesh position={[0.28, 0, 0]} rotation={[0, 0, 0.6]}>
+            <coneGeometry args={[0.08, 0.2, 4]} />
+            <meshStandardMaterial color="#2d8a4e" />
+          </mesh>
+        </group>
         {/* Arms */}
         {/* Left arm — holding rod */}
         <mesh position={[-0.32, 1.0, -0.1]} rotation={[0.4, 0, 0.2]}>

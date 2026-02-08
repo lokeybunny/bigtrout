@@ -11,6 +11,7 @@ import { SpeedBoost, generateBoosts, BoostPickup } from './SpeedBoost';
 import { Obstacles, generateObstacles, Obstacle } from './Obstacles';
 import { Minimap } from './Minimap';
 import { useSolanaTransactions, GameEvent } from '../../hooks/useSolanaTransactions';
+import { useGameSFX } from '../../hooks/useGameSFX';
 
 interface RaceState {
   playerCheckpoint: number;
@@ -46,6 +47,7 @@ const getCheckpointProgress = (pos: THREE.Vector3): number => {
 };
 
 export const GameScene = () => {
+  const playSFX = useGameSFX();
   const boatPosRef = useRef(new THREE.Vector3(0, 0, -15));
   const wakeSpeedRef = useRef(0);
   const wakePosRef = useRef(new THREE.Vector3(0, 0, -15));
@@ -66,23 +68,23 @@ export const GameScene = () => {
 
   const handleGameEvent = useCallback((event: GameEvent) => {
     if (event.kind === 'trout') {
-      // Big buy = +5 points
       setTroutPoints(prev => prev + 5);
       setTokenMultiplier(prev => Math.min(prev + 0.15, 2.5));
       setTokenMessage('🐟 BIG BUY! +5 $BIGTROUT');
+      playSFX('bigBuy');
     } else if (event.kind === 'goldfish') {
-      // Small buy = +1 point
       setTroutPoints(prev => prev + 1);
       setTokenMultiplier(prev => Math.min(prev + 0.05, 2.5));
       setTokenMessage('🐠 BUY! +1 $BIGTROUT');
+      playSFX('buy');
     } else if (event.kind === 'octopus') {
-      // Sell streak = slow down
       setTroutPoints(prev => Math.max(0, prev - 3));
       setTokenMultiplier(prev => Math.max(0.5, prev - 0.2));
       setTokenMessage('🐙 SELL STREAK! -3 $BIGTROUT');
+      playSFX('sell');
     }
     setTimeout(() => setTokenMessage(null), 2500);
-  }, []);
+  }, [playSFX]);
 
   const { connected } = useSolanaTransactions(handleGameEvent);
   
@@ -155,16 +157,17 @@ export const GameScene = () => {
     boostEndTimeRef.current = performance.now() + 4000;
     setBoostTimer(4);
     setBoostMessage('⚡ SPEED BOOST!');
+    playSFX('boost');
     setTimeout(() => setBoostMessage(null), 2000);
-  }, []);
+  }, [playSFX]);
 
   const handleObstacleHit = useCallback((type: 'rock' | 'wave') => {
-    // Slow down by setting a negative multiplier briefly
     setBoostMultiplier(0.3);
     boostEndTimeRef.current = performance.now() + 1500;
     setHitMessage(type === 'rock' ? '🪨 ROCK HIT! Slowed!' : '🌊 ROUGH WAVES! Slowed!');
+    playSFX(type);
     setTimeout(() => setHitMessage(null), 1500);
-  }, []);
+  }, [playSFX]);
 
   const handleBoatPosition = useCallback((pos: THREE.Vector3) => {
     boatPosRef.current.copy(pos);
