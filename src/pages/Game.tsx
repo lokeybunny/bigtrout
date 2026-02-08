@@ -106,16 +106,18 @@ const Game = () => {
             </a>
           </div>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-4 text-xs" style={{
-            fontFamily: 'Rajdhani',
-            color: '#aaa',
-            textShadow: '0 1px 4px rgba(0,0,0,0.8)',
+          <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm" style={{
+            fontFamily: 'Bangers, cursive',
+            letterSpacing: '0.05em',
           }}>
-            <span>⌨️ WASD to steer</span>
-            <span>⇧ Shift to paddle</span>
-            <span>⚡ Collect boosts</span>
-            <span>🪨 Avoid rocks</span>
-            <span>R to restart</span>
+            {['⌨️ WASD to steer', '⇧ Shift to paddle', '⚡ Collect boosts', '🪨 Avoid rocks', 'R to restart'].map((txt) => (
+              <span key={txt} className="px-3 py-1.5 rounded-lg" style={{
+                background: 'rgba(0,0,0,0.6)',
+                color: '#44ff88',
+                border: '1px solid rgba(68,255,136,0.3)',
+                backdropFilter: 'blur(4px)',
+              }}>{txt}</span>
+            ))}
           </div>
         </div>
       </div>
