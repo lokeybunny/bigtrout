@@ -48,7 +48,7 @@ const exchangeLogos = [
   { name: 'Poloniex', logo: poloniexLogo, url: 'https://www.poloniex.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Poloniex' },
   { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue', hasBorder: true },
   { name: 'Moontok', logo: moontokLogo, url: 'https://moontok.io/coins/the-big-trout', alt: 'View BIGTROUT on Moontok' },
-  { name: 'Binance', logo: binanceLogo, url: 'https://www.binance.com', alt: 'Trade BIGTROUT on Binance' },
+  { name: 'Binance', logo: binanceLogo, url: 'https://web3.binance.com/en/token/sol/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Binance' },
 ];
 
 // Generate fireflies
