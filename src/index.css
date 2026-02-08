@@ -384,3 +384,20 @@
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, hsl(var(--pepe-glow)), hsl(var(--sakura-mid)));
 }
+
+/* Hero water & fish animations */
+@keyframes waterFlow {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes waterWave {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(-6px); opacity: 0.8; }
+}
+
+@keyframes fishSway {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(8px) rotate(0.3deg); }
+  75% { transform: translateX(-8px) rotate(-0.3deg); }
+}
