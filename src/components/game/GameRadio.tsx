@@ -8,24 +8,24 @@ interface RadioStation {
 
 const STATIONS: RadioStation[] = [
   // Lo-Fi / Chill
-  { name: 'Lofi Hip Hop', url: 'https://play.streamafrica.net/lofiradio', genre: 'Lo-Fi' },
-  { name: 'Chillhop', url: 'https://streams.fluxfm.de/Chillhop/mp3-128/streams.fluxfm.de/', genre: 'Lo-Fi' },
+  { name: 'Lofi Girl', url: 'https://streams.ilovemusic.de/iloveradio17.mp3', genre: 'Lo-Fi' },
+  { name: 'Chillout', url: 'https://streams.ilovemusic.de/iloveradio7.mp3', genre: 'Lo-Fi' },
   // Electronic / Dance
-  { name: 'Techno FM', url: 'https://stream.laut.fm/technofm', genre: 'Electronic' },
-  { name: 'House Radio', url: 'https://stream.laut.fm/house', genre: 'Electronic' },
+  { name: 'Dance Radio', url: 'https://streams.ilovemusic.de/iloveradio2.mp3', genre: 'Electronic' },
+  { name: 'Hardstyle', url: 'https://streams.ilovemusic.de/iloveradio21.mp3', genre: 'Electronic' },
   // Hip Hop
-  { name: 'Hip Hop Beats', url: 'https://stream.laut.fm/hiphop', genre: 'Hip Hop' },
-  { name: 'Rap Radio', url: 'https://stream.laut.fm/rapfm', genre: 'Hip Hop' },
+  { name: 'Hip Hop', url: 'https://streams.ilovemusic.de/iloveradio3.mp3', genre: 'Hip Hop' },
+  { name: 'Urban Club', url: 'https://streams.ilovemusic.de/iloveradio4.mp3', genre: 'Hip Hop' },
   // Rock
-  { name: 'Classic Rock', url: 'https://stream.laut.fm/classic-rock', genre: 'Rock' },
-  { name: 'Indie Rock', url: 'https://stream.laut.fm/indierock', genre: 'Rock' },
+  { name: 'Rock Radio', url: 'https://streams.ilovemusic.de/iloveradio29.mp3', genre: 'Rock' },
+  { name: 'Greatest Hits', url: 'https://streams.ilovemusic.de/iloveradio16.mp3', genre: 'Rock' },
   // Jazz
-  { name: 'Smooth Jazz', url: 'https://stream.laut.fm/smoothjazz', genre: 'Jazz' },
-  { name: 'Jazz Cafe', url: 'https://stream.laut.fm/jazzcafe', genre: 'Jazz' },
+  { name: 'Smooth Jazz', url: 'https://streaming.radio.co/s774887f7b/listen', genre: 'Jazz' },
+  { name: 'Jazz Radio', url: 'https://jazz-wr04.ice.infomaniak.ch/jazz-wr04-128.mp3', genre: 'Jazz' },
   // Reggae
-  { name: 'Reggae Vibes', url: 'https://stream.laut.fm/reggae', genre: 'Reggae' },
+  { name: 'Reggae', url: 'https://streams.ilovemusic.de/iloveradio12.mp3', genre: 'Reggae' },
   // Ambient
-  { name: 'Ambient Space', url: 'https://stream.laut.fm/ambient', genre: 'Ambient' },
+  { name: 'Ambient', url: 'https://streams.ilovemusic.de/iloveradio15.mp3', genre: 'Ambient' },
 ];
 
 const GENRES = [...new Set(STATIONS.map(s => s.genre))];
