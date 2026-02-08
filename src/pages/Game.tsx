@@ -234,6 +234,22 @@ const Game = () => {
         </h1>
       </div>
 
+      {/* Exit button */}
+      <a
+        href="https://bigtrout.fun"
+        className="absolute top-4 right-4 z-30 flex items-center gap-1.5 px-3 py-2 rounded-lg font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+        style={{
+          fontFamily: 'Bangers, cursive',
+          background: 'rgba(0,0,0,0.8)',
+          color: '#888',
+          letterSpacing: '0.05em',
+          border: '1px solid rgba(255,255,255,0.1)',
+          textDecoration: 'none',
+        }}
+      >
+        🚪 EXIT
+      </a>
+
       <Suspense fallback={
         <div className="w-full h-full flex items-center justify-center">
           <div className="text-center">
