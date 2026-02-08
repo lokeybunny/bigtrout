@@ -90,26 +90,37 @@ export const GameScene = () => {
     setTimeout(() => setCountdownDisplay(null), 3800);
   }
 
-  // Boost timer decay
+  // Boost timer decay — tracked via ref to avoid re-renders, synced to HUD less frequently
+  const boostEndTimeRef = useRef(0);
+
+  // Boost decay via rAF — no setInterval jank
   useEffect(() => {
-    if (boostMultiplier > 1) {
-      const interval = setInterval(() => {
-        setBoostTimer(prev => {
-          if (prev <= 0.1) {
-            setBoostMultiplier(1);
-            setBoostMessage(null);
-            return 0;
-          }
-          return prev - 0.1;
-        });
-      }, 100);
-      return () => clearInterval(interval);
-    }
+    if (boostMultiplier <= 1) return;
+    let raf: number;
+    let lastUpdate = 0;
+    const tick = (now: number) => {
+      const remaining = Math.max(0, (boostEndTimeRef.current - performance.now()) / 1000);
+      if (remaining <= 0) {
+        setBoostMultiplier(1);
+        setBoostTimer(0);
+        setBoostMessage(null);
+      } else {
+        // Only update React state ~4x/sec to avoid jank
+        if (now - lastUpdate > 250) {
+          setBoostTimer(remaining);
+          lastUpdate = now;
+        }
+        raf = requestAnimationFrame(tick);
+      }
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [boostMultiplier]);
 
   const handleBoostCollect = useCallback((id: string) => {
     setBoosts(prev => prev.map(b => b.id === id ? { ...b, active: false } : b));
     setBoostMultiplier(1.8);
+    boostEndTimeRef.current = performance.now() + 4000;
     setBoostTimer(4);
     setBoostMessage('⚡ SPEED BOOST!');
     setTimeout(() => setBoostMessage(null), 2000);

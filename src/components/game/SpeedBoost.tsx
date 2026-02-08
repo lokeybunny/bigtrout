@@ -9,24 +9,21 @@ export interface BoostPickup {
   active: boolean;
 }
 
-// Generate boosts scattered along the race track
+// Generate boosts scattered along the race track (1 per checkpoint pair to reduce draw calls)
 export const generateBoosts = (): BoostPickup[] => {
   const boosts: BoostPickup[] = [];
   let id = 0;
   for (let i = 0; i < CHECKPOINTS.length; i++) {
     const curr = CHECKPOINTS[i];
     const next = CHECKPOINTS[(i + 1) % CHECKPOINTS.length];
-    // Place 2 boosts between each checkpoint pair
-    for (let j = 0; j < 2; j++) {
-      const t = 0.3 + j * 0.4;
-      const x = curr[0] + (next[0] - curr[0]) * t + (Math.random() - 0.5) * 10;
-      const z = curr[1] + (next[1] - curr[1]) * t + (Math.random() - 0.5) * 6;
-      boosts.push({
-        id: `boost-${id++}`,
-        position: [x, 0.5, z],
-        active: true,
-      });
-    }
+    const t = 0.5;
+    const x = curr[0] + (next[0] - curr[0]) * t + (Math.random() - 0.5) * 8;
+    const z = curr[1] + (next[1] - curr[1]) * t + (Math.random() - 0.5) * 4;
+    boosts.push({
+      id: `boost-${id++}`,
+      position: [x, 0.5, z],
+      active: true,
+    });
   }
   return boosts;
 };
@@ -78,8 +75,7 @@ export const SpeedBoost = ({ pickup, playerPos, onCollect }: SpeedBoostProps) =>
         <coneGeometry args={[0.25, 0.5, 6]} />
         <meshStandardMaterial color="#ffaa00" emissive="#ff8800" emissiveIntensity={0.6} />
       </mesh>
-      {/* Glow */}
-      <pointLight color="#ffaa00" intensity={2} distance={10} />
+      {/* Removed pointLight for performance */}
     </group>
   );
 };
