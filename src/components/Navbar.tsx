@@ -24,7 +24,7 @@ export const Navbar = () => {
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <Fish className="w-8 h-8 text-pepe-core" strokeWidth={2.5} />
+          <Fish className="w-8 h-8 text-pepe-glow" strokeWidth={2.5} />
         </Link>
 
         {/* Desktop Navigation links */}
@@ -34,20 +34,20 @@ export const Navbar = () => {
             { label: 'How to Buy', hash: '#how-to-buy' },
             { label: 'Community', hash: '#community' },
           ].map(item => (
-            <a key={item.hash} href={item.hash} onClick={(e) => handleAnchorClick(e, item.hash)} className="text-pepe-core hover:text-pepe-glow transition-colors font-bold text-sm tracking-wide">
+            <a key={item.hash} href={item.hash} onClick={(e) => handleAnchorClick(e, item.hash)} className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-sm tracking-wide">
               {item.label}
             </a>
           ))}
-          <Link to="/news" className="text-pepe-core hover:text-pepe-glow transition-colors font-bold text-sm tracking-wide">News</Link>
-          <Link to="/lore" className="text-pepe-core hover:text-pepe-glow transition-colors font-bold text-sm tracking-wide">Lore</Link>
-          <Link to="/live" className="text-pepe-core hover:text-pepe-glow transition-colors font-bold relative text-sm tracking-wide">
+          <Link to="/news" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-sm tracking-wide">News</Link>
+          <Link to="/lore" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-sm tracking-wide">Lore</Link>
+          <Link to="/live" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold relative text-sm tracking-wide">
             Live
             <span className="absolute -top-1 -right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
           </Link>
         </div>
 
         {/* Mobile menu button */}
-        <button className="md:hidden p-2 text-pepe-core" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <button className="md:hidden p-2 text-ukiyo-ink" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
@@ -68,12 +68,12 @@ export const Navbar = () => {
           background: 'hsl(200 30% 85% / 0.4)',
         }}>
           <div className="flex flex-col items-center gap-4">
-            <a href="#tokenomics" className="text-pepe-core hover:text-pepe-glow transition-colors font-bold text-lg" onClick={(e) => { handleAnchorClick(e, '#tokenomics'); setIsMenuOpen(false); }}>Tokenomics</a>
-            <a href="#how-to-buy" className="text-pepe-core hover:text-pepe-glow transition-colors font-bold text-lg" onClick={(e) => { handleAnchorClick(e, '#how-to-buy'); setIsMenuOpen(false); }}>How to Buy</a>
-            <a href="#community" className="text-pepe-core hover:text-pepe-glow transition-colors font-bold text-lg" onClick={(e) => { handleAnchorClick(e, '#community'); setIsMenuOpen(false); }}>Community</a>
-            <Link to="/news" className="text-pepe-core hover:text-pepe-glow transition-colors font-bold text-lg" onClick={() => setIsMenuOpen(false)}>News</Link>
-            <Link to="/lore" className="text-pepe-core hover:text-pepe-glow transition-colors font-bold text-lg" onClick={() => setIsMenuOpen(false)}>Lore</Link>
-            <Link to="/live" className="text-pepe-core hover:text-pepe-glow transition-colors font-bold text-lg relative" onClick={() => setIsMenuOpen(false)}>
+            <a href="#tokenomics" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-lg" onClick={(e) => { handleAnchorClick(e, '#tokenomics'); setIsMenuOpen(false); }}>Tokenomics</a>
+            <a href="#how-to-buy" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-lg" onClick={(e) => { handleAnchorClick(e, '#how-to-buy'); setIsMenuOpen(false); }}>How to Buy</a>
+            <a href="#community" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-lg" onClick={(e) => { handleAnchorClick(e, '#community'); setIsMenuOpen(false); }}>Community</a>
+            <Link to="/news" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-lg" onClick={() => setIsMenuOpen(false)}>News</Link>
+            <Link to="/lore" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-lg" onClick={() => setIsMenuOpen(false)}>Lore</Link>
+            <Link to="/live" className="text-ukiyo-ink hover:text-pepe-core transition-colors font-bold text-lg relative" onClick={() => setIsMenuOpen(false)}>
               Live
               <span className="absolute -top-1 -right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             </Link>
