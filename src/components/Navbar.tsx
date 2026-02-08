@@ -1,4 +1,5 @@
-import { Fish, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import troutLogo from '@/assets/trout-logo.png';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
@@ -23,15 +24,9 @@ export const Navbar = () => {
     }}>
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
-            background: 'linear-gradient(135deg, hsl(130 45% 38%), hsl(130 55% 52%))',
-            boxShadow: '0 0 15px hsl(130 45% 38% / 0.3)',
-          }}>
-            <Fish className="w-6 h-6" style={{ color: 'hsl(210 25% 10%)' }} />
-          </div>
-          <Link to="/" className="font-display text-xl font-bold text-pepe-sakura">$BIGTROUT</Link>
-        </div>
+        <Link to="/" className="flex items-center">
+          <img src={troutLogo} alt="BigTrout" className="w-10 h-10 rounded-xl object-cover" />
+        </Link>
 
         {/* Desktop Navigation links */}
         <div className="hidden md:flex items-center gap-8">
