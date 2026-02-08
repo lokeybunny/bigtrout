@@ -18,51 +18,47 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/50 border-b border-border/30">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-border/20" style={{
+      background: 'linear-gradient(180deg, hsl(210 25% 10% / 0.85), hsl(210 25% 10% / 0.7))',
+    }}>
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center glow-fire" style={{
-            background: 'linear-gradient(135deg, hsl(130 60% 35%), hsl(130 70% 50%))'
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+            background: 'linear-gradient(135deg, hsl(130 45% 38%), hsl(130 55% 52%))',
+            boxShadow: '0 0 15px hsl(130 45% 38% / 0.3)',
           }}>
-            <Fish className="w-6 h-6 text-garden-dark" />
+            <Fish className="w-6 h-6" style={{ color: 'hsl(210 25% 10%)' }} />
           </div>
           <Link to="/" className="font-display text-xl font-bold text-pepe-sakura">$BIGTROUT</Link>
         </div>
 
         {/* Desktop Navigation links */}
         <div className="hidden md:flex items-center gap-8">
-          <a href="#tokenomics" onClick={(e) => handleAnchorClick(e, '#tokenomics')} className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-            Tokenomics
-          </a>
-          <a href="#how-to-buy" onClick={(e) => handleAnchorClick(e, '#how-to-buy')} className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-            How to Buy
-          </a>
-          <a href="#community" onClick={(e) => handleAnchorClick(e, '#community')} className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-            Community
-          </a>
-          <Link to="/news" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-            News
-          </Link>
-          <Link to="/lore" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
-            Lore
-          </Link>
-          <Link to="/live" className="text-muted-foreground hover:text-foreground transition-colors font-medium relative">
+          {[
+            { label: 'Tokenomics', hash: '#tokenomics' },
+            { label: 'How to Buy', hash: '#how-to-buy' },
+            { label: 'Community', hash: '#community' },
+          ].map(item => (
+            <a key={item.hash} href={item.hash} onClick={(e) => handleAnchorClick(e, item.hash)} className="text-muted-foreground hover:text-foreground transition-colors font-medium text-sm tracking-wide">
+              {item.label}
+            </a>
+          ))}
+          <Link to="/news" className="text-muted-foreground hover:text-foreground transition-colors font-medium text-sm tracking-wide">News</Link>
+          <Link to="/lore" className="text-muted-foreground hover:text-foreground transition-colors font-medium text-sm tracking-wide">Lore</Link>
+          <Link to="/live" className="text-muted-foreground hover:text-foreground transition-colors font-medium relative text-sm tracking-wide">
             Live
             <span className="absolute -top-1 -right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
           </Link>
         </div>
 
         {/* Mobile menu button */}
-        <button 
-          className="md:hidden p-2 text-foreground"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
+        <button className="md:hidden p-2 text-foreground" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
         {/* CTA */}
-        <a 
+        <a
           href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
           target="_blank"
           rel="noopener noreferrer"
@@ -74,7 +70,9 @@ export const Navbar = () => {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border/30 py-4">
+        <div className="md:hidden absolute top-16 left-0 right-0 backdrop-blur-xl border-b border-border/20 py-4" style={{
+          background: 'hsl(210 25% 10% / 0.95)',
+        }}>
           <div className="flex flex-col items-center gap-4">
             <a href="#tokenomics" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={(e) => { handleAnchorClick(e, '#tokenomics'); setIsMenuOpen(false); }}>Tokenomics</a>
             <a href="#how-to-buy" className="text-muted-foreground hover:text-foreground transition-colors font-medium" onClick={(e) => { handleAnchorClick(e, '#how-to-buy'); setIsMenuOpen(false); }}>How to Buy</a>

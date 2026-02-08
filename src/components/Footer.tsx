@@ -1,6 +1,6 @@
 export const Footer = () => {
   return (
-    <footer className="relative py-12 px-4 border-t border-border/30" style={{ background: 'hsl(150 30% 5%)' }}>
+    <footer className="relative py-12 px-4 border-t border-border/20" style={{ background: 'hsl(210 25% 8%)' }}>
       <div className="max-w-6xl mx-auto text-center">
         <h3 className="font-display text-3xl font-black text-pepe-sakura mb-4">
           $BIGTROUT

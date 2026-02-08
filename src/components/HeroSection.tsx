@@ -9,7 +9,7 @@ export const HeroSection = () => {
     const handleScroll = () => {
       if (sectionRef.current) {
         const rect = sectionRef.current.getBoundingClientRect();
-        setScrollY(-rect.top * 0.4);
+        setScrollY(-rect.top * 0.35);
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -17,7 +17,7 @@ export const HeroSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex flex-col items-center justify-end overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-[100svh] flex flex-col items-center justify-end overflow-hidden">
       {/* Full-width parallax banner */}
       <div
         className="absolute inset-0 z-0"
@@ -25,89 +25,91 @@ export const HeroSection = () => {
           backgroundImage: `url(${heroBanner})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 40%',
-          transform: `translateY(${scrollY}px) scale(1.15)`,
+          transform: `translateY(${scrollY}px) scale(1.1)`,
           willChange: 'transform',
         }}
       />
 
-      {/* Animated water shimmer overlay — gives illusion of moving water */}
-      <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-        {/* Horizontal water ripple layer 1 */}
+      {/* Parchment texture overlay for ukiyo-e feel */}
+      <div className="absolute inset-0 z-[1] pointer-events-none mix-blend-overlay opacity-15" style={{
+        backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'200\' height=\'200\' filter=\'url(%23n)\' opacity=\'0.5\'/%3E%3C/svg%3E")',
+      }} />
+
+      {/* Animated water shimmer overlay */}
+      <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
         <div
           className="absolute bottom-0 left-0 w-[200%] h-[45%]"
           style={{
-            background: 'linear-gradient(90deg, transparent 0%, hsl(200 80% 60% / 0.08) 15%, transparent 30%, hsl(190 70% 50% / 0.06) 45%, transparent 60%, hsl(200 80% 60% / 0.08) 75%, transparent 100%)',
-            animation: 'waterFlow 4s linear infinite',
+            background: 'linear-gradient(90deg, transparent 0%, hsl(200 50% 60% / 0.06) 15%, transparent 30%, hsl(190 45% 50% / 0.05) 45%, transparent 60%, hsl(200 50% 60% / 0.06) 75%, transparent 100%)',
+            animation: 'waterFlow 5s linear infinite',
           }}
         />
-        {/* Horizontal water ripple layer 2 — offset */}
         <div
           className="absolute bottom-0 left-0 w-[200%] h-[40%]"
           style={{
-            background: 'linear-gradient(90deg, transparent 0%, hsl(180 60% 70% / 0.06) 20%, transparent 40%, hsl(200 70% 60% / 0.07) 60%, transparent 80%, hsl(180 60% 70% / 0.05) 100%)',
-            animation: 'waterFlow 6s linear infinite reverse',
+            background: 'linear-gradient(90deg, transparent 0%, hsl(180 40% 65% / 0.04) 20%, transparent 40%, hsl(200 45% 55% / 0.05) 60%, transparent 80%)',
+            animation: 'waterFlow 7s linear infinite reverse',
           }}
         />
-        {/* Vertical wave distortion */}
         <div
           className="absolute bottom-0 left-0 right-0 h-[50%]"
           style={{
-            background: 'repeating-linear-gradient(0deg, transparent, hsl(200 80% 70% / 0.03) 2px, transparent 4px)',
-            animation: 'waterWave 3s ease-in-out infinite',
+            background: 'repeating-linear-gradient(0deg, transparent, hsl(200 50% 70% / 0.02) 2px, transparent 4px)',
+            animation: 'waterWave 3.5s ease-in-out infinite',
           }}
         />
       </div>
 
-      {/* Fish subtle movement overlay — gives illusion of fish swaying */}
-      <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
-        {/* Subtle sway applied to the lower-center area where fish are */}
+      {/* Fish subtle movement */}
+      <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
         <div
           className="absolute bottom-[5%] left-[10%] w-[80%] h-[40%]"
           style={{
-            background: 'radial-gradient(ellipse at 50% 60%, hsl(130 50% 40% / 0.04), transparent 60%)',
+            background: 'radial-gradient(ellipse at 50% 60%, hsl(200 40% 50% / 0.03), transparent 60%)',
             animation: 'fishSway 5s ease-in-out infinite',
           }}
         />
         <div
           className="absolute bottom-[8%] left-[15%] w-[70%] h-[35%]"
           style={{
-            background: 'radial-gradient(ellipse at 40% 50%, hsl(340 50% 50% / 0.03), transparent 50%)',
+            background: 'radial-gradient(ellipse at 40% 50%, hsl(345 40% 55% / 0.02), transparent 50%)',
             animation: 'fishSway 4s ease-in-out infinite 1s',
           }}
         />
       </div>
 
-      {/* Gradient overlays for depth and readability */}
-      <div className="absolute inset-0 z-[3]" style={{
-        background: 'linear-gradient(180deg, hsl(150 30% 6% / 0.3) 0%, transparent 30%, transparent 60%, hsl(150 30% 6% / 0.7) 100%)',
+      {/* Gradient overlays — dark edges, visible art center */}
+      <div className="absolute inset-0 z-[4]" style={{
+        background: `
+          linear-gradient(180deg, hsl(210 25% 10% / 0.4) 0%, transparent 25%, transparent 55%, hsl(210 25% 10% / 0.75) 100%),
+          linear-gradient(90deg, hsl(210 25% 10% / 0.3) 0%, transparent 15%, transparent 85%, hsl(210 25% 10% / 0.3) 100%)
+        `,
       }} />
 
-      {/* Sakura petal light scatter */}
-      <div className="absolute inset-0 z-[3] pointer-events-none">
-        <div
-          className="absolute top-[10%] left-[20%] w-64 h-64 rounded-full blur-3xl opacity-20"
-          style={{ background: 'radial-gradient(circle, hsl(340 70% 70%), transparent)' }}
-        />
-        <div
-          className="absolute top-[5%] right-[15%] w-48 h-48 rounded-full blur-3xl opacity-15"
-          style={{ background: 'radial-gradient(circle, hsl(340 60% 75%), transparent)' }}
-        />
+      {/* Soft sakura glow accents */}
+      <div className="absolute inset-0 z-[4] pointer-events-none">
+        <div className="absolute top-[8%] left-[15%] w-48 h-48 rounded-full blur-3xl opacity-20" style={{
+          background: 'radial-gradient(circle, hsl(345 55% 75%), transparent)',
+        }} />
+        <div className="absolute top-[5%] right-[10%] w-40 h-40 rounded-full blur-3xl opacity-15" style={{
+          background: 'radial-gradient(circle, hsl(345 50% 80%), transparent)',
+        }} />
       </div>
 
       {/* Main content overlaying the banner */}
-      <div className="relative z-10 text-center pb-16 md:pb-24 px-4">
+      <div className="relative z-10 text-center pb-20 md:pb-28 px-4 w-full max-w-4xl mx-auto">
         {/* Ticker badge */}
-        <div className="inline-flex items-center gap-2 px-6 py-2 mb-6 rounded-full border border-primary/50 bg-card/60 backdrop-blur-xl">
+        <div className="inline-flex items-center gap-2 px-5 py-2 mb-6 rounded-full border border-primary/40 bg-card/50 backdrop-blur-lg">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          <span className="font-display text-sm tracking-widest text-primary">LIVE ON SOLANA</span>
+          <span className="font-display text-xs sm:text-sm tracking-[0.2em] text-primary">LIVE ON SOLANA</span>
         </div>
 
         {/* Title */}
-        <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-black mb-4 tracking-tight">
+        <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-3 tracking-tight">
           <span className="text-pepe-sakura">$BIGTROUT</span>
         </h1>
 
-        <p className="font-body text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-8">
+        <p className="font-body text-lg sm:text-xl md:text-2xl text-foreground/70 max-w-2xl mx-auto mb-8">
           The Legendary Warrior Fish has emerged from the depths.
           <span className="text-pepe"> Based</span> and <span className="text-sakura">Beautiful</span>.
         </p>
@@ -136,8 +138,8 @@ export const HeroSection = () => {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-        <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/50 flex justify-center pt-2">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+        <div className="w-6 h-10 rounded-full border-2 border-foreground/30 flex justify-center pt-2">
           <div className="w-1 h-2 rounded-full bg-primary animate-pulse" />
         </div>
       </div>

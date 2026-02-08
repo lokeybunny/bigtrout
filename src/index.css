@@ -6,54 +6,59 @@
 
 @layer base {
   :root {
-    /* Pepe Green Colors */
+    /* Ukiyo-e / Japanese Woodblock Palette */
     --pepe-dark: 130 50% 15%;
-    --pepe-core: 130 60% 35%;
-    --pepe-glow: 130 70% 50%;
-    --pepe-light: 130 50% 65%;
+    --pepe-core: 130 45% 38%;
+    --pepe-glow: 130 55% 52%;
+    --pepe-light: 130 40% 68%;
     
-    /* Cherry Blossom Colors */
-    --sakura-deep: 340 60% 45%;
-    --sakura-mid: 340 70% 65%;
-    --sakura-glow: 340 80% 80%;
-    --sakura-light: 340 60% 90%;
+    /* Cherry Blossom — softer, watercolor feel */
+    --sakura-deep: 340 45% 50%;
+    --sakura-mid: 345 55% 70%;
+    --sakura-glow: 345 65% 82%;
+    --sakura-light: 345 50% 92%;
     
-    /* Japanese Garden Colors */
-    --garden-dark: 150 30% 8%;
-    --garden-mid: 140 25% 15%;
-    --garden-pond: 190 50% 35%;
-    --garden-wood: 25 40% 30%;
+    /* Japanese Garden — warm earthy tones */
+    --garden-dark: 200 25% 12%;
+    --garden-mid: 195 20% 22%;
+    --garden-pond: 200 35% 45%;
+    --garden-wood: 30 35% 32%;
+
+    /* Ukiyo-e sky blue */
+    --ukiyo-sky: 200 40% 55%;
+    --ukiyo-parchment: 40 30% 88%;
+    --ukiyo-ink: 220 20% 18%;
     
-    /* Base theme */
-    --background: 150 30% 6%;
-    --foreground: 60 30% 92%;
-    --card: 140 25% 10%;
-    --card-foreground: 60 30% 92%;
-    --popover: 140 25% 10%;
-    --popover-foreground: 60 30% 92%;
-    --primary: 130 60% 35%;
-    --primary-foreground: 150 30% 6%;
-    --secondary: 340 70% 65%;
-    --secondary-foreground: 150 30% 6%;
-    --muted: 140 20% 18%;
-    --muted-foreground: 130 15% 55%;
-    --accent: 340 80% 80%;
-    --accent-foreground: 150 30% 6%;
+    /* Base theme — dark indigo-teal like night ukiyo-e */
+    --background: 210 25% 10%;
+    --foreground: 40 25% 90%;
+    --card: 205 22% 14%;
+    --card-foreground: 40 25% 90%;
+    --popover: 205 22% 14%;
+    --popover-foreground: 40 25% 90%;
+    --primary: 130 45% 38%;
+    --primary-foreground: 210 25% 10%;
+    --secondary: 345 55% 70%;
+    --secondary-foreground: 210 25% 10%;
+    --muted: 200 18% 20%;
+    --muted-foreground: 200 15% 55%;
+    --accent: 345 65% 82%;
+    --accent-foreground: 210 25% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 140 20% 20%;
-    --input: 140 20% 18%;
-    --ring: 130 60% 35%;
+    --border: 200 18% 22%;
+    --input: 200 18% 20%;
+    --ring: 130 45% 38%;
     --radius: 0.75rem;
     
-    --sidebar-background: 150 30% 8%;
-    --sidebar-foreground: 60 30% 92%;
-    --sidebar-primary: 130 60% 35%;
-    --sidebar-primary-foreground: 150 30% 6%;
-    --sidebar-accent: 140 20% 18%;
-    --sidebar-accent-foreground: 60 30% 92%;
-    --sidebar-border: 140 20% 20%;
-    --sidebar-ring: 130 60% 35%;
+    --sidebar-background: 210 25% 12%;
+    --sidebar-foreground: 40 25% 90%;
+    --sidebar-primary: 130 45% 38%;
+    --sidebar-primary-foreground: 210 25% 10%;
+    --sidebar-accent: 200 18% 20%;
+    --sidebar-accent-foreground: 40 25% 90%;
+    --sidebar-border: 200 18% 22%;
+    --sidebar-ring: 130 45% 38%;
   }
 }
 
@@ -65,18 +70,18 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Rajdhani', sans-serif;
     background: linear-gradient(180deg, 
-      hsl(var(--garden-dark)) 0%, 
-      hsl(150 30% 4%) 30%,
-      hsl(var(--pepe-dark) / 0.3) 60%,
-      hsl(150 30% 4%) 80%,
-      hsl(var(--garden-dark)) 100%
+      hsl(var(--background)) 0%, 
+      hsl(210 22% 8%) 30%,
+      hsl(205 20% 10%) 60%,
+      hsl(210 22% 8%) 80%,
+      hsl(var(--background)) 100%
     );
     min-height: 100vh;
   }
 }
 
 @layer utilities {
-  /* Text Effects */
+  /* Text Effects — ukiyo-e inspired */
   .text-pepe {
     background: linear-gradient(135deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)), hsl(var(--pepe-light)));
     -webkit-background-clip: text;
@@ -103,10 +108,10 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 30px hsl(var(--pepe-glow) / 0.5));
+    filter: drop-shadow(0 0 20px hsl(var(--pepe-glow) / 0.4));
   }
 
-  /* Legacy aliases for components that use text-fire / text-ice */
+  /* Legacy aliases */
   .text-fire {
     background: linear-gradient(135deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)), hsl(var(--pepe-light)));
     -webkit-background-clip: text;
@@ -128,17 +133,17 @@
     background-clip: text;
   }
   
-  /* Glow Effects */
+  /* Glow Effects — softer, watercolor */
   .glow-fire {
-    box-shadow: 0 0 30px hsl(var(--pepe-core) / 0.6), 0 0 60px hsl(var(--pepe-glow) / 0.4);
+    box-shadow: 0 0 20px hsl(var(--pepe-core) / 0.4), 0 0 40px hsl(var(--pepe-glow) / 0.25);
   }
   
   .glow-ice {
-    box-shadow: 0 0 30px hsl(var(--sakura-glow) / 0.6), 0 0 60px hsl(var(--sakura-mid) / 0.4);
+    box-shadow: 0 0 20px hsl(var(--sakura-glow) / 0.4), 0 0 40px hsl(var(--sakura-mid) / 0.25);
   }
   
   .glow-ember {
-    box-shadow: 0 0 20px hsl(var(--pepe-glow) / 0.8);
+    box-shadow: 0 0 15px hsl(var(--pepe-glow) / 0.5);
   }
   
   /* Pulse animation */
@@ -148,10 +153,10 @@
   
   @keyframes lavaPulse {
     0%, 100% { 
-      box-shadow: 0 0 30px hsl(var(--pepe-core) / 0.4), 0 0 60px hsl(var(--pepe-glow) / 0.2);
+      box-shadow: 0 0 20px hsl(var(--pepe-core) / 0.3), 0 0 40px hsl(var(--pepe-glow) / 0.15);
     }
     50% { 
-      box-shadow: 0 0 50px hsl(var(--pepe-core) / 0.6), 0 0 100px hsl(var(--pepe-glow) / 0.4);
+      box-shadow: 0 0 35px hsl(var(--pepe-core) / 0.5), 0 0 70px hsl(var(--pepe-glow) / 0.3);
     }
   }
   
@@ -175,12 +180,8 @@
       transform: translateY(-10vh) translateX(0) rotate(0deg);
       opacity: 0;
     }
-    10% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 0.8;
-    }
+    10% { opacity: 1; }
+    90% { opacity: 0.8; }
     100% { 
       transform: translateY(100vh) translateX(40px) rotate(360deg);
       opacity: 0;
@@ -197,12 +198,8 @@
       transform: translateY(100vh) scale(0);
       opacity: 0;
     }
-    10% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 0.8;
-    }
+    10% { opacity: 1; }
+    90% { opacity: 0.8; }
     100% { 
       transform: translateY(-20vh) scale(1);
       opacity: 0;
@@ -223,147 +220,87 @@
     }
   }
   
-  /* Card style */
+  /* Card style — ukiyo-e paper feel */
   .card-volcanic {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl;
+    @apply backdrop-blur-xl rounded-xl;
+    background: hsl(var(--card) / 0.7);
+    border: 1px solid hsl(var(--border) / 0.6);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .card-volcanic:hover {
-    @apply border-primary/50;
+    border-color: hsl(var(--pepe-core) / 0.4);
     box-shadow: 
-      0 0 30px hsl(var(--pepe-core) / 0.2),
-      inset 0 0 30px hsl(var(--pepe-core) / 0.05);
-    transform: translateY(-5px);
+      0 0 25px hsl(var(--pepe-core) / 0.15),
+      inset 0 0 25px hsl(var(--pepe-core) / 0.03);
+    transform: translateY(-4px);
   }
 
-  /* Hologram animations (kept for hero sphere) */
-  @keyframes hologramPulse {
-    0%, 100% {
-      opacity: 0.6;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.02);
-    }
+  /* Ukiyo-e style decorative card */
+  .card-ukiyo {
+    @apply rounded-xl;
+    background: linear-gradient(145deg, hsl(205 22% 14% / 0.85), hsl(200 20% 12% / 0.9));
+    border: 1px solid hsl(var(--garden-pond) / 0.2);
+    box-shadow: 0 4px 30px hsl(0 0% 0% / 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
-  @keyframes scanLines {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100px; }
+
+  .card-ukiyo:hover {
+    border-color: hsl(var(--sakura-mid) / 0.3);
+    box-shadow: 0 8px 40px hsl(var(--sakura-mid) / 0.1);
+    transform: translateY(-3px);
   }
-  
-  @keyframes dissolveLoop {
-    0%, 85% {
-      opacity: 1;
-      filter: blur(0px) drop-shadow(0 0 30px hsl(190 100% 70% / 0.6)) drop-shadow(0 0 60px hsl(20 100% 50% / 0.4));
-    }
-    92% {
-      opacity: 0;
-      filter: blur(8px) drop-shadow(0 0 30px hsl(190 100% 70% / 0.6)) drop-shadow(0 0 60px hsl(20 100% 50% / 0.4));
-    }
-    100% {
-      opacity: 1;
-      filter: blur(0px) drop-shadow(0 0 30px hsl(190 100% 70% / 0.6)) drop-shadow(0 0 60px hsl(20 100% 50% / 0.4));
-    }
+
+  /* Section divider — wave/brush stroke style */
+  .divider-brush {
+    height: 4px;
+    background: linear-gradient(90deg, 
+      transparent, 
+      hsl(var(--sakura-mid) / 0.4) 20%, 
+      hsl(var(--pepe-glow) / 0.5) 50%, 
+      hsl(var(--sakura-mid) / 0.4) 80%, 
+      transparent
+    );
+    border-radius: 2px;
   }
-  
-  @keyframes blueFlameIntense {
-    0%, 100% {
-      opacity: 0.7;
-      transform: rotate(var(--rotation, 0deg)) translateY(-60%) translateX(-50%) scaleY(1) scaleX(1);
-    }
-    25% {
-      opacity: 1;
-      transform: rotate(var(--rotation, 0deg)) translateY(-70%) translateX(-50%) scaleY(1.3) scaleX(0.9);
-    }
-    50% {
-      opacity: 0.9;
-      transform: rotate(var(--rotation, 0deg)) translateY(-65%) translateX(-50%) scaleY(1.15) scaleX(1.1);
-    }
-    75% {
-      opacity: 1;
-      transform: rotate(var(--rotation, 0deg)) translateY(-72%) translateX(-50%) scaleY(1.25) scaleX(0.95);
-    }
-  }
-  
-  @keyframes fireFlameIntense {
-    0%, 100% {
-      opacity: 0.75;
-      transform: rotate(var(--rotation, 0deg)) translateY(-62%) translateX(-50%) scaleY(1) scaleX(1);
-    }
-    30% {
-      opacity: 1;
-      transform: rotate(var(--rotation, 0deg)) translateY(-75%) translateX(-50%) scaleY(1.35) scaleX(0.85);
-    }
-    60% {
-      opacity: 0.85;
-      transform: rotate(var(--rotation, 0deg)) translateY(-68%) translateX(-50%) scaleY(1.2) scaleX(1.05);
-    }
-    80% {
-      opacity: 1;
-      transform: rotate(var(--rotation, 0deg)) translateY(-78%) translateX(-50%) scaleY(1.3) scaleX(0.9);
-    }
-  }
-  
+
   /* Twinkling fireflies */
   @keyframes twinkle {
-    0%, 100% {
-      opacity: 0.3;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.2);
-    }
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
   }
   
-  @keyframes shootingStar {
-    0% { opacity: 0; transform: rotate(-45deg) translateX(0); }
-    10% { opacity: 1; }
-    70% { opacity: 1; }
-    100% { opacity: 0; transform: rotate(-45deg) translateX(500px); }
-  }
-  
-  @keyframes fireDustRise {
-    0% { opacity: 0; transform: translateY(0) scale(0.5); }
-    10% { opacity: 1; }
-    80% { opacity: 0.6; }
-    100% { opacity: 0; transform: translateY(-80vh) scale(0.2); }
-  }
-  
-  /* Button styles */
+  /* Button styles — ukiyo-e themed */
   .btn-fire {
     @apply px-8 py-4 font-bold text-lg uppercase tracking-wider rounded-lg;
     font-family: 'Bangers', 'Orbitron', monospace;
     background: linear-gradient(135deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)));
-    border: 2px solid hsl(var(--pepe-glow));
-    box-shadow: 0 0 30px hsl(var(--pepe-core) / 0.6), 0 0 60px hsl(var(--pepe-glow) / 0.4);
-    color: hsl(var(--garden-dark));
+    border: 2px solid hsl(var(--pepe-glow) / 0.6);
+    box-shadow: 0 0 20px hsl(var(--pepe-core) / 0.4), 0 0 40px hsl(var(--pepe-glow) / 0.2);
+    color: hsl(var(--background));
     transition: all 0.3s ease;
     letter-spacing: 0.15em;
   }
   
   .btn-fire:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 50px hsl(var(--pepe-core) / 0.8), 0 0 100px hsl(var(--pepe-glow) / 0.5);
+    box-shadow: 0 0 35px hsl(var(--pepe-core) / 0.6), 0 0 70px hsl(var(--pepe-glow) / 0.35);
   }
   
   .btn-ice {
     @apply px-8 py-4 font-bold text-lg uppercase tracking-wider rounded-lg;
     font-family: 'Bangers', 'Orbitron', monospace;
     background: linear-gradient(135deg, hsl(var(--sakura-deep)), hsl(var(--sakura-mid)));
-    border: 2px solid hsl(var(--sakura-glow));
-    box-shadow: 0 0 30px hsl(var(--sakura-glow) / 0.6), 0 0 60px hsl(var(--sakura-mid) / 0.4);
-    color: hsl(var(--garden-dark));
+    border: 2px solid hsl(var(--sakura-glow) / 0.6);
+    box-shadow: 0 0 20px hsl(var(--sakura-glow) / 0.4), 0 0 40px hsl(var(--sakura-mid) / 0.2);
+    color: hsl(var(--background));
     transition: all 0.3s ease;
     letter-spacing: 0.15em;
   }
   
   .btn-ice:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 50px hsl(var(--sakura-glow) / 0.8), 0 0 100px hsl(var(--sakura-mid) / 0.5);
+    box-shadow: 0 0 35px hsl(var(--sakura-glow) / 0.6), 0 0 70px hsl(var(--sakura-mid) / 0.35);
   }
 }
 
@@ -373,11 +310,11 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--garden-dark));
+  background: hsl(var(--background));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, hsl(var(--pepe-core)), hsl(var(--pepe-glow)));
+  background: linear-gradient(180deg, hsl(var(--pepe-core)), hsl(var(--garden-pond)));
   border-radius: 4px;
 }
 
@@ -400,4 +337,10 @@
   0%, 100% { transform: translateX(0) rotate(0deg); }
   25% { transform: translateX(8px) rotate(0.3deg); }
   75% { transform: translateX(-8px) rotate(-0.3deg); }
+}
+
+/* Ink brush stroke decoration */
+@keyframes brushReveal {
+  0% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
 }

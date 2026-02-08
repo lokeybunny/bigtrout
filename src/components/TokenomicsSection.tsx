@@ -58,9 +58,9 @@ export const TokenomicsSection = () => {
   const circulatingPercent = vestingData?.circulatingPercent || 100;
 
   const staticCards = [
-    { icon: TrendingUp, title: 'Total Supply', value: '1,000,000,000', description: 'One billion BIGTROUT tokens', gradient: 'green' },
-    { icon: Fish, title: 'Tax', value: '0%', description: 'No buy/sell tax - pure trading', gradient: 'green' },
-    { icon: Zap, title: 'Contract', value: 'Renounced', description: 'Fully community owned', gradient: 'pink' },
+    { icon: TrendingUp, title: 'Total Supply', value: '1,000,000,000', description: 'One billion BIGTROUT tokens', color: 'pepe' },
+    { icon: Fish, title: 'Tax', value: '0%', description: 'No buy/sell tax - pure trading', color: 'pepe' },
+    { icon: Zap, title: 'Contract', value: 'Renounced', description: 'Fully community owned', color: 'sakura' },
   ];
 
   return (
@@ -72,20 +72,21 @@ export const TokenomicsSection = () => {
         backgroundPosition: 'center',
         transform: `translateY(${scrollY * -0.5}px) scale(1.2)`,
         willChange: 'transform',
-        filter: 'saturate(0.8) brightness(0.8)',
+        filter: 'saturate(0.7) brightness(0.5)',
       }} />
       
+      {/* Dark overlay with ukiyo-e tinting */}
       <div className="absolute inset-0 z-0" style={{
-        background: 'linear-gradient(180deg, hsl(150 30% 6% / 0.85) 0%, hsl(140 25% 8% / 0.6) 40%, hsl(140 25% 8% / 0.5) 70%, hsl(140 30% 6% / 0.3) 100%)',
+        background: `linear-gradient(180deg, 
+          hsl(210 25% 10% / 0.88) 0%, 
+          hsl(200 22% 12% / 0.7) 40%, 
+          hsl(200 22% 12% / 0.65) 70%, 
+          hsl(210 25% 10% / 0.88) 100%
+        )`,
       }} />
 
-      <div className="absolute inset-0 pointer-events-none z-0" style={{
-        background: 'radial-gradient(ellipse at center bottom, hsl(130 60% 35% / 0.2), transparent 50%)',
-      }} />
-
-      <div className="absolute bottom-0 left-0 right-0 h-48 z-0 pointer-events-none" style={{
-        background: 'linear-gradient(180deg, transparent 0%, hsl(340 60% 45% / 0.1) 50%, hsl(340 70% 50% / 0.15) 100%)',
-      }} />
+      {/* Decorative brush stroke divider at top */}
+      <div className="absolute top-0 left-0 right-0 h-1 z-[1] divider-brush" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="text-center mb-16">
@@ -114,34 +115,34 @@ export const TokenomicsSection = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
-            <div className="card-volcanic p-6 text-center">
+            <div className="card-ukiyo p-6 text-center">
               <div className="w-14 h-14 mx-auto mb-4 rounded-xl flex items-center justify-center glow-fire" style={{
-                background: 'linear-gradient(135deg, hsl(130 60% 35%), hsl(130 70% 50%))',
+                background: 'linear-gradient(135deg, hsl(130 45% 38%), hsl(130 55% 52%))',
               }}>
-                <Lock className="w-7 h-7 text-garden-dark" />
+                <Lock className="w-7 h-7" style={{ color: 'hsl(210 25% 10%)' }} />
               </div>
               <p className="text-muted-foreground text-sm mb-1 font-display tracking-wider">Locked Supply</p>
               <p className="font-display text-3xl font-bold text-pepe mb-1">{loading ? '...' : formatNumber(vestingData?.totalLocked || 0)}</p>
               <p className="text-muted-foreground text-xs">{loading ? '...' : `${lockedPercent.toFixed(2)}% locked`}</p>
             </div>
 
-            <div className="card-volcanic p-6 text-center">
+            <div className="card-ukiyo p-6 text-center">
               <div className="w-14 h-14 mx-auto mb-4 rounded-xl flex items-center justify-center glow-ice" style={{
-                background: 'linear-gradient(135deg, hsl(340 60% 45%), hsl(340 70% 65%))',
+                background: 'linear-gradient(135deg, hsl(345 45% 50%), hsl(345 55% 70%))',
               }}>
-                <Unlock className="w-7 h-7 text-garden-dark" />
+                <Unlock className="w-7 h-7" style={{ color: 'hsl(210 25% 10%)' }} />
               </div>
               <p className="text-muted-foreground text-sm mb-1 font-display tracking-wider">Circulating Supply</p>
               <p className="font-display text-3xl font-bold text-sakura mb-1">{loading ? '...' : formatNumber(vestingData?.totalUnlocked || 0)}</p>
               <p className="text-muted-foreground text-xs">{loading ? '...' : `${circulatingPercent.toFixed(2)}% circulating`}</p>
             </div>
 
-            <div className="card-volcanic p-6 text-center">
+            <div className="card-ukiyo p-6 text-center">
               <div className="w-14 h-14 mx-auto mb-4 rounded-xl flex items-center justify-center" style={{
-                background: 'linear-gradient(135deg, hsl(130 60% 35%), hsl(340 60% 45%))',
-                boxShadow: '0 0 30px hsl(130 60% 35% / 0.4), 0 0 30px hsl(340 60% 45% / 0.4)',
+                background: 'linear-gradient(135deg, hsl(130 45% 38%), hsl(345 45% 50%))',
+                boxShadow: '0 0 20px hsl(130 45% 38% / 0.3), 0 0 20px hsl(345 45% 50% / 0.3)',
               }}>
-                <FileText className="w-7 h-7 text-garden-dark" />
+                <FileText className="w-7 h-7" style={{ color: 'hsl(210 25% 10%)' }} />
               </div>
               <p className="text-muted-foreground text-sm mb-1 font-display tracking-wider">Lock Contracts</p>
               <p className="font-display text-3xl font-bold text-pepe-sakura mb-1">{loading ? '...' : vestingData?.contractCount || 0}</p>
@@ -153,20 +154,20 @@ export const TokenomicsSection = () => {
             <div className="h-4 rounded-full overflow-hidden bg-card border border-border/50 flex">
               <div className="h-full transition-all duration-1000" style={{
                 width: `${lockedPercent}%`,
-                background: 'linear-gradient(90deg, hsl(130 60% 35%), hsl(130 70% 50%))',
+                background: 'linear-gradient(90deg, hsl(130 45% 38%), hsl(130 55% 52%))',
               }} />
               <div className="h-full transition-all duration-1000" style={{
                 width: `${circulatingPercent}%`,
-                background: 'linear-gradient(90deg, hsl(340 60% 45%), hsl(340 70% 65%))',
+                background: 'linear-gradient(90deg, hsl(345 45% 50%), hsl(345 55% 70%))',
               }} />
             </div>
             <div className="flex justify-between mt-3 text-sm">
               <span className="text-pepe flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full" style={{ background: 'linear-gradient(90deg, hsl(130 60% 35%), hsl(130 70% 50%))' }} />
+                <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(130 45% 38%)' }} />
                 Locked ({lockedPercent.toFixed(2)}%)
               </span>
               <span className="text-sakura flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full" style={{ background: 'linear-gradient(90deg, hsl(340 60% 45%), hsl(340 70% 65%))' }} />
+                <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(345 45% 50%)' }} />
                 Circulating ({circulatingPercent.toFixed(2)}%)
               </span>
             </div>
@@ -187,21 +188,24 @@ export const TokenomicsSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {staticCards.map((item, index) => (
-            <div key={index} className="card-volcanic p-6 text-center group">
-              <div className={`w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center ${item.gradient === 'green' ? 'glow-fire' : 'glow-ice'}`} style={{
-                background: item.gradient === 'green' 
-                  ? 'linear-gradient(135deg, hsl(130 60% 35%), hsl(130 70% 50%))'
-                  : 'linear-gradient(135deg, hsl(340 60% 45%), hsl(340 70% 65%))',
+            <div key={index} className="card-ukiyo p-6 text-center group">
+              <div className={`w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center ${item.color === 'pepe' ? 'glow-fire' : 'glow-ice'}`} style={{
+                background: item.color === 'pepe' 
+                  ? 'linear-gradient(135deg, hsl(130 45% 38%), hsl(130 55% 52%))'
+                  : 'linear-gradient(135deg, hsl(345 45% 50%), hsl(345 55% 70%))',
               }}>
-                <item.icon className="w-8 h-8 text-garden-dark" />
+                <item.icon className="w-8 h-8" style={{ color: 'hsl(210 25% 10%)' }} />
               </div>
               <h3 className="font-display text-lg font-semibold text-foreground mb-2">{item.title}</h3>
-              <p className={`font-display text-2xl font-bold mb-2 ${item.gradient === 'green' ? 'text-pepe' : 'text-sakura'}`}>{item.value}</p>
+              <p className={`font-display text-2xl font-bold mb-2 ${item.color === 'pepe' ? 'text-pepe' : 'text-sakura'}`}>{item.value}</p>
               <p className="text-sm text-muted-foreground">{item.description}</p>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Bottom brush stroke divider */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 z-[1] divider-brush" />
     </section>
   );
 };
