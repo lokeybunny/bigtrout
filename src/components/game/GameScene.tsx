@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { Ocean } from './Ocean';
+import { FishStatue } from './FishStatue';
 import { Boat } from './Boat';
 import { AIBoat, CHECKPOINTS, TOTAL_LAPS } from './AIBoat';
 import { RaceTrack } from './RaceTrack';
@@ -514,6 +515,7 @@ export const GameScene = () => {
         <Sky />
         <Ocean tokenMultiplier={tokenMultiplier} />
         <TroutIsland />
+        <FishStatue />
         <RaceTrack passedCheckpoints={passedCheckpoints} />
         
         <Boat 
