@@ -1,6 +1,7 @@
 import { Suspense, useState } from 'react';
 import { GameScene } from '@/components/game/GameScene';
 import raceMenuBg from '@/assets/bigtrout-race-menu.jpeg';
+import raceHowtoBg from '@/assets/bigtrout-race-howto.png';
 
 type Screen = 'menu' | 'howto' | 'playing';
 
@@ -127,9 +128,12 @@ const Game = () => {
   if (screen === 'howto') {
     return (
       <div className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse at 50% 30%, #0a1a2a 0%, #050d08 50%, #000 100%)',
-        }} />
+        <img
+          src={raceHowtoBg}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/60" />
 
         <div className="relative z-10 w-full max-w-3xl mx-auto px-6 py-8 overflow-y-auto max-h-screen">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-2" style={{
