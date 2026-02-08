@@ -197,6 +197,169 @@ export const Boat = ({ onPositionUpdate }: BoatProps) => {
         <meshStandardMaterial color="#ffcc44" emissive="#ffaa22" emissiveIntensity={0.8} />
       </mesh>
       <pointLight position={[-0.6, 0.8, 2]} color="#ffcc44" intensity={1} distance={6} />
+
+      {/* ===== FISHERMAN ===== */}
+      <group position={[0, 0.22, 0.8]}>
+        {/* Legs */}
+        <mesh position={[-0.12, 0.45, 0]}>
+          <boxGeometry args={[0.18, 0.7, 0.18]} />
+          <meshStandardMaterial color="#2a3a5a" />
+        </mesh>
+        <mesh position={[0.12, 0.45, 0]}>
+          <boxGeometry args={[0.18, 0.7, 0.18]} />
+          <meshStandardMaterial color="#2a3a5a" />
+        </mesh>
+        {/* Boots */}
+        <mesh position={[-0.12, 0.08, 0.05]}>
+          <boxGeometry args={[0.2, 0.16, 0.28]} />
+          <meshStandardMaterial color="#3a2a10" />
+        </mesh>
+        <mesh position={[0.12, 0.08, 0.05]}>
+          <boxGeometry args={[0.2, 0.16, 0.28]} />
+          <meshStandardMaterial color="#3a2a10" />
+        </mesh>
+        {/* Torso */}
+        <mesh position={[0, 1.0, 0]}>
+          <boxGeometry args={[0.45, 0.6, 0.25]} />
+          <meshStandardMaterial color="#cc8822" />
+        </mesh>
+        {/* Vest */}
+        <mesh position={[0, 1.05, 0.05]}>
+          <boxGeometry args={[0.48, 0.5, 0.15]} />
+          <meshStandardMaterial color="#5a7a3a" />
+        </mesh>
+        {/* Head */}
+        <mesh position={[0, 1.5, 0]}>
+          <boxGeometry args={[0.28, 0.3, 0.28]} />
+          <meshStandardMaterial color="#d4a574" />
+        </mesh>
+        {/* Hat (bucket hat) */}
+        <mesh position={[0, 1.72, 0]}>
+          <cylinderGeometry args={[0.25, 0.2, 0.15, 8]} />
+          <meshStandardMaterial color="#5a7a3a" />
+        </mesh>
+        <mesh position={[0, 1.67, 0]}>
+          <cylinderGeometry args={[0.32, 0.32, 0.04, 8]} />
+          <meshStandardMaterial color="#4a6a2a" />
+        </mesh>
+        {/* Arms */}
+        {/* Left arm — holding rod */}
+        <mesh position={[-0.32, 1.0, -0.1]} rotation={[0.4, 0, 0.2]}>
+          <boxGeometry args={[0.14, 0.5, 0.14]} />
+          <meshStandardMaterial color="#cc8822" />
+        </mesh>
+        {/* Right arm — relaxed */}
+        <mesh position={[0.32, 0.95, 0]} rotation={[0, 0, -0.15]}>
+          <boxGeometry args={[0.14, 0.5, 0.14]} />
+          <meshStandardMaterial color="#cc8822" />
+        </mesh>
+        {/* Hands */}
+        <mesh position={[-0.35, 0.7, -0.2]}>
+          <boxGeometry args={[0.1, 0.1, 0.1]} />
+          <meshStandardMaterial color="#d4a574" />
+        </mesh>
+        <mesh position={[0.35, 0.68, 0]}>
+          <boxGeometry args={[0.1, 0.1, 0.1]} />
+          <meshStandardMaterial color="#d4a574" />
+        </mesh>
+      </group>
+
+      {/* ===== FISH BAGS / CATCH ===== */}
+      {/* Bag 1 — large burlap sack with trout tails poking out */}
+      <group position={[-0.5, 0.35, 1.5]}>
+        <mesh>
+          <sphereGeometry args={[0.3, 8, 6]} />
+          <meshStandardMaterial color="#8a7a5a" roughness={0.95} />
+        </mesh>
+        {/* Tied top */}
+        <mesh position={[0, 0.25, 0]}>
+          <cylinderGeometry args={[0.08, 0.15, 0.15, 6]} />
+          <meshStandardMaterial color="#6a5a3a" />
+        </mesh>
+        {/* Rope tie */}
+        <mesh position={[0, 0.3, 0]}>
+          <torusGeometry args={[0.08, 0.015, 6, 8]} />
+          <meshStandardMaterial color="#aa9060" />
+        </mesh>
+        {/* Fish tail sticking out */}
+        <mesh position={[0.1, 0.35, 0]} rotation={[0.3, 0, 0.5]}>
+          <coneGeometry args={[0.08, 0.15, 4]} />
+          <meshStandardMaterial color="#2d8a4e" />
+        </mesh>
+      </group>
+
+      {/* Bag 2 — smaller sack */}
+      <group position={[0.4, 0.32, 1.8]}>
+        <mesh>
+          <sphereGeometry args={[0.22, 8, 6]} />
+          <meshStandardMaterial color="#7a6a4a" roughness={0.95} />
+        </mesh>
+        <mesh position={[0, 0.18, 0]}>
+          <cylinderGeometry args={[0.06, 0.12, 0.12, 6]} />
+          <meshStandardMaterial color="#6a5a3a" />
+        </mesh>
+        {/* Fish tail */}
+        <mesh position={[-0.05, 0.28, 0.05]} rotation={[-0.2, 0, -0.4]}>
+          <coneGeometry args={[0.06, 0.12, 4]} />
+          <meshStandardMaterial color="#2d8a4e" />
+        </mesh>
+      </group>
+
+      {/* Bag 3 — near middle */}
+      <group position={[0, 0.33, 1.2]}>
+        <mesh>
+          <sphereGeometry args={[0.25, 8, 6]} />
+          <meshStandardMaterial color="#8a7a5a" roughness={0.95} />
+        </mesh>
+        <mesh position={[0, 0.2, 0]}>
+          <cylinderGeometry args={[0.07, 0.13, 0.12, 6]} />
+          <meshStandardMaterial color="#6a5a3a" />
+        </mesh>
+        {/* Two tails */}
+        <mesh position={[0.08, 0.3, 0]} rotation={[0.2, 0.3, 0.3]}>
+          <coneGeometry args={[0.07, 0.13, 4]} />
+          <meshStandardMaterial color="#2d8a4e" />
+        </mesh>
+        <mesh position={[-0.08, 0.32, 0.02]} rotation={[-0.3, 0, -0.5]}>
+          <coneGeometry args={[0.06, 0.11, 4]} />
+          <meshStandardMaterial color="#3a9a5e" />
+        </mesh>
+      </group>
+
+      {/* Wooden crate with fish visible */}
+      <group position={[-0.6, 0.3, 0.5]}>
+        <mesh>
+          <boxGeometry args={[0.5, 0.3, 0.4]} />
+          <meshStandardMaterial color="#7a5a30" roughness={0.9} />
+        </mesh>
+        {/* Fish inside crate */}
+        <mesh position={[0, 0.18, 0]} rotation={[0, 0.3, 0]}>
+          <sphereGeometry args={[0.12, 6, 4]} />
+          <meshStandardMaterial color="#2d8a4e" metalness={0.2} />
+        </mesh>
+        <mesh position={[0.1, 0.2, 0.05]} rotation={[0, -0.2, 0.3]}>
+          <sphereGeometry args={[0.1, 6, 4]} />
+          <meshStandardMaterial color="#3aaa5e" metalness={0.2} />
+        </mesh>
+      </group>
+
+      {/* Bucket with a fish */}
+      <group position={[0.6, 0.28, 0.3]}>
+        <mesh>
+          <cylinderGeometry args={[0.15, 0.12, 0.3, 8]} />
+          <meshStandardMaterial color="#6a6a6a" metalness={0.4} roughness={0.6} />
+        </mesh>
+        {/* Water in bucket */}
+        <mesh position={[0, 0.1, 0]}>
+          <cylinderGeometry args={[0.13, 0.13, 0.05, 8]} />
+          <meshStandardMaterial color="#2a6a5a" transparent opacity={0.6} />
+        </mesh>
+        {/* Tail fin poking out */}
+        <mesh position={[0.05, 0.2, 0]} rotation={[0.4, 0, 0.6]}>
+          <coneGeometry args={[0.06, 0.1, 4]} />
+          <meshStandardMaterial color="#2d8a4e" />
+        </mesh>
+      </group>
     </group>
   );
 };
