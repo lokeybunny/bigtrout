@@ -8,6 +8,7 @@ import { RaceTrack } from './RaceTrack';
 import { TroutIsland } from './TroutIsland';
 import { Sky } from './Sky';
 import { SpeedBoost, generateBoosts, BoostPickup } from './SpeedBoost';
+import { Obstacles, generateObstacles, Obstacle } from './Obstacles';
 import { Minimap } from './Minimap';
 
 interface RaceState {
@@ -50,9 +51,11 @@ export const GameScene = () => {
   const wakeHeadingRef = useRef(0);
 
   const [boosts, setBoosts] = useState<BoostPickup[]>(() => generateBoosts());
+  const [obstacles] = useState<Obstacle[]>(() => generateObstacles());
   const [boostMultiplier, setBoostMultiplier] = useState(1);
   const [boostTimer, setBoostTimer] = useState(0);
   const [boostMessage, setBoostMessage] = useState<string | null>(null);
+  const [hitMessage, setHitMessage] = useState<string | null>(null);
   
   const [state, setState] = useState<RaceState>({
     playerCheckpoint: 0,
@@ -95,7 +98,7 @@ export const GameScene = () => {
 
   // Boost decay via rAF — no setInterval jank
   useEffect(() => {
-    if (boostMultiplier <= 1) return;
+    if (boostMultiplier === 1) return;
     let raf: number;
     let lastUpdate = 0;
     const tick = (now: number) => {
@@ -124,6 +127,14 @@ export const GameScene = () => {
     setBoostTimer(4);
     setBoostMessage('⚡ SPEED BOOST!');
     setTimeout(() => setBoostMessage(null), 2000);
+  }, []);
+
+  const handleObstacleHit = useCallback((type: 'rock' | 'wave') => {
+    // Slow down by setting a negative multiplier briefly
+    setBoostMultiplier(0.3);
+    boostEndTimeRef.current = performance.now() + 1500;
+    setHitMessage(type === 'rock' ? '🪨 ROCK HIT! Slowed!' : '🌊 ROUGH WAVES! Slowed!');
+    setTimeout(() => setHitMessage(null), 1500);
   }, []);
 
   const handleBoatPosition = useCallback((pos: THREE.Vector3) => {
@@ -216,7 +227,7 @@ export const GameScene = () => {
               Checkpoint: {lastCheckpointRef.current + 1} / {CHECKPOINTS.length}
             </div>
             <div className="text-sm mt-1" style={{ fontFamily: 'Rajdhani', color: '#aaa' }}>
-              ⌨️ WASD to steer • Collect ⚡ for boosts!
+              ⌨️ WASD to steer • Collect ⚡ • Avoid 🪨!
             </div>
             {/* Boost indicator */}
             {boostMultiplier > 1 && (
@@ -294,7 +305,19 @@ export const GameScene = () => {
         </div>
       )}
 
-      {/* Countdown */}
+      {/* Hit message */}
+      {hitMessage && (
+        <div className="absolute top-32 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+          <div className="text-3xl font-bold" style={{
+            fontFamily: 'Bangers, cursive',
+            color: '#ff4444',
+            textShadow: '0 0 30px rgba(255,68,68,0.6), 3px 3px 0 #000',
+          }}>
+            {hitMessage}
+          </div>
+        </div>
+      )}
+
       {countdownDisplay && (
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
           <div className="text-8xl font-bold" style={{
@@ -393,6 +416,9 @@ export const GameScene = () => {
             onCollect={handleBoostCollect}
           />
         ))}
+
+        {/* Obstacles */}
+        <Obstacles obstacles={obstacles} playerPos={wakePosRef} onHit={handleObstacleHit} />
       </Canvas>
     </div>
   );
