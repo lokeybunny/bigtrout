@@ -65,6 +65,7 @@ export const GameScene = () => {
   const [passedCheckpoints, setPassedCheckpoints] = useState<Set<number>>(new Set());
   const [checkpointFlash, setCheckpointFlash] = useState<string | null>(null);
   const [paddleDisabled, setPaddleDisabled] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   // $BIGTROUT points from Solana buys/sells
   const [troutPoints, setTroutPoints] = useState(0);
@@ -137,6 +138,7 @@ export const GameScene = () => {
     setTroutPoints(0);
     setTokenMultiplier(1);
     setTokenMessage(null);
+    setResetKey(prev => prev + 1);
 
     // Restart countdown
     setCountdownDisplay('3');
@@ -582,6 +584,7 @@ export const GameScene = () => {
         <RaceTrack passedCheckpoints={passedCheckpoints} />
         
         <Boat 
+          key={`player-${resetKey}`}
           onPositionUpdate={handleBoatPosition}
           speedRef={wakeSpeedRef}
           posRef={wakePosRef}
@@ -593,7 +596,7 @@ export const GameScene = () => {
         
         {AI_BOATS.map((boat, i) => (
           <AIBoat
-            key={boat.id}
+            key={`${boat.id}-${resetKey}`}
             id={boat.id}
             color={boat.color}
             speed={state.raceStarted ? boat.speed : 0}
