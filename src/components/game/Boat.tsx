@@ -15,6 +15,9 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
   const groupRef = useRef<THREE.Group>(null);
   const sailRef = useRef<THREE.Group>(null);
   const jibRef = useRef<THREE.Mesh>(null);
+  const mouthRef = useRef<THREE.Mesh>(null);
+  const leftPupilRef = useRef<THREE.Mesh>(null);
+  const rightPupilRef = useRef<THREE.Mesh>(null);
   const keysRef = useRef<Set<string>>(new Set());
   const velocityRef = useRef({ forward: 0, turn: 0 });
   const headingRef = useRef(0);
@@ -111,6 +114,24 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
       const speedNorm = Math.abs(vel.forward) / maxSpeed;
       jibRef.current.scale.x = 1 + speedNorm * 0.25;
       jibRef.current.rotation.y = Math.sin(t * 2) * 0.05 + speedNorm * 0.2;
+    }
+
+    // Animate fish head mouth — opens when moving
+    if (mouthRef.current) {
+      const speedNorm = Math.abs(vel.forward) / maxSpeed;
+      const mouthOpen = speedNorm > 0.05 ? Math.sin(t * 6) * 0.08 * speedNorm + 0.02 : 0;
+      mouthRef.current.position.y = -0.1 - mouthOpen;
+      mouthRef.current.scale.y = 1 + mouthOpen * 8;
+    }
+
+    // Animate fish eyes — pupils look in turning direction
+    const turnNorm = vel.turn / turnSpeed;
+    const eyeShift = turnNorm * 0.04;
+    if (leftPupilRef.current) {
+      leftPupilRef.current.position.x = -0.22 + eyeShift;
+    }
+    if (rightPupilRef.current) {
+      rightPupilRef.current.position.x = 0.22 + eyeShift;
     }
 
     // Camera follow
@@ -271,7 +292,7 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
             <sphereGeometry args={[0.1, 8, 8]} />
             <meshStandardMaterial color="#ffffff" />
           </mesh>
-          <mesh position={[-0.22, 0.08, 0.26]}>
+          <mesh ref={leftPupilRef} position={[-0.22, 0.08, 0.26]}>
             <sphereGeometry args={[0.05, 8, 8]} />
             <meshStandardMaterial color="#111111" />
           </mesh>
@@ -280,12 +301,12 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
             <sphereGeometry args={[0.1, 8, 8]} />
             <meshStandardMaterial color="#ffffff" />
           </mesh>
-          <mesh position={[0.22, 0.08, 0.26]}>
+          <mesh ref={rightPupilRef} position={[0.22, 0.08, 0.26]}>
             <sphereGeometry args={[0.05, 8, 8]} />
             <meshStandardMaterial color="#111111" />
           </mesh>
           {/* Mouth — wide grin */}
-          <mesh position={[0, -0.1, 0.25]} rotation={[0.2, 0, 0]}>
+          <mesh ref={mouthRef} position={[0, -0.1, 0.25]} rotation={[0.2, 0, 0]}>
             <boxGeometry args={[0.25, 0.04, 0.06]} />
             <meshStandardMaterial color="#cc3333" />
           </mesh>
