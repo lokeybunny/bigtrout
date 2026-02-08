@@ -24,7 +24,7 @@ const Game = () => {
           textShadow: '0 0 20px rgba(68,255,136,0.4), 3px 3px 0 #000',
           letterSpacing: '0.05em'
         }}>
-          🏁 RACE TO $BIGTROUT
+          🏁 $BIGTROUT RACE
         </h1>
       </div>
 
