@@ -1,5 +1,5 @@
 import { Menu, X } from 'lucide-react';
-import troutLogo from '@/assets/trout-logo.png';
+import troutLogo from '@/assets/trout-logo-clean.png';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
@@ -25,7 +25,7 @@ export const Navbar = () => {
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img src={troutLogo} alt="BigTrout" className="w-12 h-12 object-contain mix-blend-multiply" />
+          <img src={troutLogo} alt="BigTrout" className="w-12 h-12 object-contain" />
         </Link>
 
         {/* Desktop Navigation links */}
