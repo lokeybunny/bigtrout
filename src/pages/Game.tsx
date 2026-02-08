@@ -24,16 +24,16 @@ const Game = () => {
           textShadow: '0 0 20px rgba(68,255,136,0.4), 3px 3px 0 #000',
           letterSpacing: '0.05em'
         }}>
-          🎣 BIGTROUT FISHING
+          🏁 RACE TO $BIGTROUT
         </h1>
       </div>
 
       <Suspense fallback={
         <div className="w-full h-full flex items-center justify-center">
           <div className="text-center">
-            <div className="text-4xl mb-4">🐟</div>
-            <div className="text-xl font-bold text-pepe-glow" style={{ fontFamily: 'Bangers' }}>
-              Loading the waters...
+            <div className="text-4xl mb-4">⛵</div>
+            <div className="text-xl font-bold" style={{ fontFamily: 'Bangers', color: '#44ff88' }}>
+              Preparing the race...
             </div>
           </div>
         </div>
@@ -41,7 +41,6 @@ const Game = () => {
         <GameScene />
       </Suspense>
 
-      {/* Float up animation */}
       <style>{`
         @keyframes floatUp {
           0% { opacity: 1; transform: translateY(0); }

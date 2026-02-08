@@ -7,9 +7,10 @@ interface BoatProps {
   speedRef?: MutableRefObject<number>;
   posRef?: MutableRefObject<THREE.Vector3>;
   headingRef?: MutableRefObject<number>;
+  raceStarted?: boolean;
 }
 
-export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef }: BoatProps) => {
+export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true }: BoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const sailRef = useRef<THREE.Group>(null);
   const jibRef = useRef<THREE.Mesh>(null);
@@ -48,20 +49,26 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     const turnSpeed = 1.8;
     const friction = 0.96;
 
-    if (keys.has('w') || keys.has('arrowup')) {
-      vel.forward = Math.min(vel.forward + accel * delta, maxSpeed);
-    } else if (keys.has('s') || keys.has('arrowdown')) {
-      vel.forward = Math.max(vel.forward - accel * delta, -maxSpeed * 0.4);
+    // Block movement before race starts
+    if (!raceStarted) {
+      vel.forward = 0;
+      vel.turn = 0;
     } else {
-      vel.forward *= friction;
-    }
+      if (keys.has('w') || keys.has('arrowup')) {
+        vel.forward = Math.min(vel.forward + accel * delta, maxSpeed);
+      } else if (keys.has('s') || keys.has('arrowdown')) {
+        vel.forward = Math.max(vel.forward - accel * delta, -maxSpeed * 0.4);
+      } else {
+        vel.forward *= friction;
+      }
 
-    if (keys.has('a') || keys.has('arrowleft')) {
-      vel.turn = Math.min(vel.turn + turnSpeed * delta, turnSpeed);
-    } else if (keys.has('d') || keys.has('arrowright')) {
-      vel.turn = Math.max(vel.turn - turnSpeed * delta, -turnSpeed);
-    } else {
-      vel.turn *= 0.9;
+      if (keys.has('a') || keys.has('arrowleft')) {
+        vel.turn = Math.min(vel.turn + turnSpeed * delta, turnSpeed);
+      } else if (keys.has('d') || keys.has('arrowright')) {
+        vel.turn = Math.max(vel.turn - turnSpeed * delta, -turnSpeed);
+      } else {
+        vel.turn *= 0.9;
+      }
     }
 
     headingRef.current += vel.turn * delta;
