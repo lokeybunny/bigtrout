@@ -12,7 +12,7 @@ export const TroutIsland = () => {
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, -180]} rotation={[0, Math.PI, 0]}>
+    <group ref={groupRef} position={[0, 0, -185]} rotation={[0, Math.PI, 0]}>
       {/* Main body — elongated fish shape */}
       <mesh position={[0, 2, 0]}>
         <sphereGeometry args={[8, 16, 12]} />

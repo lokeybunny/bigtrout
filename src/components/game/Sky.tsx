@@ -14,7 +14,7 @@ export const Sky = () => {
     <>
       {/* Sky dome */}
       <mesh>
-        <sphereGeometry args={[100, 32, 16]} />
+        <sphereGeometry args={[400, 32, 16]} />
         <meshBasicMaterial 
           color="#1a2a4a" 
           side={THREE.BackSide}
