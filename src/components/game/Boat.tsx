@@ -13,6 +13,12 @@ interface BoatProps {
   onPaddleChange?: (active: boolean) => void;
 }
 
+// Pre-allocated vectors to avoid per-frame GC
+const _camOffset = new THREE.Vector3();
+const _targetCamPos = new THREE.Vector3();
+const _lookTarget = new THREE.Vector3();
+const _yAxis = new THREE.Vector3(0, 1, 0);
+
 export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true, boostMultiplier = 1, paddleDisabled = false, onPaddleChange }: BoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const sailRef = useRef<THREE.Group>(null);
@@ -156,16 +162,15 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
       }
     }
 
-    // Camera follow
-    const camOffset = new THREE.Vector3(0, 3.5, 8);
-    camOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), headingRef.current);
-    const targetCamPos = posRef.current.clone().add(camOffset);
-    camera.position.lerp(targetCamPos, 0.04);
+    // Camera follow — reuse vectors to avoid GC pressure
+    _camOffset.set(0, 3.5, 8);
+    _camOffset.applyAxisAngle(_yAxis, headingRef.current);
+    _targetCamPos.copy(posRef.current).add(_camOffset);
+    camera.position.lerp(_targetCamPos, 0.04);
 
-    const lookTarget = posRef.current.clone().add(
-      new THREE.Vector3(0, 0.5, -5).applyAxisAngle(new THREE.Vector3(0, 1, 0), headingRef.current)
-    );
-    camera.lookAt(lookTarget);
+    _lookTarget.set(0, 0.5, -5).applyAxisAngle(_yAxis, headingRef.current);
+    _lookTarget.add(posRef.current);
+    camera.lookAt(_lookTarget);
 
     onPositionUpdate?.(posRef.current.clone(), headingRef.current);
   });

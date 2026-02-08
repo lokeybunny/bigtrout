@@ -56,14 +56,19 @@ const RockObstacle = ({ obstacle, playerPos, onHit }: ObstacleProps) => {
 
   useFrame(() => {
     if (!groupRef.current) return;
-    cooldownRef.current = Math.max(0, cooldownRef.current - 1 / 60);
+    if (cooldownRef.current > 0) {
+      cooldownRef.current = Math.max(0, cooldownRef.current - 1 / 60);
+      return; // skip distance check during cooldown
+    }
 
     const dx = playerPos.current.x - obstacle.position[0];
     const dz = playerPos.current.z - obstacle.position[2];
-    const dist = Math.sqrt(dx * dx + dz * dz);
+    // Use squared distance to avoid Math.sqrt
+    const distSq = dx * dx + dz * dz;
+    const rSq = obstacle.radius * obstacle.radius;
 
-    if (dist < obstacle.radius && cooldownRef.current <= 0) {
-      cooldownRef.current = 2; // 2 second cooldown
+    if (distSq < rSq) {
+      cooldownRef.current = 2;
       onHit('rock');
     }
   });
@@ -104,17 +109,22 @@ const WaveObstacle = ({ obstacle, playerPos, onHit }: ObstacleProps) => {
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
     const t = clock.getElapsedTime();
-    cooldownRef.current = Math.max(0, cooldownRef.current - 1 / 60);
 
     // Animate wave bobbing
     groupRef.current.position.y = Math.sin(t * 1.5) * 0.3;
     groupRef.current.rotation.z = Math.sin(t * 1.2) * 0.15;
 
+    if (cooldownRef.current > 0) {
+      cooldownRef.current = Math.max(0, cooldownRef.current - 1 / 60);
+      return;
+    }
+
     const dx = playerPos.current.x - obstacle.position[0];
     const dz = playerPos.current.z - obstacle.position[2];
-    const dist = Math.sqrt(dx * dx + dz * dz);
+    const distSq = dx * dx + dz * dz;
+    const rSq = obstacle.radius * obstacle.radius;
 
-    if (dist < obstacle.radius && cooldownRef.current <= 0) {
+    if (distSq < rSq) {
       cooldownRef.current = 2;
       onHit('wave');
     }
