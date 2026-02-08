@@ -9,9 +9,11 @@ interface BoatProps {
   headingRef?: MutableRefObject<number>;
   raceStarted?: boolean;
   boostMultiplier?: number;
+  paddleDisabled?: boolean;
+  onPaddleChange?: (active: boolean) => void;
 }
 
-export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true, boostMultiplier = 1 }: BoatProps) => {
+export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true, boostMultiplier = 1, paddleDisabled = false, onPaddleChange }: BoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const sailRef = useRef<THREE.Group>(null);
   const jibRef = useRef<THREE.Mesh>(null);
@@ -22,6 +24,9 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
   const velocityRef = useRef({ forward: 0, turn: 0 });
   const headingRef = useRef(0);
   const posRef = useRef(new THREE.Vector3(0, -0.3, -15));
+  const paddleArmRef = useRef<THREE.Mesh>(null);
+  const paddleRef = useRef<THREE.Group>(null);
+  const isPaddlingRef = useRef(false);
   const { camera } = useThree();
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -47,9 +52,13 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     const vel = velocityRef.current;
     const t = clock.getElapsedTime();
 
-    // Acceleration / deceleration
-    const accel = 4 * boostMultiplier;
-    const maxSpeed = 8 * boostMultiplier;
+    // Paddle boost — shift key, disabled after obstacle hit
+    const paddling = keys.has('shift') && !paddleDisabled && raceStarted;
+    isPaddlingRef.current = paddling;
+    const paddleMult = paddling ? 1.4 : 1;
+
+    const accel = 4 * boostMultiplier * paddleMult;
+    const maxSpeed = 8 * boostMultiplier * paddleMult;
     const turnSpeed = 1.8;
     const friction = 0.96;
 
@@ -132,6 +141,19 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     }
     if (rightPupilRef.current) {
       rightPupilRef.current.position.x = 0.22 + eyeShift;
+    }
+
+    // Animate paddle when shift is held
+    if (paddleArmRef.current && paddleRef.current) {
+      if (isPaddlingRef.current) {
+        const paddleSwing = Math.sin(t * 8) * 0.6;
+        paddleArmRef.current.rotation.x = 0.8 + paddleSwing;
+        paddleRef.current.visible = true;
+        paddleRef.current.rotation.x = 0.8 + paddleSwing;
+      } else {
+        paddleArmRef.current.rotation.x = 0;
+        paddleRef.current.visible = false;
+      }
     }
 
     // Camera follow
@@ -331,11 +353,25 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
           <boxGeometry args={[0.14, 0.5, 0.14]} />
           <meshStandardMaterial color="#cc8822" />
         </mesh>
-        {/* Right arm — relaxed */}
-        <mesh position={[0.32, 0.95, 0]} rotation={[0, 0, -0.15]}>
+        {/* Right arm — paddle arm */}
+        <mesh ref={paddleArmRef} position={[0.32, 0.95, 0]} rotation={[0, 0, -0.15]}>
           <boxGeometry args={[0.14, 0.5, 0.14]} />
           <meshStandardMaterial color="#cc8822" />
         </mesh>
+
+        {/* Paddle (visible only when paddling) */}
+        <group ref={paddleRef} position={[0.5, 0.4, -0.3]} visible={false}>
+          {/* Paddle shaft */}
+          <mesh rotation={[0.8, 0, 0]}>
+            <cylinderGeometry args={[0.025, 0.025, 1.8]} />
+            <meshStandardMaterial color="#5a3a10" />
+          </mesh>
+          {/* Paddle blade */}
+          <mesh position={[0, -0.6, -0.5]} rotation={[0.8, 0, 0]}>
+            <boxGeometry args={[0.2, 0.02, 0.5]} />
+            <meshStandardMaterial color="#7a5a20" />
+          </mesh>
+        </group>
         {/* Hands */}
         <mesh position={[-0.35, 0.7, -0.2]}>
           <boxGeometry args={[0.1, 0.1, 0.1]} />
