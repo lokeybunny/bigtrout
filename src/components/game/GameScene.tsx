@@ -33,7 +33,9 @@ const AI_BOATS = [
   { id: 5, color: '#33cccc', speed: 2.7, name: 'Teal Storm' },
 ];
 
-const getCheckpointProgress = (pos: THREE.Vector3): number => {
+const CHECKPOINT_RADIUS = 8; // Must be within this distance to trigger checkpoint
+
+const getCheckpointProgress = (pos: THREE.Vector3): { index: number; withinRange: boolean } => {
   let minDist = Infinity;
   let closestIdx = 0;
   for (let i = 0; i < CHECKPOINTS.length; i++) {
@@ -45,7 +47,7 @@ const getCheckpointProgress = (pos: THREE.Vector3): number => {
       closestIdx = i;
     }
   }
-  return closestIdx;
+  return { index: closestIdx, withinRange: minDist <= CHECKPOINT_RADIUS };
 };
 
 export const GameScene = () => {
@@ -237,11 +239,11 @@ export const GameScene = () => {
   const handleBoatPosition = useCallback((pos: THREE.Vector3) => {
     boatPosRef.current.copy(pos);
     
-    const cp = getCheckpointProgress(pos);
+    const { index: cp, withinRange } = getCheckpointProgress(pos);
     const totalCPs = CHECKPOINTS.length;
     
-    if (cp === (lastCheckpointRef.current + 1) % totalCPs || 
-        (cp === 0 && lastCheckpointRef.current === totalCPs - 1)) {
+    if (withinRange && (cp === (lastCheckpointRef.current + 1) % totalCPs || 
+        (cp === 0 && lastCheckpointRef.current === totalCPs - 1))) {
       if (cp === 0 && lastCheckpointRef.current === totalCPs - 1) {
         playerLapRef.current++;
       }
