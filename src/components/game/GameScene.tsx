@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { Ocean } from './Ocean';
 import { FishStatue } from './FishStatue';
 import { Boat } from './Boat';
+import { GameRadio } from './GameRadio';
 import { AIBoat, CHECKPOINTS, TOTAL_LAPS } from './AIBoat';
 import { RaceTrack } from './RaceTrack';
 import { TroutIsland } from './TroutIsland';
@@ -465,6 +466,9 @@ export const GameScene = () => {
           </button>
         )}
       </div>
+
+      {/* Radio Player */}
+      <GameRadio />
 
       {/* $BIGTROUT Points HUD - bottom left, above chart button */}
       <div className="absolute left-2 z-10 pointer-events-none transition-all duration-300" style={{ bottom: chartExpanded ? 416 : 60 }}>
