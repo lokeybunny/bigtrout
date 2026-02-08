@@ -17,7 +17,7 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
   const keysRef = useRef<Set<string>>(new Set());
   const velocityRef = useRef({ forward: 0, turn: 0 });
   const headingRef = useRef(0);
-  const posRef = useRef(new THREE.Vector3(0, -0.3, 2));
+  const posRef = useRef(new THREE.Vector3(0, -0.3, -15));
   const { camera } = useThree();
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -79,9 +79,9 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     posRef.current.x += dx;
     posRef.current.z += dz;
 
-    // Clamp to play area
-    posRef.current.x = Math.max(-40, Math.min(40, posRef.current.x));
-    posRef.current.z = Math.max(-40, Math.min(40, posRef.current.z));
+    // Clamp to play area — wide enough for the full race track
+    posRef.current.x = Math.max(-120, Math.min(120, posRef.current.x));
+    posRef.current.z = Math.max(-250, Math.min(50, posRef.current.z));
 
     // Ocean bob
     const bobY = -0.3 + Math.sin(t * 0.8) * 0.15;

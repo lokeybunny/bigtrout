@@ -274,11 +274,11 @@ export const GameScene = () => {
       )}
 
       {/* 3D Canvas */}
-      <Canvas camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 300 }}>
+      <Canvas camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 500 }}>
         <ambientLight intensity={0.8} color="#6688bb" />
         <directionalLight position={[10, 20, 5]} intensity={1.2} color="#ccddef" />
         <hemisphereLight args={['#6688aa', '#223344', 0.6]} />
-        <fog attach="fog" args={['#0a1525', 40, 150]} />
+        <fog attach="fog" args={['#0a1525', 60, 250]} />
         
         <Sky />
         <Ocean />
