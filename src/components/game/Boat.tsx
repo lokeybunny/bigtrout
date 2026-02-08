@@ -8,9 +8,10 @@ interface BoatProps {
   posRef?: MutableRefObject<THREE.Vector3>;
   headingRef?: MutableRefObject<number>;
   raceStarted?: boolean;
+  boostMultiplier?: number;
 }
 
-export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true }: BoatProps) => {
+export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true, boostMultiplier = 1 }: BoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const sailRef = useRef<THREE.Group>(null);
   const jibRef = useRef<THREE.Mesh>(null);
@@ -44,8 +45,8 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     const t = clock.getElapsedTime();
 
     // Acceleration / deceleration
-    const accel = 4;
-    const maxSpeed = 8;
+    const accel = 4 * boostMultiplier;
+    const maxSpeed = 8 * boostMultiplier;
     const turnSpeed = 1.8;
     const friction = 0.96;
 

@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { Ocean } from './Ocean';
 import { Boat } from './Boat';
@@ -7,6 +7,8 @@ import { AIBoat, CHECKPOINTS, TOTAL_LAPS } from './AIBoat';
 import { RaceTrack } from './RaceTrack';
 import { TroutIsland } from './TroutIsland';
 import { Sky } from './Sky';
+import { SpeedBoost, generateBoosts, BoostPickup } from './SpeedBoost';
+import { Minimap } from './Minimap';
 
 interface RaceState {
   playerCheckpoint: number;
@@ -46,6 +48,11 @@ export const GameScene = () => {
   const wakeSpeedRef = useRef(0);
   const wakePosRef = useRef(new THREE.Vector3(0, 0, -15));
   const wakeHeadingRef = useRef(0);
+
+  const [boosts, setBoosts] = useState<BoostPickup[]>(() => generateBoosts());
+  const [boostMultiplier, setBoostMultiplier] = useState(1);
+  const [boostTimer, setBoostTimer] = useState(0);
+  const [boostMessage, setBoostMessage] = useState<string | null>(null);
   
   const [state, setState] = useState<RaceState>({
     playerCheckpoint: 0,
@@ -68,7 +75,7 @@ export const GameScene = () => {
   );
   const finishOrderRef = useRef<(number | 'player')[]>([]);
 
-  // Start countdown
+  // Countdown
   const [countdownDisplay, setCountdownDisplay] = useState<string | null>('3');
   const countdownStarted = useRef(false);
 
@@ -83,14 +90,37 @@ export const GameScene = () => {
     setTimeout(() => setCountdownDisplay(null), 3800);
   }
 
+  // Boost timer decay
+  useEffect(() => {
+    if (boostMultiplier > 1) {
+      const interval = setInterval(() => {
+        setBoostTimer(prev => {
+          if (prev <= 0.1) {
+            setBoostMultiplier(1);
+            setBoostMessage(null);
+            return 0;
+          }
+          return prev - 0.1;
+        });
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [boostMultiplier]);
+
+  const handleBoostCollect = useCallback((id: string) => {
+    setBoosts(prev => prev.map(b => b.id === id ? { ...b, active: false } : b));
+    setBoostMultiplier(1.8);
+    setBoostTimer(4);
+    setBoostMessage('⚡ SPEED BOOST!');
+    setTimeout(() => setBoostMessage(null), 2000);
+  }, []);
+
   const handleBoatPosition = useCallback((pos: THREE.Vector3) => {
     boatPosRef.current.copy(pos);
     
-    // Track player checkpoint
     const cp = getCheckpointProgress(pos);
     const totalCPs = CHECKPOINTS.length;
     
-    // Only advance checkpoint if moving forward (within 2 of last)
     if (cp === (lastCheckpointRef.current + 1) % totalCPs || 
         (cp === 0 && lastCheckpointRef.current === totalCPs - 1)) {
       if (cp === 0 && lastCheckpointRef.current === totalCPs - 1) {
@@ -99,7 +129,6 @@ export const GameScene = () => {
       lastCheckpointRef.current = cp;
       playerProgressRef.current = playerLapRef.current * totalCPs + cp;
       
-      // Check if player finished
       if (playerLapRef.current >= TOTAL_LAPS && !finishOrderRef.current.includes('player')) {
         finishOrderRef.current.push('player');
         const place = finishOrderRef.current.indexOf('player') + 1;
@@ -120,7 +149,6 @@ export const GameScene = () => {
       }));
     }
 
-    // Update positions for leaderboard
     updatePositions();
   }, []);
 
@@ -147,7 +175,13 @@ export const GameScene = () => {
   }, []);
 
   const playerPlace = state.positions.findIndex(p => p.id === 'player') + 1;
-  const totalCheckpointsPassed = playerProgressRef.current;
+
+  // AI positions for minimap
+  const aiMinimapData = AI_BOATS.map(b => ({
+    id: b.id,
+    color: b.color,
+    progress: aiProgressRef.current[b.id] || 0,
+  }));
 
   return (
     <div className="relative w-full h-screen" style={{ cursor: 'crosshair' }}>
@@ -171,8 +205,22 @@ export const GameScene = () => {
               Checkpoint: {lastCheckpointRef.current + 1} / {CHECKPOINTS.length}
             </div>
             <div className="text-sm mt-1" style={{ fontFamily: 'Rajdhani', color: '#aaa' }}>
-              ⌨️ WASD to steer • Race to $BIGTROUT Island!
+              ⌨️ WASD to steer • Collect ⚡ for boosts!
             </div>
+            {/* Boost indicator */}
+            {boostMultiplier > 1 && (
+              <div className="mt-1">
+                <div className="text-sm font-bold" style={{ fontFamily: 'Bangers', color: '#ffaa00' }}>
+                  ⚡ BOOST {boostTimer.toFixed(1)}s
+                </div>
+                <div className="w-32 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.5)' }}>
+                  <div className="h-full rounded-full transition-all" style={{
+                    width: `${(boostTimer / 4) * 100}%`,
+                    background: 'linear-gradient(90deg, #ff6600, #ffcc00)',
+                  }} />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Position */}
@@ -221,6 +269,20 @@ export const GameScene = () => {
         </div>
       </div>
 
+      {/* Boost message */}
+      {boostMessage && (
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+          <div className="text-3xl font-bold" style={{
+            fontFamily: 'Bangers, cursive',
+            color: '#ffaa00',
+            textShadow: '0 0 30px rgba(255,170,0,0.6), 3px 3px 0 #000',
+            animation: 'floatUp 2s ease-out forwards',
+          }}>
+            {boostMessage}
+          </div>
+        </div>
+      )}
+
       {/* Countdown */}
       {countdownDisplay && (
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
@@ -228,7 +290,6 @@ export const GameScene = () => {
             fontFamily: 'Bangers, cursive',
             color: countdownDisplay === 'GO!' ? '#44ff88' : '#ffcc44',
             textShadow: '0 0 40px rgba(255,204,68,0.5), 4px 4px 0 #000',
-            animation: 'pulse 0.5s ease-in-out',
           }}>
             {countdownDisplay}
           </div>
@@ -273,6 +334,13 @@ export const GameScene = () => {
         </div>
       )}
 
+      {/* Minimap */}
+      <Minimap 
+        playerPos={boatPosRef} 
+        aiPositions={aiMinimapData}
+        boosts={boosts}
+      />
+
       {/* 3D Canvas */}
       <Canvas camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 500 }}>
         <ambientLight intensity={0.8} color="#6688bb" />
@@ -291,6 +359,7 @@ export const GameScene = () => {
           posRef={wakePosRef}
           headingRef={wakeHeadingRef}
           raceStarted={state.raceStarted}
+          boostMultiplier={boostMultiplier}
         />
         
         {AI_BOATS.map((boat, i) => (
@@ -301,6 +370,16 @@ export const GameScene = () => {
             speed={state.raceStarted ? boat.speed : 0}
             startOffset={i * 0.3}
             onProgress={handleAIProgress}
+          />
+        ))}
+
+        {/* Speed boost pickups */}
+        {boosts.map(boost => (
+          <SpeedBoost
+            key={boost.id}
+            pickup={boost}
+            playerPos={wakePosRef}
+            onCollect={handleBoostCollect}
           />
         ))}
       </Canvas>
