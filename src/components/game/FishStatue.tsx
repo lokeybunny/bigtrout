@@ -1,15 +1,19 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useAdaptivePerf } from './AdaptivePerformance';
 
 export const FishStatue = () => {
   const fishRef = useRef<THREE.Group>(null);
+  const perfRef = useAdaptivePerf();
+  const frameCount = useRef(0);
 
   useFrame(({ clock }) => {
-    // Slow majestic rotation only
-    if (fishRef.current) {
-      fishRef.current.rotation.y = clock.getElapsedTime() * 0.15;
-    }
+    if (!fishRef.current) return;
+    // On low tier, only update rotation every 3rd frame
+    frameCount.current++;
+    if (perfRef.current.tier >= 2 && frameCount.current % 3 !== 0) return;
+    fishRef.current.rotation.y = clock.getElapsedTime() * 0.15;
   });
 
   return (

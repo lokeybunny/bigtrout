@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { useAdaptivePerf } from './AdaptivePerformance';
 
 const MOON_POS: [number, number, number] = [30, 40, -60];
 
 export const Sky = () => {
-  // Star field — 200 stars (reduced from 400+300)
+  const perfRef = useAdaptivePerf();
+  const starMult = perfRef.current.starMultiplier;
+  // Star field — scaled by performance tier
   const starsGeometry = useMemo(() => {
-    const count = 200;
+    const count = Math.floor(200 * starMult);
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
