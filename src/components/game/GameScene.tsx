@@ -17,6 +17,7 @@ import { Minimap } from './Minimap';
 import { CircleCollider } from './Colliders';
 import { useSolanaTransactions, GameEvent } from '../../hooks/useSolanaTransactions';
 import { useGameSFX } from '../../hooks/useGameSFX';
+import { OpponentBoat } from './OpponentBoat';
 import { supabase } from '@/integrations/supabase/client';
 
 interface MultiplayerData {
@@ -53,8 +54,14 @@ const AI_BOATS = [
   { id: 5, color: '#33cccc', speed: 2.7, name: 'Teal Storm' },
 ];
 
-const MULTIPLAYER_LAPS = 5;
+const FISH_COLORS: Record<string, string> = {
+  trout: '#2d8a4e',
+  blowfish: '#cc9933',
+  shark: '#5566aa',
+  octopus: '#9933cc',
+};
 
+const MULTIPLAYER_LAPS = 5;
 const CHECKPOINT_RADIUS = 8;
 const CHECKPOINT_RADIUS_SQ = CHECKPOINT_RADIUS * CHECKPOINT_RADIUS;
 
@@ -98,12 +105,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   const [boosts, setBoosts] = useState<BoostPickup[]>(() => generateBoosts());
   const [obstacles] = useState<Obstacle[]>(() => generateObstacles());
   const obstacleColliders = useMemo<CircleCollider[]>(() => 
-    obstacles.map(obs => ({
-      x: obs.position[0],
-      z: obs.position[2],
-      radius: obs.radius,
-      label: obs.type,
-    })),
+    obstacles.map(obs => ({ x: obs.position[0], z: obs.position[2], radius: obs.radius, label: obs.type })),
     [obstacles]
   );
   const [boostMultiplier, setBoostMultiplier] = useState(1);
@@ -126,7 +128,12 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   const [playerFinishTime, setPlayerFinishTime] = useState<number | null>(null);
   const [leaderboardSubmitted, setLeaderboardSubmitted] = useState(false);
 
-  // $BIGTROUT points from Solana buys/sells
+  // Opponent position ref for 3D rendering (updated via broadcast)
+  const opponentPosRef = useRef({ x: 5, z: -15, heading: 0 });
+  const broadcastChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const broadcastThrottleRef = useRef(0);
+
+  // $BIGTROUT points
   const [troutPoints, setTroutPoints] = useState(0);
   const [tokenMultiplier, setTokenMultiplier] = useState(1);
   const [tokenMessage, setTokenMessage] = useState<string | null>(null);
@@ -152,13 +159,13 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   }, [playSFX]);
 
   const { connected } = useSolanaTransactions(handleGameEvent);
-  
+
   const [state, setState] = useState<RaceState>({
     playerCheckpoint: 0,
     playerLap: 0,
     positions: [
       { id: 'player', progress: 0 },
-      ...AI_BOATS.map(b => ({ id: b.id, progress: 0 })),
+      ...(isMultiplayer ? [] : AI_BOATS.map(b => ({ id: b.id, progress: 0 }))),
     ],
     finished: false,
     finishPlace: null,
@@ -174,9 +181,38 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   );
   const finishOrderRef = useRef<(number | 'player')[]>([]);
 
+  // Setup multiplayer broadcast channel
+  useEffect(() => {
+    if (!isMultiplayer || !multiplayerData) return;
+
+    const channel = supabase.channel(`race-broadcast-${multiplayerData.matchId}`, {
+      config: { broadcast: { self: false } },
+    });
+
+    channel.on('broadcast', { event: 'position' }, ({ payload }) => {
+      if (payload.playerId !== multiplayerData.playerId) {
+        opponentPosRef.current = { x: payload.x, z: payload.z, heading: payload.heading };
+        setOpponentLap(payload.lap || 0);
+        setOpponentCheckpoint(payload.checkpoint || 0);
+        if (payload.finished) {
+          setOpponentFinished(true);
+          setOpponentFinishTime(payload.finishTimeMs);
+        }
+      }
+    });
+
+    channel.subscribe();
+    broadcastChannelRef.current = channel;
+
+    return () => {
+      supabase.removeChannel(channel);
+      broadcastChannelRef.current = null;
+    };
+  }, [isMultiplayer, multiplayerData]);
+
   // Reset race (single player only)
   const resetRace = useCallback(() => {
-    if (isMultiplayer) return; // No restart in multiplayer
+    if (isMultiplayer) return;
     playerProgressRef.current = 0;
     lastCheckpointRef.current = 0;
     playerLapRef.current = 0;
@@ -198,32 +234,20 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
     setResetKey(prev => prev + 1);
     setCountdownDisplay('3');
     setState({
-      playerCheckpoint: 0,
-      playerLap: 0,
-      positions: [
-        { id: 'player', progress: 0 },
-        ...AI_BOATS.map(b => ({ id: b.id, progress: 0 })),
-      ],
-      finished: false,
-      finishPlace: null,
-      countdown: 3,
-      raceStarted: false,
+      playerCheckpoint: 0, playerLap: 0,
+      positions: [{ id: 'player', progress: 0 }, ...AI_BOATS.map(b => ({ id: b.id, progress: 0 }))],
+      finished: false, finishPlace: null, countdown: 3, raceStarted: false,
     });
     setTimeout(() => setCountdownDisplay('2'), 1000);
     setTimeout(() => setCountdownDisplay('1'), 2000);
-    setTimeout(() => {
-      setCountdownDisplay('GO!');
-      setState(prev => ({ ...prev, raceStarted: true, countdown: null }));
-    }, 3000);
+    setTimeout(() => { setCountdownDisplay('GO!'); setState(prev => ({ ...prev, raceStarted: true, countdown: null })); }, 3000);
     setTimeout(() => setCountdownDisplay(null), 3800);
   }, [isMultiplayer]);
 
   // R key to reset (single player only)
   useEffect(() => {
     if (isMultiplayer) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'r' || e.key === 'R') resetRace();
-    };
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'r' || e.key === 'R') resetRace(); };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [resetRace, isMultiplayer]);
@@ -248,39 +272,10 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   useEffect(() => {
     if (!isMultiplayer || !state.raceStarted || state.finished) return;
     let raf: number;
-    const tick = () => {
-      setRaceTimeMs(performance.now() - raceStartTimeRef.current);
-      raf = requestAnimationFrame(tick);
-    };
+    const tick = () => { setRaceTimeMs(performance.now() - raceStartTimeRef.current); raf = requestAnimationFrame(tick); };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [isMultiplayer, state.raceStarted, state.finished]);
-
-  // Multiplayer: subscribe to opponent's progress
-  useEffect(() => {
-    if (!isMultiplayer || !multiplayerData) return;
-    const channel = supabase
-      .channel(`race-${multiplayerData.matchId}`)
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'race_positions',
-        filter: `match_id=eq.${multiplayerData.matchId}`,
-      }, (payload) => {
-        const data = payload.new as any;
-        if (data.player_id !== multiplayerData.playerId) {
-          setOpponentLap(data.lap || 0);
-          setOpponentCheckpoint(Math.floor(data.pos_x) || 0); // reusing pos_x to carry checkpoint
-          if (data.finished) {
-            setOpponentFinished(true);
-            setOpponentFinishTime(data.finish_time_ms);
-          }
-        }
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [isMultiplayer, multiplayerData]);
 
   // Boost timer decay
   const boostEndTimeRef = useRef(0);
@@ -291,17 +286,8 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
     let lastUpdate = 0;
     const tick = (now: number) => {
       const remaining = Math.max(0, (boostEndTimeRef.current - performance.now()) / 1000);
-      if (remaining <= 0) {
-        setBoostMultiplier(1);
-        setBoostTimer(0);
-        setBoostMessage(null);
-      } else {
-        if (now - lastUpdate > 250) {
-          setBoostTimer(remaining);
-          lastUpdate = now;
-        }
-        raf = requestAnimationFrame(tick);
-      }
+      if (remaining <= 0) { setBoostMultiplier(1); setBoostTimer(0); setBoostMessage(null); }
+      else { if (now - lastUpdate > 250) { setBoostTimer(remaining); lastUpdate = now; } raf = requestAnimationFrame(tick); }
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
@@ -327,79 +313,77 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   }, [playSFX]);
 
   const posUpdateThrottleRef = useRef(0);
-  const mpUpdateThrottleRef = useRef(0);
 
-  const handleBoatPosition = useCallback((pos: THREE.Vector3) => {
+  // Broadcast position to opponent
+  const broadcastPosition = useCallback((pos: THREE.Vector3, heading: number, lap: number, checkpoint: number, finished = false, finishTimeMs = 0) => {
+    if (!broadcastChannelRef.current || !multiplayerData) return;
+    const now = performance.now();
+    if (!finished && now - broadcastThrottleRef.current < 50) return; // ~20Hz
+    broadcastThrottleRef.current = now;
+
+    broadcastChannelRef.current.send({
+      type: 'broadcast',
+      event: 'position',
+      payload: {
+        playerId: multiplayerData.playerId,
+        x: pos.x,
+        z: pos.z,
+        heading,
+        lap,
+        checkpoint,
+        finished,
+        finishTimeMs,
+      },
+    });
+  }, [multiplayerData]);
+
+  const handleBoatPosition = useCallback((pos: THREE.Vector3, heading: number) => {
     boatPosRef.current.copy(pos);
-    
+
+    // Broadcast in multiplayer
+    if (isMultiplayer) {
+      broadcastPosition(pos, heading, playerLapRef.current, lastCheckpointRef.current);
+    }
+
     const { index: cp, withinRange } = getCheckpointProgress(pos);
     const totalCPs = CHECKPOINTS.length;
-    
-    if (withinRange && (cp === (lastCheckpointRef.current + 1) % totalCPs || 
+
+    if (withinRange && (cp === (lastCheckpointRef.current + 1) % totalCPs ||
         (cp === 0 && lastCheckpointRef.current === totalCPs - 1))) {
       if (cp === 0 && lastCheckpointRef.current === totalCPs - 1) {
         playerLapRef.current++;
       }
       lastCheckpointRef.current = cp;
       playerProgressRef.current = playerLapRef.current * totalCPs + cp;
-      
+
       setPassedCheckpoints(prev => new Set(prev).add(cp));
       setCheckpointFlash(`✅ Checkpoint ${cp + 1} / ${totalCPs}`);
       playSFX('checkpoint');
       setTimeout(() => setCheckpointFlash(null), 1500);
-      
+
       if (playerLapRef.current >= totalLaps && !finishOrderRef.current.includes('player')) {
         finishOrderRef.current.push('player');
         const place = finishOrderRef.current.indexOf('player') + 1;
         const finishTime = performance.now() - raceStartTimeRef.current;
         setPlayerFinishTime(finishTime);
 
-        // Submit to multiplayer DB
         if (isMultiplayer && multiplayerData) {
+          broadcastPosition(pos, heading, playerLapRef.current, cp, true, Math.round(finishTime));
+
           supabase.from('race_positions').update({
-            lap: playerLapRef.current,
-            pos_x: cp,
-            finished: true,
-            finish_time_ms: Math.round(finishTime),
+            lap: playerLapRef.current, finished: true, finish_time_ms: Math.round(finishTime),
           }).eq('match_id', multiplayerData.matchId).eq('player_id', multiplayerData.playerId).then(() => {});
 
-          // Submit to leaderboard
           supabase.from('leaderboard').insert({
-            username: multiplayerData.playerName,
-            time_ms: Math.round(finishTime),
-            laps: totalLaps,
-            mode: 'multiplayer',
+            username: multiplayerData.playerName, time_ms: Math.round(finishTime), laps: totalLaps, mode: 'multiplayer',
           }).then(() => setLeaderboardSubmitted(true));
         }
 
-        setState(prev => ({
-          ...prev,
-          finished: true,
-          finishPlace: place,
-          playerCheckpoint: cp,
-          playerLap: playerLapRef.current,
-        }));
+        setState(prev => ({ ...prev, finished: true, finishPlace: place, playerCheckpoint: cp, playerLap: playerLapRef.current }));
         return;
       }
-      
-      setState(prev => ({
-        ...prev,
-        playerCheckpoint: cp,
-        playerLap: playerLapRef.current,
-      }));
 
-      // Sync to DB in multiplayer
-      if (isMultiplayer && multiplayerData) {
-        const now = performance.now();
-        if (now - mpUpdateThrottleRef.current > 500) {
-          mpUpdateThrottleRef.current = now;
-          supabase.from('race_positions').update({
-            lap: playerLapRef.current,
-            pos_x: cp, // reuse for checkpoint
-            heading: 0,
-          }).eq('match_id', multiplayerData.matchId).eq('player_id', multiplayerData.playerId).then(() => {});
-        }
-      }
+      setState(prev => ({ ...prev, playerCheckpoint: cp, playerLap: playerLapRef.current }));
     }
 
     const now = performance.now();
@@ -407,7 +391,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
       posUpdateThrottleRef.current = now;
       updatePositions();
     }
-  }, [isMultiplayer, multiplayerData, totalLaps]);
+  }, [isMultiplayer, multiplayerData, totalLaps, broadcastPosition]);
 
   const handleAIProgress = useCallback((id: number, progress: number, lap: number) => {
     aiProgressRef.current[id] = progress;
@@ -418,27 +402,31 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   }, [totalLaps]);
 
   const updatePositions = useCallback(() => {
-    const allProgress = [
-      { id: 'player' as const, progress: playerProgressRef.current },
-      ...AI_BOATS.map(b => ({ id: b.id, progress: aiProgressRef.current[b.id] || 0 })),
-    ].sort((a, b) => b.progress - a.progress);
+    const allProgress = isMultiplayer
+      ? [{ id: 'player' as const, progress: playerProgressRef.current }]
+      : [
+          { id: 'player' as const, progress: playerProgressRef.current },
+          ...AI_BOATS.map(b => ({ id: b.id, progress: aiProgressRef.current[b.id] || 0 })),
+        ];
+    allProgress.sort((a, b) => b.progress - a.progress);
     setState(prev => ({ ...prev, positions: allProgress }));
-  }, []);
+  }, [isMultiplayer]);
 
   const playerPlace = state.positions.findIndex(p => p.id === 'player') + 1;
 
-  const aiMinimapData = AI_BOATS.map(b => ({
+  const aiMinimapData = isMultiplayer ? [] : AI_BOATS.map(b => ({
     id: b.id,
     color: b.color,
     progress: aiProgressRef.current[b.id] || 0,
   }));
+
+  const opponentColor = multiplayerData ? (FISH_COLORS[multiplayerData.opponentFish] || '#cc9933') : '#cc9933';
 
   return (
     <div className="relative w-full h-screen" style={{ cursor: 'crosshair' }}>
       {/* HUD */}
       <div className="absolute top-0 left-0 right-0 z-10 p-4 pointer-events-none">
         <div className="flex items-start justify-between max-w-5xl mx-auto">
-          {/* Race info */}
           <div className="flex flex-col gap-1">
             <div className="text-3xl font-bold" style={{ fontFamily: 'Bangers, cursive', color: '#44ff88', textShadow: '0 0 20px rgba(68,255,136,0.5), 2px 2px 0 #000' }}>
               LAP {Math.min(playerLapRef.current + 1, totalLaps)} / {totalLaps}
@@ -446,7 +434,6 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
             <div className="text-lg" style={{ fontFamily: 'Bangers, cursive', color: '#ffcc44', textShadow: '2px 2px 0 #000' }}>
               Checkpoint: {lastCheckpointRef.current + 1} / {CHECKPOINTS.length}
             </div>
-            {/* Timer (multiplayer) */}
             {isMultiplayer && (
               <div className="text-lg font-mono" style={{ color: '#fff', textShadow: '2px 2px 0 #000' }}>
                 ⏱️ {formatTime(state.finished ? (playerFinishTime || raceTimeMs) : raceTimeMs)}
@@ -457,9 +444,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
             </div>
             {boostMultiplier > 1 && (
               <div className="mt-1">
-                <div className="text-sm font-bold" style={{ fontFamily: 'Bangers', color: '#ffaa00' }}>
-                  ⚡ BOOST {boostTimer.toFixed(1)}s
-                </div>
+                <div className="text-sm font-bold" style={{ fontFamily: 'Bangers', color: '#ffaa00' }}>⚡ BOOST {boostTimer.toFixed(1)}s</div>
                 <div className="w-32 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.5)' }}>
                   <div className="h-full rounded-full transition-all" style={{ width: `${(boostTimer / 4) * 100}%`, background: 'linear-gradient(90deg, #ff6600, #ffcc00)' }} />
                 </div>
@@ -467,19 +452,16 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
             )}
           </div>
 
-          {/* Standings + Opponent tracker */}
           <div className="flex flex-col gap-2">
             {/* Opponent info (multiplayer) */}
             {isMultiplayer && multiplayerData && (
               <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[160px]">
-                <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#ffcc44' }}>
-                  ⚔️ OPPONENT
-                </div>
-                <div className="text-sm" style={{ fontFamily: 'Rajdhani', color: '#ddd' }}>
+                <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#ffcc44' }}>⚔️ VS</div>
+                <div className="text-sm font-bold" style={{ fontFamily: 'Rajdhani', color: opponentColor }}>
                   {multiplayerData.opponentName}
                 </div>
                 <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: opponentFinished ? '#ffd700' : '#888' }}>
-                  {opponentFinished 
+                  {opponentFinished
                     ? `🏁 Finished: ${formatTime(opponentFinishTime || 0)}`
                     : `Lap ${Math.min(opponentLap + 1, totalLaps)}/${totalLaps} • CP ${opponentCheckpoint + 1}`
                   }
@@ -487,78 +469,61 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
               </div>
             )}
 
-            {/* AI Standings */}
-            <div className="bg-black/50 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[140px]">
-              <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#ffcc44' }}>STANDINGS</div>
-              {state.positions.slice(0, 6).map((pos, i) => {
-                const isPlayer = pos.id === 'player';
-                const boat = AI_BOATS.find(b => b.id === pos.id);
-                return (
-                  <div key={String(pos.id)} className="flex items-center gap-2 text-xs py-0.5" style={{ fontFamily: 'Rajdhani' }}>
-                    <span style={{ color: i === 0 ? '#ffd700' : i === 1 ? '#c0c0c0' : i === 2 ? '#cd7f32' : '#666', fontWeight: 'bold', width: '16px' }}>
-                      {i + 1}.
-                    </span>
-                    <span style={{ color: isPlayer ? '#44ff88' : '#aaa', fontWeight: isPlayer ? 'bold' : 'normal' }}>
-                      {isPlayer ? '🎣 YOU' : boat?.name || `Boat ${pos.id}`}
-                    </span>
-                    {isPlayer && <span style={{ color: '#44ff88', fontSize: '8px' }}>◀</span>}
-                  </div>
-                );
-              })}
+            {/* AI Standings (single player only) */}
+            {!isMultiplayer && (
+              <div className="bg-black/50 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[140px]">
+                <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#ffcc44' }}>STANDINGS</div>
+                {state.positions.slice(0, 6).map((pos, i) => {
+                  const isPlayer = pos.id === 'player';
+                  const boat = AI_BOATS.find(b => b.id === pos.id);
+                  return (
+                    <div key={String(pos.id)} className="flex items-center gap-2 text-xs py-0.5" style={{ fontFamily: 'Rajdhani' }}>
+                      <span style={{ color: i === 0 ? '#ffd700' : i === 1 ? '#c0c0c0' : i === 2 ? '#cd7f32' : '#666', fontWeight: 'bold', width: '16px' }}>{i + 1}.</span>
+                      <span style={{ color: isPlayer ? '#44ff88' : '#aaa', fontWeight: isPlayer ? 'bold' : 'normal' }}>
+                        {isPlayer ? '🎣 YOU' : boat?.name || `Boat ${pos.id}`}
+                      </span>
+                      {isPlayer && <span style={{ color: '#44ff88', fontSize: '8px' }}>◀</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Position indicator (single player) */}
+      {!isMultiplayer && (
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 z-10 pointer-events-none text-center">
+          <div className="bg-black/60 backdrop-blur-sm rounded-xl px-5 py-4">
+            <div className="text-6xl font-bold" style={{ fontFamily: 'Bangers, cursive', color: playerPlace <= 1 ? '#44ff88' : playerPlace <= 3 ? '#ffcc44' : '#ff6644', textShadow: '0 0 20px rgba(68,255,136,0.3), 3px 3px 0 #000' }}>
+              {playerPlace}{playerPlace === 1 ? 'st' : playerPlace === 2 ? 'nd' : playerPlace === 3 ? 'rd' : 'th'}
             </div>
+            <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: '#888' }}>of {AI_BOATS.length + 1}</div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Position indicator */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 z-10 pointer-events-none text-center">
-        <div className="bg-black/60 backdrop-blur-sm rounded-xl px-5 py-4">
-          <div className="text-6xl font-bold" style={{
-            fontFamily: 'Bangers, cursive',
-            color: playerPlace <= 1 ? '#44ff88' : playerPlace <= 3 ? '#ffcc44' : '#ff6644',
-            textShadow: '0 0 20px rgba(68,255,136,0.3), 3px 3px 0 #000'
-          }}>
-            {playerPlace}{playerPlace === 1 ? 'st' : playerPlace === 2 ? 'nd' : playerPlace === 3 ? 'rd' : 'th'}
-          </div>
-          <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: '#888' }}>of {AI_BOATS.length + 1}</div>
-        </div>
-      </div>
-
-      {/* Boost message */}
+      {/* Boost/hit/checkpoint messages */}
       {boostMessage && (
         <div className="absolute top-24 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-          <div className="text-3xl font-bold px-4 py-1 rounded-lg" style={{ fontFamily: 'Bangers, cursive', color: '#ffaa00', textShadow: '0 0 30px rgba(255,170,0,0.6), 3px 3px 0 #000', background: 'rgba(0,0,0,0.7)', animation: 'floatUp 2s ease-out forwards' }}>
-            {boostMessage}
-          </div>
+          <div className="text-3xl font-bold px-4 py-1 rounded-lg" style={{ fontFamily: 'Bangers, cursive', color: '#ffaa00', textShadow: '0 0 30px rgba(255,170,0,0.6), 3px 3px 0 #000', background: 'rgba(0,0,0,0.7)', animation: 'floatUp 2s ease-out forwards' }}>{boostMessage}</div>
         </div>
       )}
-
-      {/* Hit message */}
       {hitMessage && (
         <div className="absolute top-32 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-          <div className="text-3xl font-bold px-4 py-1 rounded-lg" style={{ fontFamily: 'Bangers, cursive', color: '#ff4444', textShadow: '0 0 30px rgba(255,68,68,0.6), 3px 3px 0 #000', background: 'rgba(0,0,0,0.7)' }}>
-            {hitMessage}
-          </div>
+          <div className="text-3xl font-bold px-4 py-1 rounded-lg" style={{ fontFamily: 'Bangers, cursive', color: '#ff4444', textShadow: '0 0 30px rgba(255,68,68,0.6), 3px 3px 0 #000', background: 'rgba(0,0,0,0.7)' }}>{hitMessage}</div>
         </div>
       )}
-
-      {/* Checkpoint flash */}
       {checkpointFlash && (
         <div className="absolute top-40 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-          <div className="text-2xl font-bold px-4 py-2 rounded-lg" style={{ fontFamily: 'Bangers, cursive', color: '#44ff88', textShadow: '0 0 20px rgba(68,255,136,0.6), 2px 2px 0 #000', background: 'rgba(0,0,0,0.4)' }}>
-            {checkpointFlash}
-          </div>
+          <div className="text-2xl font-bold px-4 py-2 rounded-lg" style={{ fontFamily: 'Bangers, cursive', color: '#44ff88', textShadow: '0 0 20px rgba(68,255,136,0.6), 2px 2px 0 #000', background: 'rgba(0,0,0,0.4)' }}>{checkpointFlash}</div>
         </div>
       )}
 
       {countdownDisplay && (
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-          <div className="text-8xl font-bold px-8 py-4 rounded-2xl" style={{
-            fontFamily: 'Bangers, cursive',
-            color: countdownDisplay === 'GO!' ? '#44ff88' : '#ffcc44',
-            textShadow: '0 0 40px rgba(255,204,68,0.5), 4px 4px 0 #000',
-            background: 'rgba(0,0,0,0.6)',
-          }}>
+          <div className="text-8xl font-bold px-8 py-4 rounded-2xl" style={{ fontFamily: 'Bangers, cursive', color: countdownDisplay === 'GO!' ? '#44ff88' : '#ffcc44', textShadow: '0 0 40px rgba(255,204,68,0.5), 4px 4px 0 #000', background: 'rgba(0,0,0,0.6)' }}>
             {countdownDisplay}
           </div>
         </div>
@@ -568,36 +533,43 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
       {state.finished && (
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-auto" style={{ background: 'rgba(0,0,0,0.6)' }}>
           <div className="text-center">
-            <div className="text-6xl font-bold mb-4" style={{
-              fontFamily: 'Bangers, cursive',
-              color: state.finishPlace === 1 ? '#ffd700' : state.finishPlace! <= 3 ? '#44ff88' : '#ff6644',
-              textShadow: '0 0 30px rgba(255,215,0,0.5), 4px 4px 0 #000',
-            }}>
-              {state.finishPlace === 1 ? '🏆 YOU WIN!' : `FINISHED ${state.finishPlace}${state.finishPlace === 2 ? 'nd' : state.finishPlace === 3 ? 'rd' : 'th'}`}
-            </div>
-
-            {/* Time display (multiplayer) */}
-            {isMultiplayer && playerFinishTime && (
-              <div className="mb-4">
-                <div className="text-3xl font-mono font-bold" style={{ color: '#44ff88', textShadow: '2px 2px 0 #000' }}>
-                  ⏱️ {formatTime(playerFinishTime)}
+            {isMultiplayer ? (
+              <>
+                <div className="text-6xl font-bold mb-4" style={{
+                  fontFamily: 'Bangers, cursive',
+                  color: (!opponentFinished || (playerFinishTime && opponentFinishTime && playerFinishTime < opponentFinishTime)) ? '#ffd700' : '#ff6644',
+                  textShadow: '0 0 30px rgba(255,215,0,0.5), 4px 4px 0 #000',
+                }}>
+                  {!opponentFinished ? '🏁 RACE COMPLETE!' : (playerFinishTime && opponentFinishTime && playerFinishTime < opponentFinishTime) ? '🏆 YOU WIN!' : '💀 YOU LOST!'}
                 </div>
-                {opponentFinished && opponentFinishTime && (
-                  <div className="text-lg mt-2" style={{ fontFamily: 'Rajdhani', color: '#ffcc44' }}>
-                    {multiplayerData?.opponentName}: {formatTime(opponentFinishTime)}
-                    {playerFinishTime < opponentFinishTime ? ' — You were faster! 🔥' : ' — They were faster!'}
+                {playerFinishTime && (
+                  <div className="mb-4">
+                    <div className="text-3xl font-mono font-bold" style={{ color: '#44ff88', textShadow: '2px 2px 0 #000' }}>
+                      ⏱️ Your time: {formatTime(playerFinishTime)}
+                    </div>
+                    {opponentFinished && opponentFinishTime && (
+                      <div className="text-lg mt-2" style={{ fontFamily: 'Rajdhani', color: '#ffcc44' }}>
+                        {multiplayerData?.opponentName}: {formatTime(opponentFinishTime)}
+                      </div>
+                    )}
+                    {!opponentFinished && (
+                      <div className="text-sm mt-2 animate-pulse" style={{ fontFamily: 'Rajdhani', color: '#888' }}>
+                        Waiting for {multiplayerData?.opponentName} to finish...
+                      </div>
+                    )}
+                    {leaderboardSubmitted && (
+                      <div className="text-xs mt-1" style={{ fontFamily: 'Rajdhani', color: '#44ff88' }}>✅ Time submitted to leaderboard</div>
+                    )}
                   </div>
                 )}
-                {!opponentFinished && (
-                  <div className="text-sm mt-2" style={{ fontFamily: 'Rajdhani', color: '#888' }}>
-                    Waiting for opponent to finish...
-                  </div>
-                )}
-                {leaderboardSubmitted && (
-                  <div className="text-xs mt-1" style={{ fontFamily: 'Rajdhani', color: '#44ff88' }}>
-                    ✅ Time submitted to leaderboard
-                  </div>
-                )}
+              </>
+            ) : (
+              <div className="text-6xl font-bold mb-4" style={{
+                fontFamily: 'Bangers, cursive',
+                color: state.finishPlace === 1 ? '#ffd700' : state.finishPlace! <= 3 ? '#44ff88' : '#ff6644',
+                textShadow: '0 0 30px rgba(255,215,0,0.5), 4px 4px 0 #000',
+              }}>
+                {state.finishPlace === 1 ? '🏆 YOU WIN!' : `FINISHED ${state.finishPlace}${state.finishPlace === 2 ? 'nd' : state.finishPlace === 3 ? 'rd' : 'th'}`}
               </div>
             )}
 
@@ -607,19 +579,11 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
 
             <div className="flex gap-4 justify-center">
               {isMultiplayer ? (
-                <button
-                  onClick={onExitToMenu}
-                  className="px-8 py-3 rounded-lg font-bold text-lg"
-                  style={{ fontFamily: 'Bangers', background: 'linear-gradient(135deg, #2d8a4e, #44ff88)', color: '#0a1525', cursor: 'pointer', letterSpacing: '0.1em' }}
-                >
+                <button onClick={onExitToMenu} className="px-8 py-3 rounded-lg font-bold text-lg" style={{ fontFamily: 'Bangers', background: 'linear-gradient(135deg, #2d8a4e, #44ff88)', color: '#0a1525', cursor: 'pointer', letterSpacing: '0.1em' }}>
                   BACK TO MENU
                 </button>
               ) : (
-                <button
-                  onClick={() => window.location.reload()}
-                  className="px-8 py-3 rounded-lg font-bold text-lg"
-                  style={{ fontFamily: 'Bangers', background: 'linear-gradient(135deg, #2d8a4e, #44ff88)', color: '#0a1525', cursor: 'pointer', letterSpacing: '0.1em' }}
-                >
+                <button onClick={() => window.location.reload()} className="px-8 py-3 rounded-lg font-bold text-lg" style={{ fontFamily: 'Bangers', background: 'linear-gradient(135deg, #2d8a4e, #44ff88)', color: '#0a1525', cursor: 'pointer', letterSpacing: '0.1em' }}>
                   RACE AGAIN
                 </button>
               )}
@@ -628,7 +592,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
         </div>
       )}
 
-      {/* GMGN Chart */}
+      {/* Chart */}
       <div className="absolute bottom-2 left-2 z-10 transition-all duration-300" style={{ width: chartExpanded ? 560 : 48, height: chartExpanded ? 400 : 48 }}>
         {chartExpanded ? (
           <div className="rounded-lg overflow-hidden border border-white/10 relative" style={{ background: 'rgba(0,0,0,0.85)', width: '100%', height: '100%' }}>
@@ -644,7 +608,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
 
       <GameRadio chartExpanded={chartExpanded} />
 
-      {/* $BIGTROUT Points HUD */}
+      {/* Points HUD */}
       <div className="absolute left-2 z-10 pointer-events-none transition-all duration-300" style={{ bottom: chartExpanded ? 416 : 60 }}>
         <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2" style={{ minWidth: 180 }}>
           <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#44ff88' }}>$BIGTROUT POINTS</div>
@@ -652,23 +616,19 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
           <div className="text-xs mt-1" style={{ fontFamily: 'Rajdhani', color: tokenMultiplier >= 1 ? '#44ff88' : '#ff6644' }}>
             Speed: {(tokenMultiplier * 100).toFixed(0)}% {tokenMultiplier > 1 ? '🔥' : tokenMultiplier < 1 ? '🧊' : ''}
           </div>
-          <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: connected ? '#44ff88' : '#888' }}>
-            {connected ? '● Live' : '○ Connecting...'}
-          </div>
+          <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: connected ? '#44ff88' : '#888' }}>{connected ? '● Live' : '○ Connecting...'}</div>
         </div>
       </div>
 
       {tokenMessage && (
         <div className="absolute left-2 z-10 pointer-events-none transition-all duration-300" style={{ bottom: chartExpanded ? 520 : 164 }}>
-          <div className="text-lg font-bold px-3 py-1 rounded-md" style={{ fontFamily: 'Bangers, cursive', color: tokenMessage.includes('SELL') ? '#ff4444' : '#44ff88', textShadow: '0 0 20px rgba(68,255,136,0.5), 2px 2px 0 #000', background: 'rgba(0,0,0,0.7)' }}>
-            {tokenMessage}
-          </div>
+          <div className="text-lg font-bold px-3 py-1 rounded-md" style={{ fontFamily: 'Bangers, cursive', color: tokenMessage.includes('SELL') ? '#ff4444' : '#44ff88', textShadow: '0 0 20px rgba(68,255,136,0.5), 2px 2px 0 #000', background: 'rgba(0,0,0,0.7)' }}>{tokenMessage}</div>
         </div>
       )}
 
       <Minimap playerPos={boatPosRef} aiPositions={aiMinimapData} boosts={boosts} />
 
-      {/* CA Address */}
+      {/* CA */}
       <div className="absolute bottom-2 z-10 transition-all duration-300" style={{ left: chartExpanded ? 'calc(50% + 200px)' : '50%', transform: 'translateX(-50%)' }}>
         <button
           onClick={() => {
@@ -695,10 +655,19 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
           <TroutIsland />
           <FishStatue />
           <RaceTrack passedCheckpoints={passedCheckpoints} />
+
           <Boat key={`player-${resetKey}`} onPositionUpdate={handleBoatPosition} speedRef={wakeSpeedRef} posRef={wakePosRef} headingRef={wakeHeadingRef} raceStarted={state.raceStarted} boostMultiplier={boostMultiplier * tokenMultiplier} paddleDisabled={paddleDisabled} obstacleColliders={obstacleColliders} />
-          {AI_BOATS.map((boat, i) => (
+
+          {/* AI boats (single player only) */}
+          {!isMultiplayer && AI_BOATS.map((boat, i) => (
             <AIBoat key={`${boat.id}-${resetKey}`} id={boat.id} color={boat.color} speed={state.raceStarted ? boat.speed : 0} startOffset={i * 0.3} onProgress={handleAIProgress} obstacles={obstacles} obstacleColliders={obstacleColliders} />
           ))}
+
+          {/* Opponent boat (multiplayer only) */}
+          {isMultiplayer && multiplayerData && (
+            <OpponentBoat posRef={opponentPosRef} color={opponentColor} />
+          )}
+
           {boosts.map(boost => (
             <SpeedBoost key={boost.id} pickup={boost} playerPos={wakePosRef} onCollect={handleBoostCollect} />
           ))}
