@@ -37,6 +37,7 @@ import solflareLogo from '@/assets/logos/solflare.png';
 import solanaLogo from '@/assets/logos/solana.png';
 import bitgetWalletLogo from '@/assets/logos/bitget-wallet.png';
 import pionexLogo from '@/assets/logos/pionex.jpg';
+import bitmartIconLogo from '@/assets/logos/bitmart-icon.png';
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
 const socialLinks = [
@@ -79,6 +80,7 @@ const exchangeLogos = [
   { name: 'Solana Wallet', logo: solanaLogo, url: 'https://solana.com', alt: 'BIGTROUT on Solana Wallet' },
   { name: 'Bitget Wallet', logo: bitgetWalletLogo, url: 'https://web3.bitget.com', alt: 'BIGTROUT on Bitget Wallet' },
   { name: 'Pionex', logo: pionexLogo, url: 'https://x.com/pionex/status/2020938017666630043', alt: 'Trade BIGTROUT on Pionex' },
+  { name: 'BitMart', logo: bitmartIconLogo, url: 'https://www.bitmart.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on BitMart' },
 ];
 
 // Generate fireflies
