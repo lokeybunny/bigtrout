@@ -593,8 +593,11 @@ export const GameScene = () => {
         boosts={boosts}
       />
 
-      {/* CA Address - bottom center */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10">
+      {/* CA Address - bottom center, shifts right when chart+radio expanded */}
+      <div className="absolute bottom-2 z-10 transition-all duration-300" style={{
+        left: '50%',
+        transform: `translateX(${chartExpanded ? 'calc(-50% + 120px)' : '-50%'})`,
+      }}>
         <button
           onClick={() => {
             navigator.clipboard.writeText('EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG');
