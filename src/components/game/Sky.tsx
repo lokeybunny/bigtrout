@@ -40,7 +40,7 @@ export const Sky = () => {
       {/* Sky dome */}
       <mesh>
         <sphereGeometry args={[400, 16, 8]} />
-        <meshBasicMaterial color="#1a2a4a" side={THREE.BackSide} />
+        <meshBasicMaterial color="#050a14" side={THREE.BackSide} fog={false} />
       </mesh>
 
       {/* Moon */}
