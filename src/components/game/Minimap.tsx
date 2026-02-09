@@ -23,11 +23,13 @@ const worldToMap = (wx: number, wz: number): [number, number] => {
 // Approximate AI position from progress along checkpoints
 const getAIWorldPos = (progress: number): [number, number] => {
   const totalCPs = CHECKPOINTS.length;
-  const rawIdx = progress % totalCPs;
-  const idx = Math.floor(rawIdx);
-  const frac = rawIdx - idx;
-  const curr = CHECKPOINTS[idx % totalCPs];
+  if (totalCPs === 0) return [0, 0];
+  const rawIdx = ((progress % totalCPs) + totalCPs) % totalCPs;
+  const idx = Math.floor(rawIdx) % totalCPs;
+  const frac = rawIdx - Math.floor(rawIdx);
+  const curr = CHECKPOINTS[idx];
   const next = CHECKPOINTS[(idx + 1) % totalCPs];
+  if (!curr || !next) return [0, 0];
   return [
     curr[0] + (next[0] - curr[0]) * frac,
     curr[1] + (next[1] - curr[1]) * frac,
