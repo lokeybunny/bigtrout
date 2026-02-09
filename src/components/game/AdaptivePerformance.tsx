@@ -1,5 +1,5 @@
 import { useRef, createContext, useContext, useEffect } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 
 /**
  * Adaptive Performance Governor
@@ -113,20 +113,14 @@ export const AdaptivePerformanceProvider = ({ children }: { children: React.Reac
 };
 
 function AdaptivePerformanceMonitor({ perfRef, initialTier }: { perfRef: React.MutableRefObject<PerformanceTier>; initialTier: number }) {
-  const { gl } = useThree();
   const fpsBuffer = useRef<number[]>([]);
   const sampleWindows = useRef(0);
   const currentTier = useRef(initialTier);
   const stableHighCount = useRef(0); // consecutive high-FPS windows for upgrade
   const lastTransition = useRef(0); // timestamp of last tier change
 
-  // Apply initial tier DPR
+  // Set initial tier — no DPR changes (causes white flashes)
   useEffect(() => {
-    if (initialTier >= 2) {
-      gl.setPixelRatio(1);
-    } else if (initialTier === 1) {
-      gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.2));
-    }
     perfRef.current = { ...TIERS[initialTier] };
     console.log(`[Perf] Initial tier: ${initialTier} (${initialTier === 0 ? 'high' : initialTier === 1 ? 'medium' : 'low'})`);
   }, []);
@@ -175,16 +169,7 @@ function AdaptivePerformanceMonitor({ perfRef, initialTier }: { perfRef: React.M
       currentTier.current = newTier;
       lastTransition.current = now;
       perfRef.current = { ...TIERS[newTier] };
-
-      // Adjust DPR
-      if (newTier === 2) {
-        gl.setPixelRatio(1);
-      } else if (newTier === 1) {
-        gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.2));
-      } else {
-        gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-      }
-
+      // No DPR changes — they cause white flashes from context resize
       console.log(`[Perf] Tier ${newTier} (${newTier === 0 ? 'high' : newTier === 1 ? 'medium' : 'low'}) — FPS avg: ${avg.toFixed(1)}`);
     }
   });
