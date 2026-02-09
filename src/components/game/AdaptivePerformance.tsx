@@ -1,56 +1,135 @@
-import { useRef, createContext, useContext } from 'react';
+import { useRef, createContext, useContext, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 
 /**
- * Adaptive FPS governor — monitors real-time FPS and exposes
- * a quality tier (via ref to avoid re-renders) that other
- * components can read each frame to scale their work.
- *
- * Tier 0 = full quality, Tier 1 = moderate reduction, Tier 2 = aggressive
+ * Adaptive Performance Governor
+ * 
+ * 1. Detects hardware on mount (GPU string, deviceMemory, mobile)
+ *    to pick an initial tier (0=high, 1=medium, 2=low).
+ * 2. Monitors FPS every ~0.75s and can downgrade OR upgrade tiers
+ *    (with hysteresis to prevent oscillation).
+ * 3. Exposes a ref-based context so consumers read .current each frame
+ *    without causing re-renders.
  */
 
 export interface PerformanceTier {
   /** 0 = high, 1 = medium, 2 = low */
   tier: number;
-  /** How many frames to skip for wave updates (1 = none, higher = more skip) */
+  /** How many frames to skip for wave updates (1 = none) */
   oceanFrameSkip: number;
   /** Whether checkpoint lights should render */
   enableCheckpointLights: boolean;
-  /** Whether lane markers should render */
-  enableLaneMarkers: boolean;
+  /** Whether decorative details on boat render */
+  enableBoatDetails: boolean;
   /** Whether shadows are enabled */
   enableShadows: boolean;
+  /** Star count multiplier (1 = full, 0.5 = half, 0.25 = quarter) */
+  starMultiplier: number;
+  /** Ocean grid segments (higher = more detail) */
+  oceanSegments: number;
 }
 
-const DEFAULT_TIER: PerformanceTier = {
-  tier: 0,
-  oceanFrameSkip: 2,
-  enableCheckpointLights: true,
-  enableLaneMarkers: true,
-  enableShadows: true,
-};
+const TIERS: PerformanceTier[] = [
+  // Tier 0 — High
+  {
+    tier: 0,
+    oceanFrameSkip: 2,
+    enableCheckpointLights: true,
+    enableBoatDetails: true,
+    enableShadows: false, // already disabled globally for perf
+    starMultiplier: 1,
+    oceanSegments: 25,
+  },
+  // Tier 1 — Medium
+  {
+    tier: 1,
+    oceanFrameSkip: 3,
+    enableCheckpointLights: true,
+    enableBoatDetails: false,
+    enableShadows: false,
+    starMultiplier: 0.5,
+    oceanSegments: 16,
+  },
+  // Tier 2 — Low
+  {
+    tier: 2,
+    oceanFrameSkip: 5,
+    enableCheckpointLights: false,
+    enableBoatDetails: false,
+    enableShadows: false,
+    starMultiplier: 0.25,
+    oceanSegments: 10,
+  },
+];
 
-// Use a ref-based context so consumers never re-render — they just read .current each frame
-const AdaptivePerfContext = createContext<React.MutableRefObject<PerformanceTier>>({ current: { ...DEFAULT_TIER } });
+/**
+ * Detect hardware capabilities and return a starting tier.
+ */
+function detectInitialTier(): number {
+  // Mobile / touch device → start at tier 1
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  
+  // Low memory → tier 2
+  const mem = (navigator as any).deviceMemory;
+  if (mem !== undefined && mem <= 2) return 2;
+  if (mem !== undefined && mem <= 4) return isMobile ? 2 : 1;
+
+  // Check GPU via WebGL renderer string
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (gl) {
+      const dbg = (gl as WebGLRenderingContext).getExtension('WEBGL_debug_renderer_info');
+      if (dbg) {
+        const renderer = (gl as WebGLRenderingContext).getParameter(dbg.UNMASKED_RENDERER_WEBGL).toLowerCase();
+        // Known weak GPUs
+        const weakGPUs = ['intel', 'mesa', 'swiftshader', 'llvmpipe', 'virtualbox', 'microsoft basic'];
+        if (weakGPUs.some(g => renderer.includes(g))) {
+          return isMobile ? 2 : 1;
+        }
+      }
+    }
+  } catch {
+    // ignore
+  }
+
+  return isMobile ? 1 : 0;
+}
+
+const AdaptivePerfContext = createContext<React.MutableRefObject<PerformanceTier>>({ current: { ...TIERS[0] } });
 
 export const useAdaptivePerf = () => useContext(AdaptivePerfContext);
 
 export const AdaptivePerformanceProvider = ({ children }: { children: React.ReactNode }) => {
-  const perfRef = useRef<PerformanceTier>({ ...DEFAULT_TIER });
+  const initialTier = useRef(detectInitialTier());
+  const perfRef = useRef<PerformanceTier>({ ...TIERS[initialTier.current] });
+
   return (
     <AdaptivePerfContext.Provider value={perfRef}>
-      <AdaptivePerformanceMonitor perfRef={perfRef} />
+      <AdaptivePerformanceMonitor perfRef={perfRef} initialTier={initialTier.current} />
       {children}
     </AdaptivePerfContext.Provider>
   );
 };
 
-function AdaptivePerformanceMonitor({ perfRef }: { perfRef: React.MutableRefObject<PerformanceTier> }) {
+function AdaptivePerformanceMonitor({ perfRef, initialTier }: { perfRef: React.MutableRefObject<PerformanceTier>; initialTier: number }) {
   const { gl } = useThree();
   const fpsBuffer = useRef<number[]>([]);
   const sampleWindows = useRef(0);
-  const currentTier = useRef(0);
-  const lastDpr = useRef(gl.getPixelRatio());
+  const currentTier = useRef(initialTier);
+  const stableHighCount = useRef(0); // consecutive high-FPS windows for upgrade
+  const lastTransition = useRef(0); // timestamp of last tier change
+
+  // Apply initial tier DPR
+  useEffect(() => {
+    if (initialTier >= 2) {
+      gl.setPixelRatio(1);
+    } else if (initialTier === 1) {
+      gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.2));
+    }
+    perfRef.current = { ...TIERS[initialTier] };
+    console.log(`[Perf] Initial tier: ${initialTier} (${initialTier === 0 ? 'high' : initialTier === 1 ? 'medium' : 'low'})`);
+  }, []);
 
   useFrame((_, delta) => {
     if (delta <= 0) return;
@@ -64,50 +143,49 @@ function AdaptivePerformanceMonitor({ perfRef }: { perfRef: React.MutableRefObje
     fpsBuffer.current.length = 0;
     sampleWindows.current++;
 
-    // Skip first window (initial load stutter)
-    if (sampleWindows.current < 2) return;
+    // Skip first 2 windows (initial load stutter)
+    if (sampleWindows.current < 3) return;
+
+    const now = performance.now();
+    // Cooldown: don't change tier within 3 seconds of last change
+    if (now - lastTransition.current < 3000) return;
 
     let newTier = currentTier.current;
 
-    // Only downgrade, never upgrade (prevents oscillation)
-    if (avg < 22 && newTier < 2) {
+    // Downgrade thresholds
+    if (avg < 20 && newTier < 2) {
       newTier = 2;
-    } else if (avg < 35 && newTier < 1) {
+      stableHighCount.current = 0;
+    } else if (avg < 32 && newTier < 1) {
       newTier = 1;
+      stableHighCount.current = 0;
+    }
+    // Upgrade thresholds (need 4 consecutive good windows ~3s)
+    else if (avg > 50 && newTier > 0) {
+      stableHighCount.current++;
+      if (stableHighCount.current >= 4) {
+        newTier = newTier - 1;
+        stableHighCount.current = 0;
+      }
+    } else {
+      stableHighCount.current = 0;
     }
 
     if (newTier !== currentTier.current) {
       currentTier.current = newTier;
+      lastTransition.current = now;
+      perfRef.current = { ...TIERS[newTier] };
 
+      // Adjust DPR
       if (newTier === 2) {
-        // Aggressive: drop DPR to 1, skip 4 ocean frames, disable lights & markers
         gl.setPixelRatio(1);
-        lastDpr.current = 1;
-        perfRef.current = {
-          tier: 2,
-          oceanFrameSkip: 4,
-          enableCheckpointLights: false,
-          enableLaneMarkers: false,
-          enableShadows: false,
-        };
-        // Disable shadow map on low tier
-        gl.shadowMap.enabled = false;
-        console.log('[Perf] Tier 2 (low) — FPS avg:', avg.toFixed(1));
       } else if (newTier === 1) {
-        // Moderate: DPR to 1, skip 3 ocean frames, keep lights but lose markers
-        const dpr = Math.min(gl.getPixelRatio(), 1.2);
-        gl.setPixelRatio(dpr);
-        lastDpr.current = dpr;
-        perfRef.current = {
-          tier: 1,
-          oceanFrameSkip: 3,
-          enableCheckpointLights: true,
-          enableLaneMarkers: false,
-          enableShadows: false,
-        };
-        gl.shadowMap.enabled = false;
-        console.log('[Perf] Tier 1 (medium) — FPS avg:', avg.toFixed(1));
+        gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.2));
+      } else {
+        gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       }
+
+      console.log(`[Perf] Tier ${newTier} (${newTier === 0 ? 'high' : newTier === 1 ? 'medium' : 'low'}) — FPS avg: ${avg.toFixed(1)}`);
     }
   });
 

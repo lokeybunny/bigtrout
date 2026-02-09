@@ -14,11 +14,11 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   const frameSkip = useRef(0);
   const perfRef = useAdaptivePerf();
   
+  const segments = perfRef.current.oceanSegments;
   const geometry = useMemo(() => {
-    // Reduced to 25x25 (625 verts)
-    const geo = new THREE.PlaneGeometry(600, 600, 25, 25);
+    const geo = new THREE.PlaneGeometry(600, 600, segments, segments);
     return geo;
-  }, []);
+  }, [segments]);
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
