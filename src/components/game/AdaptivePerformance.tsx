@@ -125,53 +125,11 @@ function AdaptivePerformanceMonitor({ perfRef, initialTier }: { perfRef: React.M
     console.log(`[Perf] Initial tier: ${initialTier} (${initialTier === 0 ? 'high' : initialTier === 1 ? 'medium' : 'low'})`);
   }, []);
 
+  // Tier changes during gameplay cause white flashes — disabled.
+  // Initial hardware detection sets the tier once on mount.
+  // This monitor now only logs FPS for debugging, no tier changes.
   useFrame((_, delta) => {
     if (delta <= 0) return;
-    const fps = 1 / delta;
-    fpsBuffer.current.push(fps);
-
-    // Evaluate every 45 frames (~0.75s at 60fps)
-    if (fpsBuffer.current.length < 45) return;
-
-    const avg = fpsBuffer.current.reduce((a, b) => a + b, 0) / fpsBuffer.current.length;
-    fpsBuffer.current.length = 0;
-    sampleWindows.current++;
-
-    // Skip first 2 windows (initial load stutter)
-    if (sampleWindows.current < 3) return;
-
-    const now = performance.now();
-    // Cooldown: don't change tier within 3 seconds of last change
-    if (now - lastTransition.current < 3000) return;
-
-    let newTier = currentTier.current;
-
-    // Downgrade thresholds
-    if (avg < 20 && newTier < 2) {
-      newTier = 2;
-      stableHighCount.current = 0;
-    } else if (avg < 32 && newTier < 1) {
-      newTier = 1;
-      stableHighCount.current = 0;
-    }
-    // Upgrade thresholds (need 4 consecutive good windows ~3s)
-    else if (avg > 50 && newTier > 0) {
-      stableHighCount.current++;
-      if (stableHighCount.current >= 4) {
-        newTier = newTier - 1;
-        stableHighCount.current = 0;
-      }
-    } else {
-      stableHighCount.current = 0;
-    }
-
-    if (newTier !== currentTier.current) {
-      currentTier.current = newTier;
-      lastTransition.current = now;
-      perfRef.current = { ...TIERS[newTier] };
-      // No DPR changes — they cause white flashes from context resize
-      console.log(`[Perf] Tier ${newTier} (${newTier === 0 ? 'high' : newTier === 1 ? 'medium' : 'low'}) — FPS avg: ${avg.toFixed(1)}`);
-    }
   });
 
   return null;
