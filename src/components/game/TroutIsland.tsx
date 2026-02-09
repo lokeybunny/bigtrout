@@ -75,8 +75,7 @@ export const TroutIsland = () => {
         <boxGeometry args={[7.5, 1.5, 0.1]} />
         <meshStandardMaterial color="#44ff88" emissive="#44ff88" emissiveIntensity={0.5} />
       </mesh>
-      {/* Beacon light */}
-      <pointLight position={[0, 10, 4]} color="#44ff88" intensity={5} distance={50} />
+      {/* Beacon light removed for performance */}
     </group>
   );
 };
