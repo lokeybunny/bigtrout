@@ -13,6 +13,8 @@ interface BoatProps {
   paddleDisabled?: boolean;
   onPaddleChange?: (active: boolean) => void;
   obstacleColliders?: CircleCollider[];
+  startX?: number;
+  fishColor?: string;
 }
 
 // Pre-allocated vectors to avoid per-frame GC
@@ -21,7 +23,7 @@ const _targetCamPos = new THREE.Vector3();
 const _lookTarget = new THREE.Vector3();
 const _yAxis = new THREE.Vector3(0, 1, 0);
 
-export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true, boostMultiplier = 1, paddleDisabled = false, onPaddleChange, obstacleColliders }: BoatProps) => {
+export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: externalPosRef, headingRef: externalHeadingRef, raceStarted = true, boostMultiplier = 1, paddleDisabled = false, onPaddleChange, obstacleColliders, startX = 0, fishColor = '#2d8a4e' }: BoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const sailRef = useRef<THREE.Group>(null);
   const jibRef = useRef<THREE.Mesh>(null);
@@ -31,7 +33,7 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
   const keysRef = useRef<Set<string>>(new Set());
   const velocityRef = useRef({ forward: 0, turn: 0 });
   const headingRef = useRef(0);
-  const posRef = useRef(new THREE.Vector3(0, -0.3, -15));
+  const posRef = useRef(new THREE.Vector3(startX, -0.3, -15));
   const paddleArmRef = useRef<THREE.Mesh>(null);
   const paddleRef = useRef<THREE.Group>(null);
   const isPaddlingRef = useRef(false);
@@ -345,12 +347,12 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
           {/* Main fish head — large oval */}
           <mesh>
             <sphereGeometry args={[0.3, 10, 8]} />
-            <meshStandardMaterial color="#2d8a4e" metalness={0.25} roughness={0.5} />
+            <meshStandardMaterial color={fishColor} metalness={0.25} roughness={0.5} />
           </mesh>
           {/* Fish belly / lighter underside */}
           <mesh position={[0, -0.08, 0.05]} scale={[0.9, 0.7, 0.85]}>
             <sphereGeometry args={[0.28, 8, 6]} />
-            <meshStandardMaterial color="#6ecf8a" metalness={0.15} roughness={0.6} />
+            <meshStandardMaterial color={fishColor} metalness={0.15} roughness={0.6} opacity={0.7} transparent />
           </mesh>
           {/* Left eye — big googly */}
           <mesh position={[-0.2, 0.08, 0.18]}>
@@ -378,16 +380,16 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
           {/* Dorsal fin on top */}
           <mesh position={[0, 0.28, -0.05]} rotation={[0.3, 0, 0]}>
             <coneGeometry args={[0.12, 0.25, 4]} />
-            <meshStandardMaterial color="#1a6b3a" />
+            <meshStandardMaterial color={fishColor} />
           </mesh>
           {/* Side fins (like ears) */}
           <mesh position={[-0.28, 0, 0]} rotation={[0, 0, -0.6]}>
             <coneGeometry args={[0.08, 0.2, 4]} />
-            <meshStandardMaterial color="#2d8a4e" />
+            <meshStandardMaterial color={fishColor} />
           </mesh>
           <mesh position={[0.28, 0, 0]} rotation={[0, 0, 0.6]}>
             <coneGeometry args={[0.08, 0.2, 4]} />
-            <meshStandardMaterial color="#2d8a4e" />
+            <meshStandardMaterial color={fishColor} />
           </mesh>
         </group>
         {/* Arms */}

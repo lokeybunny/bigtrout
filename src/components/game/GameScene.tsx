@@ -128,8 +128,12 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   const [playerFinishTime, setPlayerFinishTime] = useState<number | null>(null);
   const [leaderboardSubmitted, setLeaderboardSubmitted] = useState(false);
 
+  // Spawn offsets: player1 on left, player2 on right (side by side)
+  const playerStartX = isMultiplayer && multiplayerData ? (multiplayerData.isPlayer1 ? -3 : 3) : 0;
+  const opponentStartX = isMultiplayer && multiplayerData ? (multiplayerData.isPlayer1 ? 3 : -3) : 5;
+
   // Opponent position ref for 3D rendering (updated via broadcast)
-  const opponentPosRef = useRef({ x: 5, z: -15, heading: 0 });
+  const opponentPosRef = useRef({ x: opponentStartX, z: -15, heading: 0 });
   const broadcastChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const broadcastThrottleRef = useRef(0);
 
@@ -421,6 +425,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   }));
 
   const opponentColor = multiplayerData ? (FISH_COLORS[multiplayerData.opponentFish] || '#cc9933') : '#cc9933';
+  const playerColor = multiplayerData ? (FISH_COLORS[multiplayerData.playerFish] || '#2d8a4e') : '#2d8a4e';
 
   return (
     <div className="relative w-full h-screen" style={{ cursor: 'crosshair' }}>
@@ -656,7 +661,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
           <FishStatue />
           <RaceTrack passedCheckpoints={passedCheckpoints} />
 
-          <Boat key={`player-${resetKey}`} onPositionUpdate={handleBoatPosition} speedRef={wakeSpeedRef} posRef={wakePosRef} headingRef={wakeHeadingRef} raceStarted={state.raceStarted} boostMultiplier={boostMultiplier * tokenMultiplier} paddleDisabled={paddleDisabled} obstacleColliders={obstacleColliders} />
+          <Boat key={`player-${resetKey}`} onPositionUpdate={handleBoatPosition} speedRef={wakeSpeedRef} posRef={wakePosRef} headingRef={wakeHeadingRef} raceStarted={state.raceStarted} boostMultiplier={boostMultiplier * tokenMultiplier} paddleDisabled={paddleDisabled} obstacleColliders={obstacleColliders} startX={playerStartX} fishColor={playerColor} />
 
           {/* AI boats (single player only) */}
           {!isMultiplayer && AI_BOATS.map((boat, i) => (
