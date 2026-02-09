@@ -130,22 +130,7 @@ export const RaceTrack = ({ passedCheckpoints = new Set() }: RaceTrackProps) => 
         <CheckpointBuoy key={i} position={cp} index={i} passed={passedCheckpoints.has(i)} />
       ))}
       
-      {/* Track lane markers — disabled at lower perf tiers */}
-      {perfRef.current.enableLaneMarkers && CHECKPOINTS.map((cp, i) => {
-        const next = CHECKPOINTS[(i + 1) % CHECKPOINTS.length];
-        const segments = 5;
-        return Array.from({ length: segments }).map((_, j) => {
-          const t = (j + 0.5) / segments;
-          const x = cp[0] + (next[0] - cp[0]) * t;
-          const z = cp[1] + (next[1] - cp[1]) * t;
-          return (
-            <mesh key={`lane-${i}-${j}`} position={[x, -0.5, z]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[0.3, 0.5, 8]} />
-              <meshStandardMaterial color="#44ff88" transparent opacity={0.15} side={THREE.DoubleSide} />
-            </mesh>
-          );
-        });
-      })}
+      {/* Lane markers removed for performance */}
       
       {/* Start/Finish line */}
       <mesh position={[0, -0.4, -20]} rotation={[-Math.PI / 2, 0, 0]}>

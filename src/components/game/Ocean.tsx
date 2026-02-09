@@ -15,8 +15,8 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   const perfRef = useAdaptivePerf();
   
   const geometry = useMemo(() => {
-    // Reduced from 100x100 (10K verts) to 40x40 (1.6K verts) — 6x fewer
-    const geo = new THREE.PlaneGeometry(600, 600, 40, 40);
+    // Reduced to 25x25 (625 verts)
+    const geo = new THREE.PlaneGeometry(600, 600, 25, 25);
     return geo;
   }, []);
 
@@ -63,7 +63,7 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   });
 
   return (
-    <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} geometry={geometry} receiveShadow>
+    <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} geometry={geometry}>
       <meshStandardMaterial 
         ref={matRef}
         color="#0a4a3a"

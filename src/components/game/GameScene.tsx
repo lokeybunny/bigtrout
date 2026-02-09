@@ -650,10 +650,10 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
       </div>
 
       {/* 3D Canvas */}
-      <Canvas camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 500 }} dpr={[1, 1.5]} performance={{ min: 0.5 }} gl={{ antialias: false, powerPreference: 'high-performance' }} shadows="soft">
+      <Canvas camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 500 }} dpr={[1, 1.2]} performance={{ min: 0.5 }} gl={{ antialias: false, powerPreference: 'high-performance', stencil: false, depth: true }} shadows={false}>
         <AdaptivePerformanceProvider>
-          <ambientLight intensity={0.6} color="#6688bb" />
-          <directionalLight position={[10, 20, 5]} intensity={1.5} color="#ccddef" castShadow shadow-mapSize-width={512} shadow-mapSize-height={512} shadow-camera-left={-60} shadow-camera-right={60} shadow-camera-top={60} shadow-camera-bottom={-60} shadow-camera-near={1} shadow-camera-far={120} shadow-bias={-0.002} />
+          <ambientLight intensity={0.8} color="#6688bb" />
+          <directionalLight position={[10, 20, 5]} intensity={1.8} color="#ccddef" />
           <fog attach="fog" args={['#0a1525', 50, 200]} />
           <Sky />
           <Ocean tokenMultiplier={tokenMultiplier} />
