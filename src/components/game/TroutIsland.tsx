@@ -29,7 +29,7 @@ export const TroutIsland = () => {
   return (
     <group ref={groupRef} position={[0, 0, -185]} rotation={[0, Math.PI, 0]}>
       {/* Main body — elongated fish shape */}
-      <mesh position={[0, 2, 0]}>
+      <mesh position={[0, 2, 0]} castShadow receiveShadow>
         <sphereGeometry args={[8, 16, 12]} />
         <meshStandardMaterial color="#2d7a3e" roughness={0.8} />
       </mesh>

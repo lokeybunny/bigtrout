@@ -18,6 +18,8 @@ export interface PerformanceTier {
   enableCheckpointLights: boolean;
   /** Whether lane markers should render */
   enableLaneMarkers: boolean;
+  /** Whether shadows are enabled */
+  enableShadows: boolean;
 }
 
 const DEFAULT_TIER: PerformanceTier = {
@@ -25,6 +27,7 @@ const DEFAULT_TIER: PerformanceTier = {
   oceanFrameSkip: 2,
   enableCheckpointLights: true,
   enableLaneMarkers: true,
+  enableShadows: true,
 };
 
 // Use a ref-based context so consumers never re-render — they just read .current each frame
@@ -85,7 +88,10 @@ function AdaptivePerformanceMonitor({ perfRef }: { perfRef: React.MutableRefObje
           oceanFrameSkip: 4,
           enableCheckpointLights: false,
           enableLaneMarkers: false,
+          enableShadows: false,
         };
+        // Disable shadow map on low tier
+        gl.shadowMap.enabled = false;
         console.log('[Perf] Tier 2 (low) — FPS avg:', avg.toFixed(1));
       } else if (newTier === 1) {
         // Moderate: DPR to 1, skip 3 ocean frames, keep lights but lose markers
@@ -97,7 +103,9 @@ function AdaptivePerformanceMonitor({ perfRef }: { perfRef: React.MutableRefObje
           oceanFrameSkip: 3,
           enableCheckpointLights: true,
           enableLaneMarkers: false,
+          enableShadows: false,
         };
+        gl.shadowMap.enabled = false;
         console.log('[Perf] Tier 1 (medium) — FPS avg:', avg.toFixed(1));
       }
     }

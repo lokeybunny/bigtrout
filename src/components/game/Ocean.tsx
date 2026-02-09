@@ -63,7 +63,7 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   });
 
   return (
-    <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} geometry={geometry}>
+    <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} geometry={geometry} receiveShadow>
       <meshStandardMaterial 
         ref={matRef}
         color="#0a4a3a"

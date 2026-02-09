@@ -19,7 +19,7 @@ export const FishStatue = () => {
   return (
     <group position={[0, 0, -90]}>
       {/* Island base */}
-      <mesh position={[0, -0.5, 0]}>
+      <mesh position={[0, -0.5, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[8, 10, 2, 16]} />
         <meshStandardMaterial color="#5a4a30" roughness={0.9} />
       </mesh>
