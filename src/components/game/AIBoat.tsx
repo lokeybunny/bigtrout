@@ -51,9 +51,12 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
       slowdownRef.current = Math.max(0, slowdownRef.current - delta);
     }
 
-    // Decay deflection
-    deflectRef.current[0] *= 0.96;
-    deflectRef.current[1] *= 0.96;
+    // Decay deflection smoothly — faster decay prevents oscillation
+    deflectRef.current[0] *= 0.92;
+    deflectRef.current[1] *= 0.92;
+    // Zero out tiny values to prevent drift
+    if (Math.abs(deflectRef.current[0]) < 0.01) deflectRef.current[0] = 0;
+    if (Math.abs(deflectRef.current[1]) < 0.01) deflectRef.current[1] = 0;
 
     // Apply slowdown from obstacle hits (same penalty as player: 0.3x speed for ~1.5s)
     const speedMult = slowdownRef.current > 0 ? 0.3 : 1;
@@ -133,12 +136,19 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
     registerBoatPosition(boatId, x, z);
 
     if (resolved.hit || boatResolved.hit) {
-      // Strong deflection to steer AI away
-      deflectRef.current[0] += (x - baseX) * 0.8;
-      deflectRef.current[1] += (z - baseZ) * 0.8;
-      // Apply slowdown if not already slowed
+      // Set deflection directly (not accumulate) to prevent oscillation
+      const pushX = x - (baseX + deflectRef.current[0]);
+      const pushZ = z - (baseZ + deflectRef.current[1]);
+      // Set a strong one-time lateral push in the collision normal direction
+      deflectRef.current[0] = pushX * 3;
+      deflectRef.current[1] = pushZ * 3;
+      // Brief slowdown
       if (slowdownRef.current <= 0) {
-        slowdownRef.current = boatResolved.hit ? 0.5 : 1.5;
+        slowdownRef.current = boatResolved.hit ? 0.3 : 0.8;
+      }
+      // Skip forward slightly to avoid re-entering the same collision zone
+      if (boatResolved.hit) {
+        progressRef.current += 0.05;
       }
     }
 

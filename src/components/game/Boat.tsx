@@ -95,6 +95,10 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
 
     headingRef.current += vel.turn * delta;
 
+    // Save pre-collision position
+    const prevX = posRef.current.x;
+    const prevZ = posRef.current.z;
+
     // Move in heading direction
     const dx = -Math.sin(headingRef.current) * vel.forward * delta;
     const dz = -Math.cos(headingRef.current) * vel.forward * delta;
@@ -115,8 +119,22 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     registerBoatPosition('player', posRef.current.x, posRef.current.z);
 
     if (resolved.hit || boatResolved.hit) {
-      // Full stop + slight bounce to prevent pushing through
-      vel.forward = Math.min(vel.forward, 0) - 0.5;
+      // Reflect velocity: reverse forward and deflect heading away from collision
+      const pushX = posRef.current.x - prevX;
+      const pushZ = posRef.current.z - prevZ;
+      const pushLen = Math.sqrt(pushX * pushX + pushZ * pushZ);
+      if (pushLen > 0.01) {
+        // Steer heading away from the obstacle
+        const pushAngle = Math.atan2(-pushX, -pushZ);
+        const angleDiff = pushAngle - headingRef.current;
+        // Normalize angle diff
+        const normDiff = Math.atan2(Math.sin(angleDiff), Math.cos(angleDiff));
+        headingRef.current += normDiff * 0.3; // gentle redirect
+      }
+      // Bounce: reverse forward speed proportionally
+      vel.forward = -vel.forward * 0.3;
+      // Clamp to prevent infinite acceleration from repeated bounces
+      vel.forward = Math.max(-2, Math.min(2, vel.forward));
     }
 
     // Clamp to play area — wide enough for the full race track
