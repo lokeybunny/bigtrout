@@ -3,7 +3,7 @@ import { GameScene } from '@/components/game/GameScene';
 import { ModeSelect } from '@/components/game/ModeSelect';
 import { MultiplayerLobby } from '@/components/game/MultiplayerLobby';
 import { Leaderboard } from '@/components/game/Leaderboard';
-import raceMenuBg from '@/assets/bigtrout-race-menu.jpeg';
+import raceMenuBg from '@/assets/bigtrout-race-bg.jpeg';
 import raceHowtoBg from '@/assets/bigtrout-race-howto.png';
 
 type Screen = 'menu' | 'howto' | 'modeselect' | 'lobby' | 'leaderboard' | 'playing-single' | 'playing-multi';
@@ -35,7 +35,7 @@ const Game = () => {
     return (
       <div className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center">
         <img src={raceMenuBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 30%, transparent 60%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.3) 100%)' }} />
         <div className="relative z-10 text-center mt-auto pb-12 md:pb-16 px-4">
           <h1 className="text-5xl md:text-7xl font-bold mb-2" style={{ fontFamily: 'Bangers, cursive', color: '#44ff88', textShadow: '0 0 40px rgba(68,255,136,0.4), 4px 4px 0 #000', letterSpacing: '0.05em' }}>
             $BIGTROUT RACE
