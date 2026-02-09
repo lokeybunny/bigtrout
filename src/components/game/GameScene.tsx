@@ -650,10 +650,28 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
       </div>
 
       {/* 3D Canvas */}
-      <Canvas camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 500 }} dpr={1} gl={{ antialias: false, powerPreference: 'high-performance', stencil: false, depth: true }} shadows={false} onCreated={({ gl }) => { gl.setClearColor('#0a1525', 1); }} style={{ background: '#0a1525' }}>
+      <Canvas
+        camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 500 }}
+        dpr={1}
+        gl={{ antialias: false, powerPreference: 'high-performance', stencil: false, depth: true, preserveDrawingBuffer: true, failIfMajorPerformanceCaveat: false }}
+        shadows={false}
+        onCreated={({ gl }) => {
+          gl.setClearColor('#0a1525', 1);
+          // Prevent white flash on WebGL context loss
+          const canvas = gl.domElement;
+          canvas.addEventListener('webglcontextlost', (e) => {
+            e.preventDefault();
+            console.warn('[WebGL] Context lost — preventing white flash');
+          });
+          canvas.addEventListener('webglcontextrestored', () => {
+            gl.setClearColor('#0a1525', 1);
+            console.log('[WebGL] Context restored');
+          });
+        }}
+        style={{ background: '#0a1525' }}
+      >
         <AdaptivePerformanceProvider>
           <ambientLight intensity={0.8} color="#6688bb" />
-          <directionalLight position={[10, 20, 5]} intensity={1.8} color="#ccddef" />
           <fog attach="fog" args={['#0a1525', 50, 200]} />
           <Sky />
           <Ocean tokenMultiplier={tokenMultiplier} />
