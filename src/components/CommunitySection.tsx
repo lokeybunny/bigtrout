@@ -24,6 +24,7 @@ import moontokLogo from '@/assets/logos/moontok.svg';
 import binanceLogo from '@/assets/logos/binance.png';
 import phantomLogo from '@/assets/logos/phantom.png';
 import okxLogo from '@/assets/logos/okx.png';
+import coin98Logo from '@/assets/logos/coin98.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -53,6 +54,7 @@ const exchangeLogos = [
   { name: 'Binance', logo: binanceLogo, url: 'https://web3.binance.com/en/token/sol/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Binance' },
   { name: 'Phantom', logo: phantomLogo, url: 'https://x.com/BigTrout300/status/2020657287921279428', alt: 'BIGTROUT on Phantom' },
   { name: 'OKX', logo: okxLogo, url: 'https://web3.okx.com/token/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on OKX' },
+  { name: 'Coin98', logo: coin98Logo, url: 'https://coin98.com/blockchain', alt: 'View BIGTROUT on Coin98' },
 ];
 
 // Generate fireflies
