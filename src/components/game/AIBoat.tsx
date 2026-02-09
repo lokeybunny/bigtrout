@@ -73,11 +73,12 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
     }
 
     // Current position on track
-    const rawIdx = progressRef.current % totalCheckpoints;
+    const rawIdx = ((progressRef.current % totalCheckpoints) + totalCheckpoints) % totalCheckpoints;
     const idx = Math.floor(rawIdx);
     const frac = rawIdx - idx;
     const curr = CHECKPOINTS[idx % totalCheckpoints];
     const next = CHECKPOINTS[(idx + 1) % totalCheckpoints];
+    if (!curr || !next) return;
 
     let baseX = curr[0] + (next[0] - curr[0]) * frac + Math.sin(t * 1.5 + id) * 2;
     const baseZ = curr[1] + (next[1] - curr[1]) * frac;
