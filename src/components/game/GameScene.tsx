@@ -621,7 +621,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
           <div className="text-xs mt-1" style={{ fontFamily: 'Rajdhani', color: tokenMultiplier >= 1 ? '#44ff88' : '#ff6644' }}>
             Speed: {(tokenMultiplier * 100).toFixed(0)}% {tokenMultiplier > 1 ? '🔥' : tokenMultiplier < 1 ? '🧊' : ''}
           </div>
-          <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: connected ? '#44ff88' : '#888' }}>{connected ? '● Live' : '○ Connecting...'}</div>
+          
         </div>
       </div>
 
