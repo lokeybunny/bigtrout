@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ParticleField } from '@/components/ParticleField';
+import { ScrollToTopButton } from '@/components/ScrollToTopButton';
 import { loreChapters } from '@/data/loreContent';
 import { ArrowLeft, BookOpen, Fish } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -215,6 +216,7 @@ const Lore = () => {
       </main>
 
       <Footer />
+      <ScrollToTopButton />
     </div>
   );
 };
