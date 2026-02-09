@@ -25,7 +25,7 @@ const STATIONS: RadioStation[] = [
   // Reggae
   { name: 'Reggae Vibes', url: 'https://streams.ilovemusic.de/iloveradio15.mp3', genre: 'Reggae' },
   // Ambient
-  { name: 'Ambient', url: 'https://stream.laut.fm/ambient', genre: 'Ambient' },
+  { name: 'Ambient', url: 'https://radio.stereoscenic.com/asp-s', genre: 'Ambient' },
 ];
 
 const GENRES = [...new Set(STATIONS.map(s => s.genre))];
