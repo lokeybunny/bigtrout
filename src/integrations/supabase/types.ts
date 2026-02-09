@@ -14,7 +14,116 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      leaderboard: {
+        Row: {
+          created_at: string
+          id: string
+          laps: number
+          mode: string
+          time_ms: number
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          laps?: number
+          mode?: string
+          time_ms: number
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          laps?: number
+          mode?: string
+          time_ms?: number
+          username?: string
+        }
+        Relationships: []
+      }
+      matchmaking: {
+        Row: {
+          created_at: string
+          id: string
+          player1_fish: string
+          player1_id: string
+          player1_name: string
+          player2_fish: string | null
+          player2_id: string | null
+          player2_name: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          player1_fish?: string
+          player1_id: string
+          player1_name: string
+          player2_fish?: string | null
+          player2_id?: string | null
+          player2_name?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          player1_fish?: string
+          player1_id?: string
+          player1_name?: string
+          player2_fish?: string | null
+          player2_id?: string | null
+          player2_name?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      race_positions: {
+        Row: {
+          finish_time_ms: number | null
+          finished: boolean
+          heading: number
+          id: string
+          lap: number
+          match_id: string | null
+          player_id: string
+          pos_x: number
+          pos_z: number
+          updated_at: string
+        }
+        Insert: {
+          finish_time_ms?: number | null
+          finished?: boolean
+          heading?: number
+          id?: string
+          lap?: number
+          match_id?: string | null
+          player_id: string
+          pos_x?: number
+          pos_z?: number
+          updated_at?: string
+        }
+        Update: {
+          finish_time_ms?: number | null
+          finished?: boolean
+          heading?: number
+          id?: string
+          lap?: number
+          match_id?: string | null
+          player_id?: string
+          pos_x?: number
+          pos_z?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "race_positions_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matchmaking"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
