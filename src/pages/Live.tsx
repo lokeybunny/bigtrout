@@ -3,6 +3,7 @@ import { Footer } from '@/components/Footer';
 import { ArrowLeft, Play, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import streamThumb1 from '@/assets/stream-thumb-1.jpg';
+import pondBg from '@/assets/live-pond-bg.jpg';
 
 interface StreamEntry {
   title: string;
@@ -25,23 +26,13 @@ const streams: StreamEntry[] = [
 const Live = () => {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      {/* Dark background */}
-      <div
-        className="fixed inset-0 z-0"
-        style={{
-          background: `
-            radial-gradient(ellipse at 50% 0%, hsl(20 100% 45% / 0.35) 0%, hsl(25 100% 40% / 0.15) 30%, transparent 60%),
-            radial-gradient(ellipse at 30% 10%, hsl(35 100% 50% / 0.2) 0%, transparent 40%),
-            radial-gradient(ellipse at 70% 5%, hsl(15 100% 45% / 0.18) 0%, transparent 35%),
-            linear-gradient(180deg, 
-              hsl(220 40% 4%) 0%, 
-              hsl(230 35% 5%) 30%,
-              hsl(240 30% 4%) 60%, 
-              hsl(235 35% 3%) 100%
-            )
-          `,
-        }}
-      />
+      {/* Pond background */}
+      <div className="fixed inset-0 z-0">
+        <img src={pondBg} alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(180deg, hsl(220 40% 4% / 0.75) 0%, hsl(220 40% 4% / 0.6) 50%, hsl(220 40% 4% / 0.85) 100%)',
+        }} />
+      </div>
 
       <Navbar />
 
