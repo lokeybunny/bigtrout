@@ -2,21 +2,117 @@ import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
+const SHOOTING_STAR_COUNT = 4;
+
 export const Sky = () => {
   const cloudsRef = useRef<THREE.Group>(null);
+  const shootingStarsRef = useRef<THREE.Group>(null);
 
-  useFrame(({ clock }) => {
-    if (!cloudsRef.current) return;
-    cloudsRef.current.rotation.y = clock.getElapsedTime() * 0.005;
+  // Shooting star state stored in refs to avoid re-renders
+  const shootingData = useMemo(() => {
+    return Array.from({ length: SHOOTING_STAR_COUNT }).map(() => ({
+      progress: Math.random() * -10, // negative = waiting
+      speed: 40 + Math.random() * 60,
+      start: new THREE.Vector3(
+        (Math.random() - 0.5) * 300,
+        30 + Math.random() * 50,
+        (Math.random() - 0.5) * 300
+      ),
+      dir: new THREE.Vector3(
+        -0.5 + Math.random() * -0.5,
+        -0.3 - Math.random() * 0.2,
+        -0.5 + Math.random() * -0.5
+      ).normalize(),
+      length: 8 + Math.random() * 12,
+      cooldown: 5 + Math.random() * 15,
+    }));
+  }, []);
+
+  useFrame(({ clock }, delta) => {
+    if (cloudsRef.current) {
+      cloudsRef.current.rotation.y = clock.getElapsedTime() * 0.005;
+    }
+
+    // Animate shooting stars
+    if (shootingStarsRef.current) {
+      const children = shootingStarsRef.current.children;
+      for (let i = 0; i < SHOOTING_STAR_COUNT; i++) {
+        const d = shootingData[i];
+        const mesh = children[i] as THREE.Mesh;
+        if (!mesh) continue;
+
+        d.progress += delta * d.speed;
+
+        if (d.progress > 80) {
+          // Reset with new random position & delay
+          d.progress = -(d.cooldown + Math.random() * 10);
+          d.start.set(
+            (Math.random() - 0.5) * 300,
+            30 + Math.random() * 50,
+            (Math.random() - 0.5) * 300
+          );
+          d.dir.set(
+            -0.5 + Math.random() * -0.5,
+            -0.3 - Math.random() * 0.2,
+            -0.5 + Math.random() * -0.5
+          ).normalize();
+        }
+
+        if (d.progress < 0) {
+          mesh.visible = false;
+        } else {
+          mesh.visible = true;
+          mesh.position.set(
+            d.start.x + d.dir.x * d.progress,
+            d.start.y + d.dir.y * d.progress,
+            d.start.z + d.dir.z * d.progress
+          );
+          mesh.lookAt(
+            mesh.position.x + d.dir.x,
+            mesh.position.y + d.dir.y,
+            mesh.position.z + d.dir.z
+          );
+          // Fade based on lifecycle
+          const mat = mesh.material as THREE.MeshBasicMaterial;
+          const fade = Math.min(1, d.progress / 5) * Math.max(0, 1 - (d.progress - 60) / 20);
+          mat.opacity = fade * 0.9;
+        }
+      }
+    }
   });
 
-  // Batch all stars into a single Points geometry instead of 100 individual meshes
+  // Dense star field — 400 stars spread across full sky dome
   const starsGeometry = useMemo(() => {
-    const positions = new Float32Array(80 * 3); // reduced from 100 to 80
-    for (let i = 0; i < 80; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 180;
-      positions[i * 3 + 1] = 20 + Math.random() * 60;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 180;
+    const count = 400;
+    const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      // Distribute on sphere surface
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(Math.random() * 0.8 + 0.2); // bias toward upper hemisphere
+      const r = 350 + Math.random() * 30;
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.cos(phi);
+      positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+      sizes[i] = 0.3 + Math.random() * 0.7;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    return geo;
+  }, []);
+
+  // Dim star layer for depth
+  const dimStarsGeometry = useMemo(() => {
+    const count = 300;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(Math.random() * 0.9 + 0.1);
+      const r = 340 + Math.random() * 40;
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.cos(phi);
+      positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
     }
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -25,7 +121,7 @@ export const Sky = () => {
 
   // Pre-compute cloud positions
   const cloudPositions = useMemo(() => {
-    return Array.from({ length: 8 }).map((_, i) => { // reduced from 15 to 8
+    return Array.from({ length: 8 }).map((_, i) => {
       const angle = (i / 8) * Math.PI * 2;
       const r = 50 + Math.random() * 30;
       return {
@@ -48,10 +144,9 @@ export const Sky = () => {
         <sphereGeometry args={[5, 12, 12]} />
         <meshBasicMaterial color="#ffffee" />
       </mesh>
-      {/* Single directional light for moon (removed extra pointLight) */}
       <directionalLight position={[30, 40, -60]} intensity={1.8} color="#ccddef" />
 
-      {/* Clouds — reduced count */}
+      {/* Clouds */}
       <group ref={cloudsRef}>
         {cloudPositions.map((cloud, i) => (
           <mesh key={i} position={cloud.position}>
@@ -61,10 +156,25 @@ export const Sky = () => {
         ))}
       </group>
 
-      {/* Stars — single draw call via Points */}
+      {/* Bright stars */}
       <points geometry={starsGeometry}>
-        <pointsMaterial color="#ffffff" size={0.4} sizeAttenuation />
+        <pointsMaterial color="#ffffff" size={0.5} sizeAttenuation fog={false} />
       </points>
+
+      {/* Dim stars for depth */}
+      <points geometry={dimStarsGeometry}>
+        <pointsMaterial color="#8899bb" size={0.3} sizeAttenuation fog={false} transparent opacity={0.5} />
+      </points>
+
+      {/* Shooting stars */}
+      <group ref={shootingStarsRef}>
+        {Array.from({ length: SHOOTING_STAR_COUNT }).map((_, i) => (
+          <mesh key={i} visible={false}>
+            <boxGeometry args={[0.15, 0.15, 8]} />
+            <meshBasicMaterial color="#ffffff" transparent opacity={0.8} fog={false} />
+          </mesh>
+        ))}
+      </group>
     </>
   );
 };
