@@ -23,9 +23,9 @@ const STATIONS: RadioStation[] = [
   { name: 'Smooth Jazz', url: 'https://streaming.radio.co/s774887f7b/listen', genre: 'Jazz' },
   { name: 'Jazz Radio', url: 'https://jazz.streamr.ru/jazz-64.mp3', genre: 'Jazz' },
   // Reggae
-  { name: 'Reggae', url: 'https://streams.ilovemusic.de/iloveradio12.mp3', genre: 'Reggae' },
+  { name: 'Reggae Vibes', url: 'https://streams.ilovemusic.de/iloveradio15.mp3', genre: 'Reggae' },
   // Ambient
-  { name: 'Ambient', url: 'https://streams.ilovemusic.de/iloveradio15.mp3', genre: 'Ambient' },
+  { name: 'Ambient', url: 'https://stream.laut.fm/ambient', genre: 'Ambient' },
 ];
 
 const GENRES = [...new Set(STATIONS.map(s => s.genre))];
