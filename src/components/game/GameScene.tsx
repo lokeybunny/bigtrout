@@ -620,7 +620,7 @@ export const GameScene = () => {
 
       {/* 3D Canvas */}
       <Canvas 
-        camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 300 }} 
+        camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 500 }} 
         dpr={[1, 1.5]}
         performance={{ min: 0.5 }}
         gl={{ antialias: false, powerPreference: 'high-performance' }}
