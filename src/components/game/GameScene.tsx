@@ -12,6 +12,7 @@ import { Sky } from './Sky';
 import { SpeedBoost, generateBoosts, BoostPickup } from './SpeedBoost';
 import { Obstacles, generateObstacles, Obstacle } from './Obstacles';
 import { AdaptivePerformanceProvider } from './AdaptivePerformance';
+import { AudioMuteProvider, useAudioMute } from './AudioMuteContext';
 import { Minimap } from './Minimap';
 import { CircleCollider } from './Colliders';
 import { useSolanaTransactions, GameEvent } from '../../hooks/useSolanaTransactions';
@@ -54,8 +55,13 @@ const getCheckpointProgress = (pos: THREE.Vector3): { index: number; withinRange
   return { index: closestIdx, withinRange: minDistSq <= CHECKPOINT_RADIUS_SQ };
 };
 
-export const GameScene = () => {
-  const playSFX = useGameSFX();
+const GameSceneInner = () => {
+  const { muteAll, muteSFX } = useAudioMute();
+  const playSFXRaw = useGameSFX();
+  const playSFX = useCallback((type: Parameters<typeof playSFXRaw>[0]) => {
+    if (muteAll || muteSFX) return;
+    playSFXRaw(type);
+  }, [muteAll, muteSFX, playSFXRaw]);
   const boatPosRef = useRef(new THREE.Vector3(0, 0, -15));
   const wakeSpeedRef = useRef(0);
   const wakePosRef = useRef(new THREE.Vector3(0, 0, -15));
@@ -693,3 +699,9 @@ export const GameScene = () => {
     </div>
   );
 };
+
+export const GameScene = () => (
+  <AudioMuteProvider>
+    <GameSceneInner />
+  </AudioMuteProvider>
+);
