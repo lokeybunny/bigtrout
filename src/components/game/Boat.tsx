@@ -199,7 +199,7 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
   return (
     <group ref={groupRef} position={[0, -0.3, 2]}>
       {/* Hull - tapered boat shape */}
-      <mesh position={[0, 0, 0]}>
+      <mesh position={[0, 0, 0]} castShadow>
         <boxGeometry args={[2, 0.4, 5]} />
         <meshStandardMaterial color="#6b4226" roughness={0.85} />
       </mesh>
