@@ -3,10 +3,14 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 const SHOOTING_STAR_COUNT = 4;
+const LIGHT_RAY_COUNT = 5;
+const MOON_POS: [number, number, number] = [30, 40, -60];
 
 export const Sky = () => {
   const cloudsRef = useRef<THREE.Group>(null);
   const shootingStarsRef = useRef<THREE.Group>(null);
+  const moonGlowRef = useRef<THREE.Mesh>(null);
+  const raysRef = useRef<THREE.Group>(null);
 
   // Shooting star state stored in refs to avoid re-renders
   const shootingData = useMemo(() => {
@@ -31,6 +35,28 @@ export const Sky = () => {
   useFrame(({ clock }, delta) => {
     if (cloudsRef.current) {
       cloudsRef.current.rotation.y = clock.getElapsedTime() * 0.005;
+    }
+
+    // Pulse moon glow
+    if (moonGlowRef.current) {
+      const t = clock.getElapsedTime();
+      const scale = 1 + Math.sin(t * 0.3) * 0.08 + Math.sin(t * 0.7) * 0.04;
+      moonGlowRef.current.scale.setScalar(scale);
+      const mat = moonGlowRef.current.material as THREE.MeshBasicMaterial;
+      mat.opacity = 0.12 + Math.sin(t * 0.5) * 0.03;
+    }
+
+    // Animate volumetric light rays
+    if (raysRef.current) {
+      const t = clock.getElapsedTime();
+      const children = raysRef.current.children;
+      for (let i = 0; i < children.length; i++) {
+        const ray = children[i] as THREE.Mesh;
+        const mat = ray.material as THREE.MeshBasicMaterial;
+        const phase = i * 1.3;
+        mat.opacity = 0.03 + Math.sin(t * 0.2 + phase) * 0.02 + Math.sin(t * 0.5 + phase * 2) * 0.01;
+        ray.rotation.z = Math.sin(t * 0.1 + phase) * 0.02;
+      }
     }
 
     // Animate shooting stars
@@ -140,11 +166,55 @@ export const Sky = () => {
       </mesh>
 
       {/* Moon */}
-      <mesh position={[30, 40, -60]}>
+      <mesh position={MOON_POS}>
         <sphereGeometry args={[5, 12, 12]} />
-        <meshBasicMaterial color="#ffffee" />
+        <meshBasicMaterial color="#ffffee" fog={false} />
       </mesh>
-      <directionalLight position={[30, 40, -60]} intensity={1.8} color="#ccddef" />
+
+      {/* Moon glow — layered halos */}
+      <mesh ref={moonGlowRef} position={MOON_POS}>
+        <sphereGeometry args={[12, 16, 16]} />
+        <meshBasicMaterial color="#aabbdd" transparent opacity={0.12} fog={false} side={THREE.FrontSide} depthWrite={false} />
+      </mesh>
+      <mesh position={MOON_POS}>
+        <sphereGeometry args={[20, 16, 16]} />
+        <meshBasicMaterial color="#6688aa" transparent opacity={0.05} fog={false} side={THREE.FrontSide} depthWrite={false} />
+      </mesh>
+      <mesh position={MOON_POS}>
+        <sphereGeometry args={[35, 12, 12]} />
+        <meshBasicMaterial color="#445566" transparent opacity={0.025} fog={false} side={THREE.FrontSide} depthWrite={false} />
+      </mesh>
+
+      {/* Moon point light for local illumination */}
+      <pointLight position={MOON_POS} intensity={2} distance={120} color="#aabbdd" decay={2} />
+
+      <directionalLight position={MOON_POS} intensity={1.8} color="#ccddef" />
+
+      {/* Volumetric light rays from moon */}
+      <group ref={raysRef} position={MOON_POS}>
+        {Array.from({ length: LIGHT_RAY_COUNT }).map((_, i) => {
+          const angle = ((i / LIGHT_RAY_COUNT) * Math.PI * 0.6) - Math.PI * 0.3;
+          const rayLen = 80 + i * 15;
+          return (
+            <mesh
+              key={i}
+              position={[Math.sin(angle) * rayLen * 0.5, -rayLen * 0.4, Math.cos(angle) * 5]}
+              rotation={[0, 0, angle - 0.3]}
+            >
+              <planeGeometry args={[3 + i * 0.8, rayLen]} />
+              <meshBasicMaterial
+                color="#8899cc"
+                transparent
+                opacity={0.04}
+                fog={false}
+                side={THREE.DoubleSide}
+                depthWrite={false}
+                blending={THREE.AdditiveBlending}
+              />
+            </mesh>
+          );
+        })}
+      </group>
 
       {/* Clouds */}
       <group ref={cloudsRef}>
