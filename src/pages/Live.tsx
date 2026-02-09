@@ -15,6 +15,13 @@ interface StreamEntry {
 
 const streams: StreamEntry[] = [
   {
+    title: 'BigTrout300 Live — Community Session',
+    date: 'Feb 9, 2026',
+    thumbnail: streamThumb1,
+    url: 'https://x.com/i/broadcasts/1BRKjgmAEnWGw',
+    description: 'Latest live broadcast with the Trout Squad — updates, vibes, and community hang.',
+  },
+  {
     title: 'BigTrout300 Live — Pump.fun Chart Session',
     date: 'Feb 2026',
     thumbnail: streamThumb1,
