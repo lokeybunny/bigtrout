@@ -26,7 +26,16 @@ import phantomLogo from '@/assets/logos/phantom.png';
 import okxLogo from '@/assets/logos/okx.png';
 import coin98Logo from '@/assets/logos/coin98.png';
 import cryptocomLogo from '@/assets/logos/cryptocom.svg';
-
+import kcexLogo from '@/assets/logos/kcex.png';
+import bilaxyLogo from '@/assets/logos/bilaxy.png';
+import bigoneLogo from '@/assets/logos/bigone.png';
+import pumpswapLogo from '@/assets/logos/pumpswap.png';
+import meteoraLogo from '@/assets/logos/meteora.svg';
+import raydiumLogo from '@/assets/logos/raydium.png';
+import fomoLogo from '@/assets/logos/fomo.png';
+import solflareLogo from '@/assets/logos/solflare.png';
+import solanaLogo from '@/assets/logos/solana.png';
+import bitgetWalletLogo from '@/assets/logos/bitget-wallet.png';
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
 const socialLinks = [
@@ -57,6 +66,17 @@ const exchangeLogos = [
   { name: 'OKX', logo: okxLogo, url: 'https://web3.okx.com/token/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on OKX' },
   { name: 'Coin98', logo: coin98Logo, url: 'https://coin98.com/blockchain', alt: 'View BIGTROUT on Coin98' },
   { name: 'Crypto.com', logo: cryptocomLogo, url: 'https://onchain.crypto.com/en/coin?id=the-big-trout', alt: 'View BIGTROUT on Crypto.com' },
+  { name: 'KCEX', logo: kcexLogo, url: 'https://www.kcex.com/exchange/BIGTROUT_USDT', alt: 'Trade BIGTROUT on KCEX' },
+  { name: 'Bilaxy', logo: bilaxyLogo, url: 'https://bilaxy.com/exchange', alt: 'Trade BIGTROUT on Bilaxy' },
+  { name: 'Ourbit', logo: null, url: 'https://www.ourbit.com', alt: 'Trade BIGTROUT on Ourbit' },
+  { name: 'BigONE', logo: bigoneLogo, url: 'https://big.one', alt: 'Trade BIGTROUT on BigONE' },
+  { name: 'PumpSwap', logo: pumpswapLogo, url: `https://pumpswap.io/token/${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on PumpSwap' },
+  { name: 'Meteora', logo: meteoraLogo, url: 'https://www.meteora.ag', alt: 'Trade BIGTROUT on Meteora' },
+  { name: 'Raydium', logo: raydiumLogo, url: 'https://raydium.io/swap', alt: 'Trade BIGTROUT on Raydium' },
+  { name: 'Fomo', logo: fomoLogo, url: 'https://fomo.family', alt: 'Trade BIGTROUT on Fomo' },
+  { name: 'Solflare', logo: solflareLogo, url: 'https://www.solflare.com', alt: 'BIGTROUT on Solflare' },
+  { name: 'Solana Wallet', logo: solanaLogo, url: 'https://solana.com', alt: 'BIGTROUT on Solana Wallet' },
+  { name: 'Bitget Wallet', logo: bitgetWalletLogo, url: 'https://web3.bitget.com', alt: 'BIGTROUT on Bitget Wallet' },
 ];
 
 // Generate fireflies
