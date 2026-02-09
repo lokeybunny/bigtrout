@@ -683,7 +683,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
 
           {/* AI boats (single player only) */}
           {!isMultiplayer && AI_BOATS.map((boat, i) => (
-            <AIBoat key={`${boat.id}-${resetKey}`} id={boat.id} color={boat.color} speed={state.raceStarted ? boat.speed : 0} startOffset={i * 0.3} onProgress={handleAIProgress} obstacles={obstacles} obstacleColliders={obstacleColliders} />
+            <AIBoat key={`${boat.id}-${resetKey}`} id={boat.id} color={boat.color} speed={state.raceStarted ? boat.speed : 0} startOffset={i * 0.3} onProgress={handleAIProgress} obstacles={obstacles} obstacleColliders={obstacleColliders} tokenMultiplier={tokenMultiplier} />
           ))}
 
           {/* Opponent boat (multiplayer only) */}

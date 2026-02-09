@@ -26,9 +26,10 @@ interface AIBoatProps {
   onProgress: (id: number, checkpoint: number, lap: number) => void;
   obstacles: Obstacle[];
   obstacleColliders: CircleCollider[];
+  tokenMultiplier?: number;
 }
 
-export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, obstacleColliders }: AIBoatProps) => {
+export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, obstacleColliders, tokenMultiplier = 1 }: AIBoatProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const progressRef = useRef(startOffset); // 0..CHECKPOINTS.length * TOTAL_LAPS
   const checkpointRef = useRef(0);
@@ -63,7 +64,7 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
 
     // Advance along track
     const wobble = Math.sin(t * 2 + id * 1.5) * 0.15;
-    progressRef.current += delta * (speed + wobble) * 0.12 * speedMult;
+    progressRef.current += delta * (speed + wobble) * 0.12 * speedMult * tokenMultiplier;
 
     const totalCheckpoints = CHECKPOINTS.length;
     const totalProgress = totalCheckpoints * TOTAL_LAPS;
