@@ -14,11 +14,11 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   const frameSkip = useRef(0);
   const perfRef = useAdaptivePerf();
   
-  const segments = perfRef.current.oceanSegments;
+  // Fixed geometry — don't recreate based on tier (causes flash)
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(600, 600, segments, segments);
+    const geo = new THREE.PlaneGeometry(600, 600, 20, 20);
     return geo;
-  }, [segments]);
+  }, []);
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
