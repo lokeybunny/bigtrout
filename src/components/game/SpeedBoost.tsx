@@ -59,20 +59,15 @@ export const SpeedBoost = ({ pickup, playerPos, onCollect }: SpeedBoostProps) =>
 
   return (
     <group ref={groupRef} position={[pickup.position[0], pickup.position[1], pickup.position[2]]}>
-      {/* Outer ring */}
+      {/* Outer ring — reduced segments */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.8, 0.12, 8, 16]} />
+        <torusGeometry args={[0.8, 0.12, 4, 8]} />
         <meshStandardMaterial color="#ffcc00" emissive="#ffaa00" emissiveIntensity={0.8} />
       </mesh>
-      {/* Inner arrow / bolt */}
+      {/* Inner bolt */}
       <mesh>
-        <coneGeometry args={[0.35, 0.8, 6]} />
+        <coneGeometry args={[0.35, 0.8, 4]} />
         <meshStandardMaterial color="#ff6600" emissive="#ff4400" emissiveIntensity={0.6} />
-      </mesh>
-      {/* Second bolt */}
-      <mesh rotation={[Math.PI, 0, 0]} position={[0, -0.1, 0]}>
-        <coneGeometry args={[0.25, 0.5, 6]} />
-        <meshStandardMaterial color="#ffaa00" emissive="#ff8800" emissiveIntensity={0.6} />
       </mesh>
       {/* Removed pointLight for performance */}
     </group>

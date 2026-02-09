@@ -88,16 +88,6 @@ const RockObstacle = ({ obstacle, playerPos, onHit }: ObstacleProps) => {
         <dodecahedronGeometry args={[0.7, 0]} />
         <meshStandardMaterial color="#6a6a6a" roughness={0.95} flatShading />
       </mesh>
-      {/* Tiny rock */}
-      <mesh position={[-0.6, 0.1, -0.7]} rotation={[0.3, seed * 1.2, 0]}>
-        <dodecahedronGeometry args={[0.4, 0]} />
-        <meshStandardMaterial color="#4a4a4a" roughness={0.95} flatShading />
-      </mesh>
-      {/* Warning ring at water level */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.05, 0]}>
-        <ringGeometry args={[2.5, 3, 16]} />
-        <meshStandardMaterial color="#ffffff" transparent opacity={0.15} side={THREE.DoubleSide} />
-      </mesh>
     </group>
   );
 };
@@ -132,24 +122,15 @@ const WaveObstacle = ({ obstacle, playerPos, onHit }: ObstacleProps) => {
 
   return (
     <group ref={groupRef} position={[obstacle.position[0], obstacle.position[1], obstacle.position[2]]}>
-      {/* Wave crests - a few curved shapes */}
+      {/* Wave crest — single mesh */}
       <mesh position={[0, 0.3, 0]} rotation={[0, 0, 0.2]}>
-        <torusGeometry args={[1.5, 0.4, 6, 12, Math.PI]} />
+        <torusGeometry args={[1.5, 0.4, 4, 8, Math.PI]} />
         <meshStandardMaterial color="#1a5577" transparent opacity={0.7} roughness={0.3} />
       </mesh>
-      <mesh position={[0.8, 0.5, 0.3]} rotation={[0, 0.5, 0.3]}>
-        <torusGeometry args={[1, 0.3, 6, 10, Math.PI]} />
-        <meshStandardMaterial color="#2277aa" transparent opacity={0.6} roughness={0.3} />
-      </mesh>
-      {/* Foam on top */}
+      {/* Foam */}
       <mesh position={[0, 0.7, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.5, 1.8, 12]} />
+        <ringGeometry args={[0.5, 1.8, 8]} />
         <meshStandardMaterial color="#ccddee" transparent opacity={0.3} side={THREE.DoubleSide} />
-      </mesh>
-      {/* Danger indicator */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.05, 0]}>
-        <ringGeometry args={[3, 3.5, 16]} />
-        <meshStandardMaterial color="#2277aa" transparent opacity={0.1} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );

@@ -213,13 +213,13 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     _lookTarget.add(posRef.current);
     camera.lookAt(_lookTarget);
 
-    onPositionUpdate?.(posRef.current.clone(), headingRef.current);
+    onPositionUpdate?.(posRef.current, headingRef.current);
   });
 
   return (
     <group ref={groupRef} position={[0, -0.3, 2]}>
       {/* Hull - tapered boat shape */}
-      <mesh position={[0, 0, 0]} castShadow>
+      <mesh position={[0, 0, 0]}>
         <boxGeometry args={[2, 0.4, 5]} />
         <meshStandardMaterial color="#6b4226" roughness={0.85} />
       </mesh>
@@ -346,12 +346,12 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
         <group position={[0, 1.45, 0]} rotation={[0, Math.PI, 0]}>
           {/* Main fish head — large oval */}
           <mesh>
-            <sphereGeometry args={[0.3, 10, 8]} />
+            <sphereGeometry args={[0.3, 6, 6]} />
             <meshStandardMaterial color={fishColor} metalness={0.25} roughness={0.5} />
           </mesh>
           {/* Fish belly / lighter underside */}
           <mesh position={[0, -0.08, 0.05]} scale={[0.9, 0.7, 0.85]}>
-            <sphereGeometry args={[0.28, 8, 6]} />
+            <sphereGeometry args={[0.28, 6, 4]} />
             <meshStandardMaterial color={fishColor} metalness={0.15} roughness={0.6} opacity={0.7} transparent />
           </mesh>
           {/* Left eye — big googly */}

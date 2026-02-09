@@ -176,7 +176,7 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
   return (
     <group ref={groupRef}>
       {/* Hull */}
-      <mesh position={[0, 0, 0]} castShadow>
+      <mesh position={[0, 0, 0]}>
         <boxGeometry args={[1.5, 0.3, 3.5]} />
         <meshStandardMaterial color={color} roughness={0.7} />
       </mesh>

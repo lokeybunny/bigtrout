@@ -41,7 +41,7 @@ export const OpponentBoat = ({ posRef, color = '#cc9933' }: OpponentBoatProps) =
   return (
     <group ref={groupRef} position={[0, -0.3, -15]}>
       {/* Hull */}
-      <mesh position={[0, 0, 0]} castShadow>
+      <mesh position={[0, 0, 0]}>
         <boxGeometry args={[2, 0.4, 5]} />
         <meshStandardMaterial color="#6b4226" roughness={0.85} />
       </mesh>
