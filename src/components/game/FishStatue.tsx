@@ -78,8 +78,7 @@ export const FishStatue = () => {
         </mesh>
       </group>
 
-      {/* Single light — static intensity */}
-      <pointLight position={[0, 12, 2]} color="#44ff88" intensity={4} distance={40} />
+      {/* Light removed for performance */}
     </group>
   );
 };
