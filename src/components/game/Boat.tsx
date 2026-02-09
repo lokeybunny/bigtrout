@@ -1,7 +1,7 @@
 import { useRef, useEffect, useCallback, MutableRefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { resolveCollisions, CircleCollider } from './Colliders';
+import { resolveCollisions, CircleCollider, registerBoatPosition, unregisterBoat, resolveBoatCollisions } from './Colliders';
 
 interface BoatProps {
   onPositionUpdate?: (pos: THREE.Vector3, rot: number) => void;
@@ -51,6 +51,7 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      unregisterBoat('player');
     };
   }, [handleKeyDown, handleKeyUp]);
 
@@ -104,7 +105,16 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     const resolved = resolveCollisions(posRef.current.x, posRef.current.z, 1.2, obstacleColliders);
     posRef.current.x = resolved.x;
     posRef.current.z = resolved.z;
-    if (resolved.hit) {
+
+    // Resolve boat-to-boat collisions
+    const boatResolved = resolveBoatCollisions('player', posRef.current.x, posRef.current.z, 1.5);
+    posRef.current.x = boatResolved.x;
+    posRef.current.z = boatResolved.z;
+
+    // Register player position for other boats
+    registerBoatPosition('player', posRef.current.x, posRef.current.z);
+
+    if (resolved.hit || boatResolved.hit) {
       // Full stop + slight bounce to prevent pushing through
       vel.forward = Math.min(vel.forward, 0) - 0.5;
     }

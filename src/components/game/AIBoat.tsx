@@ -1,8 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Obstacle } from './Obstacles';
-import { resolveCollisions, CircleCollider } from './Colliders';
+import { resolveCollisions, CircleCollider, registerBoatPosition, unregisterBoat, resolveBoatCollisions } from './Colliders';
 
 // Race track checkpoint positions (oval circuit)
 export const CHECKPOINTS: [number, number][] = [
@@ -35,6 +35,12 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
   const lapRef = useRef(0);
   const slowdownRef = useRef(0); // remaining slowdown time in seconds
   const deflectRef = useRef<[number, number]>([0, 0]); // lateral push from obstacle
+  const boatId = `ai-${id}`;
+
+  // Unregister on unmount
+  useEffect(() => {
+    return () => unregisterBoat(boatId);
+  }, [boatId]);
 
   useFrame(({ clock }, delta) => {
     if (!groupRef.current) return;
@@ -118,13 +124,21 @@ export const AIBoat = ({ id, color, startOffset, speed, onProgress, obstacles, o
     x = resolved.x;
     z = resolved.z;
 
-    if (resolved.hit) {
-      // Strong deflection to steer AI away from the obstacle
+    // Resolve boat-to-boat collisions (bounce off other boats)
+    const boatResolved = resolveBoatCollisions(boatId, x, z, 1.5);
+    x = boatResolved.x;
+    z = boatResolved.z;
+
+    // Register position for other boats to collide against
+    registerBoatPosition(boatId, x, z);
+
+    if (resolved.hit || boatResolved.hit) {
+      // Strong deflection to steer AI away
       deflectRef.current[0] += (x - baseX) * 0.8;
       deflectRef.current[1] += (z - baseZ) * 0.8;
       // Apply slowdown if not already slowed
       if (slowdownRef.current <= 0) {
-        slowdownRef.current = 1.5;
+        slowdownRef.current = boatResolved.hit ? 0.5 : 1.5;
       }
     }
 
