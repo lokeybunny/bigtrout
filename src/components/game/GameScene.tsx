@@ -595,8 +595,8 @@ export const GameScene = () => {
 
       {/* CA Address - bottom center, shifts right when chart+radio expanded */}
       <div className="absolute bottom-2 z-10 transition-all duration-300" style={{
-        left: '50%',
-        transform: `translateX(${chartExpanded ? 'calc(-50% + 120px)' : '-50%'})`,
+        left: chartExpanded ? 'calc(50% + 80px)' : '50%',
+        transform: 'translateX(-50%)',
       }}>
         <button
           onClick={() => {
