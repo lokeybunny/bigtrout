@@ -1,5 +1,5 @@
-import { useState, useRef, useCallback } from 'react';
-
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { useAudioMute } from './AudioMuteContext';
 interface RadioStation {
   name: string;
   url: string;
@@ -41,12 +41,21 @@ const GENRE_EMOJI: Record<string, string> = {
 };
 
 export const GameRadio = ({ chartExpanded = false }: { chartExpanded?: boolean }) => {
+  const { muteAll, muteSFX, toggleMuteAll, toggleMuteSFX } = useAudioMute();
   const [open, setOpen] = useState(false);
+  const [soundMenuOpen, setSoundMenuOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [currentStation, setCurrentStation] = useState<RadioStation | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string>(GENRES[0]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [vinylSpin, setVinylSpin] = useState(false);
+
+  // Mute/unmute radio audio when muteAll changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = muteAll;
+    }
+  }, [muteAll]);
 
   const playStation = useCallback((station: RadioStation) => {
     if (audioRef.current) {
@@ -89,8 +98,9 @@ export const GameRadio = ({ chartExpanded = false }: { chartExpanded?: boolean }
 
   return (
     <>
-      {/* Vinyl DJ Button — next to chart icon */}
-      <div className="absolute bottom-2 z-10 transition-all duration-300" style={{ left: chartExpanded ? 576 : 64 }}>
+      {/* Button row — Vinyl + Speaker */}
+      <div className="absolute bottom-2 z-10 transition-all duration-300 flex gap-2" style={{ left: chartExpanded ? 576 : 64 }}>
+        {/* Vinyl DJ Button */}
         <button
           onClick={togglePanel}
           className="w-12 h-12 rounded-lg flex items-center justify-center relative"
@@ -102,24 +112,14 @@ export const GameRadio = ({ chartExpanded = false }: { chartExpanded?: boolean }
           }}
           title="Open Radio"
         >
-          {/* Vinyl disc icon */}
           <div style={{
-            width: 28,
-            height: 28,
-            borderRadius: '50%',
+            width: 28, height: 28, borderRadius: '50%',
             background: 'radial-gradient(circle at 50% 50%, #333 20%, #111 22%, #222 40%, #111 42%, #1a1a1a 60%, #333 62%, #222 80%, #111 100%)',
             border: '2px solid #444',
             animation: vinylSpin ? 'spin 2s linear infinite' : 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <div style={{
-              width: 6,
-              height: 6,
-              borderRadius: '50%',
-              background: playing ? '#44ff88' : '#ffcc44',
-            }} />
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: playing ? '#44ff88' : '#ffcc44' }} />
           </div>
           {playing && (
             <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full" style={{
@@ -129,6 +129,90 @@ export const GameRadio = ({ chartExpanded = false }: { chartExpanded?: boolean }
             }} />
           )}
         </button>
+
+        {/* Speaker / Mute Button */}
+        <div className="relative">
+          <button
+            onClick={() => setSoundMenuOpen(prev => !prev)}
+            className="w-12 h-12 rounded-lg flex items-center justify-center relative"
+            style={{
+              background: muteAll ? 'rgba(255,68,68,0.15)' : 'rgba(0,0,0,0.7)',
+              border: muteAll ? '1px solid rgba(255,68,68,0.4)' : '1px solid rgba(255,204,68,0.4)',
+              cursor: 'pointer',
+              boxShadow: muteAll ? '0 0 12px rgba(255,68,68,0.2)' : '0 0 12px rgba(255,204,68,0.2)',
+            }}
+            title="Sound Settings"
+          >
+            <span style={{ fontSize: 22 }}>{muteAll ? '🔇' : muteSFX ? '🔉' : '🔊'}</span>
+          </button>
+
+          {/* Sound menu dropdown */}
+          {soundMenuOpen && (
+            <div className="absolute bottom-14 left-0 z-30" style={{
+              width: 200,
+              background: 'rgba(0,0,0,0.92)',
+              border: '1px solid rgba(255,204,68,0.3)',
+              borderRadius: 10,
+              overflow: 'hidden',
+            }}>
+              <div className="px-3 py-2 flex items-center justify-between" style={{
+                borderBottom: '1px solid rgba(255,255,255,0.1)',
+              }}>
+                <span style={{ fontFamily: 'Bangers', color: '#ffcc44', fontSize: 14, letterSpacing: '0.05em' }}>
+                  🔊 SOUND
+                </span>
+                <button onClick={() => setSoundMenuOpen(false)} style={{
+                  background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 14,
+                }}>✕</button>
+              </div>
+
+              {/* Mute All */}
+              <button
+                onClick={toggleMuteAll}
+                className="w-full text-left px-3 py-2.5 flex items-center gap-2"
+                style={{
+                  background: muteAll ? 'rgba(255,68,68,0.12)' : 'transparent',
+                  border: 'none',
+                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                  cursor: 'pointer',
+                }}
+              >
+                <span style={{ fontSize: 16 }}>{muteAll ? '🔇' : '🔊'}</span>
+                <div>
+                  <div style={{ fontFamily: 'Rajdhani', fontSize: 13, color: muteAll ? '#ff6644' : '#ccc', fontWeight: 'bold' }}>
+                    {muteAll ? 'UNMUTE ALL' : 'MUTE ALL SOUND'}
+                  </div>
+                  <div style={{ fontFamily: 'Rajdhani', fontSize: 10, color: '#888' }}>
+                    Radio + Sound Effects
+                  </div>
+                </div>
+                <span style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: '50%', background: muteAll ? '#ff4444' : '#44ff88', boxShadow: muteAll ? '0 0 4px rgba(255,68,68,0.6)' : '0 0 4px rgba(68,255,136,0.6)' }} />
+              </button>
+
+              {/* Mute SFX Only */}
+              <button
+                onClick={toggleMuteSFX}
+                className="w-full text-left px-3 py-2.5 flex items-center gap-2"
+                style={{
+                  background: muteSFX ? 'rgba(255,170,0,0.12)' : 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <span style={{ fontSize: 16 }}>{muteSFX ? '🔕' : '🔔'}</span>
+                <div>
+                  <div style={{ fontFamily: 'Rajdhani', fontSize: 13, color: muteSFX ? '#ffaa00' : '#ccc', fontWeight: 'bold' }}>
+                    {muteSFX ? 'UNMUTE SFX' : 'MUTE SOUND EFFECTS'}
+                  </div>
+                  <div style={{ fontFamily: 'Rajdhani', fontSize: 10, color: '#888' }}>
+                    Boost, crash, checkpoint sounds
+                  </div>
+                </div>
+                <span style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: '50%', background: muteSFX ? '#ffaa00' : '#44ff88', boxShadow: muteSFX ? '0 0 4px rgba(255,170,0,0.6)' : '0 0 4px rgba(68,255,136,0.6)' }} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Radio Panel */}
