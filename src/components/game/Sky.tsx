@@ -58,7 +58,8 @@ export const Sky = () => {
         <meshBasicMaterial color="#ccddff" transparent opacity={0.15} fog={false} side={THREE.FrontSide} depthWrite={false} />
       </mesh>
 
-      {/* No directional light needed — all meshBasicMaterial */}
+      {/* Moon light — slightly brighter */}
+      <directionalLight position={MOON_POS} intensity={2.2} color="#ddeeff" />
 
       {/* Stars — brighter and more visible */}
       <points geometry={starsGeometry}>

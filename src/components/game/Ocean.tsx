@@ -1,6 +1,7 @@
 import { useRef, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useAdaptivePerf } from './AdaptivePerformance';
 
 interface OceanProps {
   tokenMultiplier?: number;
@@ -8,29 +9,30 @@ interface OceanProps {
 
 export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
+  const matRef = useRef<THREE.MeshStandardMaterial>(null);
   const { camera } = useThree();
   const frameSkip = useRef(0);
+  const perfRef = useAdaptivePerf();
   
-  // Fixed geometry — minimal segments
+  // Fixed geometry — don't recreate based on tier (causes flash)
   const geometry = useMemo(() => {
-    return new THREE.PlaneGeometry(600, 600, 16, 16);
+    const geo = new THREE.PlaneGeometry(600, 600, 20, 20);
+    return geo;
   }, []);
-
-  // Use a single color that we can update without material uniforms
-  const color = useMemo(() => new THREE.Color('#0a4a3a'), []);
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
     
-    // Guard invalid camera
+    // Guard: don't update if camera position is invalid
     if (!Number.isFinite(camera.position.x) || !Number.isFinite(camera.position.z)) return;
     
     meshRef.current.position.x = camera.position.x;
     meshRef.current.position.z = camera.position.z;
     
-    // Skip frames for perf
+    // Dynamic frame skipping based on performance tier
+    const skip = perfRef.current.oceanFrameSkip;
     frameSkip.current++;
-    if (frameSkip.current % 3 !== 0) return;
+    if (frameSkip.current % skip !== 0) return;
     
     const positions = (meshRef.current.geometry as THREE.PlaneGeometry).attributes.position;
     const time = clock.getElapsedTime();
@@ -52,15 +54,27 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
       );
     }
     positions.needsUpdate = true;
+    // Skip computeVertexNormals — very expensive, minimal visual difference on water
+    // (meshRef.current.geometry as THREE.PlaneGeometry).computeVertexNormals();
+
+    if (matRef.current) {
+      const r = tokenMultiplier < 1 ? 0.06 : 0.04;
+      const g = tokenMultiplier >= 1 ? 0.29 + (tokenMultiplier - 1) * 0.1 : 0.22;
+      const b = tokenMultiplier < 1 ? 0.18 : 0.23;
+      matRef.current.color.setRGB(r, g, b);
+    }
   });
 
   return (
     <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} geometry={geometry}>
-      <meshBasicMaterial 
-        color={color}
+      <meshStandardMaterial 
+        ref={matRef}
+        color="#0a4a3a"
         transparent
         opacity={0.85}
         side={THREE.FrontSide}
+        metalness={0.3}
+        roughness={0.4}
       />
     </mesh>
   );
