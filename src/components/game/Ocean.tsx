@@ -16,7 +16,7 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   
   // Fixed geometry — don't recreate based on tier (causes flash)
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(600, 600, 20, 20);
+    const geo = new THREE.PlaneGeometry(400, 400, 16, 16);
     return geo;
   }, []);
 
