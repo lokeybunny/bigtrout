@@ -51,6 +51,7 @@ const TelegramIcon = ({ className }: { className?: string }) => (
 const socialLinks = [
   { icon: Twitter, name: 'Community', handle: 'Join on X', url: 'https://x.com/i/communities/2019176023888187687', color: 'green' },
   { icon: TelegramIcon, name: 'Telegram', handle: 'Join on Telegram', url: 'https://t.me/BigTrout300Solana', color: 'blue' },
+  { icon: Twitter, name: 'X Raid Chat', handle: 'Join Raid Chat', url: 'https://x.com/i/chat/group_join/g2021055493003936099/214SHu5krJ', color: 'green' },
 ];
 
 const exchangeLogos = [
