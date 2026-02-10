@@ -223,6 +223,14 @@ export const CommunitySection = () => {
             ))}
           </div>
 
+          <p className="font-display text-2xl md:text-3xl font-bold tracking-wider mt-8 mb-6" style={{
+            color: 'hsl(0 0% 80%)',
+            textShadow: '0 0 20px hsl(0 0% 100% / 0.15), 0 2px 4px hsl(0 0% 0% / 0.5)',
+            letterSpacing: '0.12em',
+          }}>
+            + MORE ON THE WAY
+          </p>
+
           <p className="text-muted-foreground/70 text-xs md:text-sm max-w-2xl mx-auto">
             Always verify the contract address{' '}
             <code className="text-pepe/80 font-mono text-xs break-all">{CONTRACT_ADDRESS}</code>{' '}
