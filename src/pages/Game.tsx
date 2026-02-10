@@ -1,6 +1,6 @@
 import { Suspense, useState } from 'react';
 import { GameScene } from '@/components/game/GameScene';
-import raceMenuBg from '@/assets/bigtrout-race-menu.jpeg';
+import raceMenuBg from '@/assets/game-landing-bg.jpeg';
 import raceHowtoBg from '@/assets/bigtrout-race-howto.png';
 
 type Screen = 'menu' | 'howto' | 'playing';
