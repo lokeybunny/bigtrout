@@ -51,8 +51,6 @@ const AI_BOATS = [
   { id: 1, color: '#cc3333', speed: 2.8, name: 'Red Fin' },
   { id: 2, color: '#3366cc', speed: 3.2, name: 'Blue Wave' },
   { id: 3, color: '#cc9933', speed: 2.5, name: 'Gold Rush' },
-  { id: 4, color: '#9933cc', speed: 3.0, name: 'Purple Tide' },
-  { id: 5, color: '#33cccc', speed: 2.7, name: 'Teal Storm' },
 ];
 
 const FISH_COLORS: Record<string, string> = {
@@ -691,8 +689,8 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
       >
         <AdaptivePerformanceProvider>
           <RenderHealthWatchdog />
-          <ambientLight intensity={0.8} color="#6688bb" />
-          <fog attach="fog" args={['#0a1525', 50, 200]} />
+          {/* No ambient/directional lights — all meshBasicMaterial */}
+          <fog attach="fog" args={['#0a1525', 60, 250]} />
           <Sky />
           <Ocean tokenMultiplier={tokenMultiplier} />
           <TroutIsland />
