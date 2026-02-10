@@ -13,6 +13,7 @@ import { SpeedBoost, generateBoosts, BoostPickup } from './SpeedBoost';
 import { Obstacles, generateObstacles, Obstacle } from './Obstacles';
 import { AdaptivePerformanceProvider } from './AdaptivePerformance';
 import { RenderHealthWatchdog } from './RenderHealthWatchdog';
+import { ScenePreloader } from './ScenePreloader';
 import { AudioMuteProvider, useAudioMute } from './AudioMuteContext';
 import { Minimap } from './Minimap';
 import { CircleCollider } from './Colliders';
@@ -723,6 +724,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
         style={{ background: '#0a1525', position: 'relative', zIndex: 1 }}
       >
         <AdaptivePerformanceProvider>
+          <ScenePreloader />
           <RenderHealthWatchdog />
           <ambientLight intensity={0.8} color="#6688bb" />
           <fog attach="fog" args={['#0a1525', 50, 200]} />

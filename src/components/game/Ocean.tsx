@@ -9,7 +9,7 @@ interface OceanProps {
 
 export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const matRef = useRef<THREE.MeshStandardMaterial>(null);
+  const matRef = useRef<THREE.MeshLambertMaterial>(null);
   const { camera } = useThree();
   const frameSkip = useRef(0);
   const perfRef = useAdaptivePerf();
@@ -67,14 +67,12 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
 
   return (
     <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} geometry={geometry}>
-      <meshStandardMaterial 
+      <meshLambertMaterial 
         ref={matRef}
         color="#0a4a3a"
         transparent
         opacity={0.85}
         side={THREE.FrontSide}
-        metalness={0.3}
-        roughness={0.4}
       />
     </mesh>
   );
