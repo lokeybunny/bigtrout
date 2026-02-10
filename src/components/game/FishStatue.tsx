@@ -35,12 +35,12 @@ export const FishStatue = () => {
       {/* Fish statue — keep meshLambertMaterial for the metallic look on the main piece */}
       <group ref={fishRef} position={[0, 7.5, 0]}>
         <mesh scale={[1, 1.2, 2.8]}>
-          <sphereGeometry args={[2, 8, 6]} />
+          <sphereGeometry args={[2, 6, 4]} />
           <meshLambertMaterial color="#1a8a4e" />
         </mesh>
         {/* Head */}
         <mesh position={[0, 0.3, 5]} scale={[1, 1, 0.8]}>
-          <sphereGeometry args={[2.2, 8, 6]} />
+          <sphereGeometry args={[2.2, 6, 4]} />
           <meshLambertMaterial color="#2a9a5e" />
         </mesh>
         {/* Eyes */}

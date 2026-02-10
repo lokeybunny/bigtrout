@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { useAdaptivePerf } from './AdaptivePerformance';
 
 const MOON_POS: [number, number, number] = [30, 40, -60];
+const SKY_RADIUS = 250;
 
 export const Sky = () => {
   const perfRef = useAdaptivePerf();
@@ -11,7 +12,7 @@ export const Sky = () => {
   const starMult = perfRef.current.starMultiplier;
 
   // Star count scales with performance tier
-  const starCount = Math.floor(350 * starMult);
+  const starCount = Math.floor(200 * starMult);
 
   const starsGeometry = useMemo(() => {
     const positions = new Float32Array(starCount * 3);
@@ -19,7 +20,7 @@ export const Sky = () => {
     for (let i = 0; i < starCount; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(Math.random() * 0.8 + 0.2);
-      const r = 350 + Math.random() * 30;
+      const r = SKY_RADIUS + Math.random() * 20;
       positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       positions[i * 3 + 1] = r * Math.cos(phi);
       positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
@@ -36,7 +37,7 @@ export const Sky = () => {
   // Moon segments
   const moonSegs = tier >= 2 ? 6 : 8;
   // Shooting stars: none on low, 1 on medium, 3 on high
-  const shootingStarCount = tier >= 2 ? 0 : tier === 1 ? 1 : 3;
+  const shootingStarCount = tier >= 1 ? 0 : 1;
 
   const shootingStars = useMemo(() => {
     return Array.from({ length: shootingStarCount }, (_, i) => ({
@@ -53,20 +54,20 @@ export const Sky = () => {
     <>
       {/* Sky dome */}
       <mesh>
-        <sphereGeometry args={[400, skySegs[0], skySegs[1]]} />
+        <sphereGeometry args={[SKY_RADIUS + 50, skySegs[0], skySegs[1]]} />
         <meshBasicMaterial color="#050a14" side={THREE.BackSide} fog={false} />
       </mesh>
 
       {/* Moon */}
       <mesh position={MOON_POS}>
-        <sphereGeometry args={[5, moonSegs, moonSegs]} />
+        <sphereGeometry args={[5, 6, 6]} />
         <meshBasicMaterial color="#fffff8" fog={false} />
       </mesh>
 
       {/* Moon glow — skip on low tier */}
       {tier < 2 && (
         <mesh position={MOON_POS}>
-          <sphereGeometry args={[14, moonSegs, moonSegs]} />
+          <sphereGeometry args={[10, 6, 6]} />
           <meshBasicMaterial color="#ccddff" transparent opacity={0.15} fog={false} side={THREE.FrontSide} depthWrite={false} />
         </mesh>
       )}
@@ -117,7 +118,7 @@ const ShootingStar = ({ startTheta, startPhi, speed, delay, duration }: Shooting
 
     meshRef.current.visible = true;
 
-    const r = 340;
+    const r = SKY_RADIUS - 10;
     const theta = startTheta + progress * 0.3;
     const phi = startPhi + progress * 0.15;
 

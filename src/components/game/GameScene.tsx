@@ -697,7 +697,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
           <ScenePreloader />
           <RenderHealthWatchdog />
           <ambientLight intensity={0.8} color="#6688bb" />
-          <fog attach="fog" args={['#0a1525', 50, 200]} />
+          <fog attach="fog" args={['#0a1525', 30, 150]} />
           <Sky />
           <Ocean tokenMultiplier={tokenMultiplier} />
           <TroutIsland />
