@@ -48,13 +48,7 @@ interface RaceState {
   raceStarted: boolean;
 }
 
-const AI_BOATS = [
-  { id: 1, color: '#cc3333', speed: 2.8, name: 'Red Fin' },
-  { id: 2, color: '#3366cc', speed: 3.2, name: 'Blue Wave' },
-  { id: 3, color: '#cc9933', speed: 2.5, name: 'Gold Rush' },
-  { id: 4, color: '#9933cc', speed: 3.0, name: 'Purple Tide' },
-  { id: 5, color: '#33cccc', speed: 2.7, name: 'Teal Storm' },
-];
+// AI boats removed from singleplayer — solo time trial mode
 
 const FISH_COLORS: Record<string, string> = {
   trout: '#2d8a4e',
@@ -171,10 +165,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   const [state, setState] = useState<RaceState>({
     playerCheckpoint: 0,
     playerLap: 0,
-    positions: [
-      { id: 'player', progress: 0 },
-      ...(isMultiplayer ? [] : AI_BOATS.map(b => ({ id: b.id, progress: 0 }))),
-    ],
+    positions: [{ id: 'player', progress: 0 }],
     finished: false,
     finishPlace: null,
     countdown: 3,
@@ -184,9 +175,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   const playerProgressRef = useRef(0);
   const lastCheckpointRef = useRef(0);
   const playerLapRef = useRef(0);
-  const aiProgressRef = useRef<Record<number, number>>(
-    Object.fromEntries(AI_BOATS.map(b => [b.id, 0]))
-  );
+  const aiProgressRef = useRef<Record<number, number>>({});
   const finishOrderRef = useRef<(number | 'player')[]>([]);
 
   // Setup multiplayer broadcast channel
@@ -224,10 +213,10 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
     playerProgressRef.current = 0;
     lastCheckpointRef.current = 0;
     playerLapRef.current = 0;
-    aiProgressRef.current = Object.fromEntries(AI_BOATS.map(b => [b.id, 0]));
     finishOrderRef.current = [];
     boatPosRef.current.set(0, 0, -15);
     boostEndTimeRef.current = 0;
+    raceStartTimeRef.current = 0;
     setBoosts(generateBoosts());
     setBoostMultiplier(1);
     setBoostTimer(0);
@@ -239,16 +228,18 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
     setTroutPoints(0);
     setTokenMultiplier(1);
     setTokenMessage(null);
+    setRaceTimeMs(0);
+    setPlayerFinishTime(null);
     setResetKey(prev => prev + 1);
     setCountdownDisplay('3');
     setState({
       playerCheckpoint: 0, playerLap: 0,
-      positions: [{ id: 'player', progress: 0 }, ...AI_BOATS.map(b => ({ id: b.id, progress: 0 }))],
+      positions: [{ id: 'player', progress: 0 }],
       finished: false, finishPlace: null, countdown: 3, raceStarted: false,
     });
     setTimeout(() => setCountdownDisplay('2'), 1000);
     setTimeout(() => setCountdownDisplay('1'), 2000);
-    setTimeout(() => { setCountdownDisplay('GO!'); setState(prev => ({ ...prev, raceStarted: true, countdown: null })); }, 3000);
+    setTimeout(() => { setCountdownDisplay('GO!'); raceStartTimeRef.current = performance.now(); setState(prev => ({ ...prev, raceStarted: true, countdown: null })); }, 3000);
     setTimeout(() => setCountdownDisplay(null), 3800);
   }, [isMultiplayer]);
 
@@ -276,14 +267,14 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
     setTimeout(() => setCountdownDisplay(null), 3800);
   }
 
-  // Race timer (multiplayer)
+  // Race timer (both modes)
   useEffect(() => {
-    if (!isMultiplayer || !state.raceStarted || state.finished) return;
+    if (!state.raceStarted || state.finished) return;
     let raf: number;
     const tick = () => { setRaceTimeMs(performance.now() - raceStartTimeRef.current); raf = requestAnimationFrame(tick); };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [isMultiplayer, state.raceStarted, state.finished]);
+  }, [state.raceStarted, state.finished]);
 
   // Boost timer decay
   const boostEndTimeRef = useRef(0);
@@ -371,7 +362,6 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
 
       if (playerLapRef.current >= totalLaps && !finishOrderRef.current.includes('player')) {
         finishOrderRef.current.push('player');
-        const place = finishOrderRef.current.indexOf('player') + 1;
         const finishTime = performance.now() - raceStartTimeRef.current;
         setPlayerFinishTime(finishTime);
 
@@ -385,9 +375,14 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
           supabase.from('leaderboard').insert({
             username: multiplayerData.playerName, time_ms: Math.round(finishTime), laps: totalLaps, mode: 'multiplayer',
           }).then(() => setLeaderboardSubmitted(true));
+        } else {
+          // Submit singleplayer time to leaderboard
+          supabase.from('leaderboard').insert({
+            username: 'Player', time_ms: Math.round(finishTime), laps: totalLaps, mode: 'singleplayer',
+          }).then(() => setLeaderboardSubmitted(true));
         }
 
-        setState(prev => ({ ...prev, finished: true, finishPlace: place, playerCheckpoint: cp, playerLap: playerLapRef.current }));
+        setState(prev => ({ ...prev, finished: true, finishPlace: 1, playerCheckpoint: cp, playerLap: playerLapRef.current }));
         return;
       }
 
@@ -401,32 +396,15 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
     }
   }, [isMultiplayer, multiplayerData, totalLaps, broadcastPosition]);
 
-  const handleAIProgress = useCallback((id: number, progress: number, lap: number) => {
-    aiProgressRef.current[id] = progress;
-    if (lap >= totalLaps && !finishOrderRef.current.includes(id)) {
-      finishOrderRef.current.push(id);
-    }
-    updatePositions();
-  }, [totalLaps]);
+  const handleAIProgress = useCallback((_id: number, _progress: number, _lap: number) => {
+    // AI boats removed — no-op kept for type compatibility
+  }, []);
 
   const updatePositions = useCallback(() => {
-    const allProgress = isMultiplayer
-      ? [{ id: 'player' as const, progress: playerProgressRef.current }]
-      : [
-          { id: 'player' as const, progress: playerProgressRef.current },
-          ...AI_BOATS.map(b => ({ id: b.id, progress: aiProgressRef.current[b.id] || 0 })),
-        ];
-    allProgress.sort((a, b) => b.progress - a.progress);
-    setState(prev => ({ ...prev, positions: allProgress }));
-  }, [isMultiplayer]);
+    setState(prev => ({ ...prev, positions: [{ id: 'player' as const, progress: playerProgressRef.current }] }));
+  }, []);
 
-  const playerPlace = state.positions.findIndex(p => p.id === 'player') + 1;
-
-  const aiMinimapData = isMultiplayer ? [] : AI_BOATS.map(b => ({
-    id: b.id,
-    color: b.color,
-    progress: aiProgressRef.current[b.id] || 0,
-  }));
+  const aiMinimapData: { id: number; color: string; progress: number }[] = [];
 
   const opponentColor = multiplayerData ? (FISH_COLORS[multiplayerData.opponentFish] || '#cc9933') : '#cc9933';
   const playerColor = multiplayerData ? (FISH_COLORS[multiplayerData.playerFish] || '#2d8a4e') : '#2d8a4e';
@@ -443,11 +421,10 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
             <div className="text-lg" style={{ fontFamily: 'Bangers, cursive', color: '#ffcc44', textShadow: '2px 2px 0 #000' }}>
               Checkpoint: {lastCheckpointRef.current + 1} / {CHECKPOINTS.length}
             </div>
-            {isMultiplayer && (
-              <div className="text-lg font-mono" style={{ color: '#fff', textShadow: '2px 2px 0 #000' }}>
-                ⏱️ {formatTime(state.finished ? (playerFinishTime || raceTimeMs) : raceTimeMs)}
-              </div>
-            )}
+            {/* Race timer — always show */}
+            <div className="text-lg font-mono" style={{ color: '#fff', textShadow: '2px 2px 0 #000' }}>
+              ⏱️ {formatTime(state.finished ? (playerFinishTime || raceTimeMs) : raceTimeMs)}
+            </div>
             <div className="text-sm mt-1" style={{ fontFamily: 'Rajdhani', color: '#aaa' }}>
               ⌨️ WASD to steer • ⇧ Shift to paddle • Collect ⚡ • Avoid 🪨{!isMultiplayer && ' • R to restart'}
             </div>
@@ -478,40 +455,15 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
               </div>
             )}
 
-            {/* AI Standings (single player only) */}
-            {!isMultiplayer && (
-              <div className="bg-black/50 backdrop-blur-sm rounded-lg px-3 py-2 min-w-[140px]">
-                <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#ffcc44' }}>STANDINGS</div>
-                {state.positions.slice(0, 6).map((pos, i) => {
-                  const isPlayer = pos.id === 'player';
-                  const boat = AI_BOATS.find(b => b.id === pos.id);
-                  return (
-                    <div key={String(pos.id)} className="flex items-center gap-2 text-xs py-0.5" style={{ fontFamily: 'Rajdhani' }}>
-                      <span style={{ color: i === 0 ? '#ffd700' : i === 1 ? '#c0c0c0' : i === 2 ? '#cd7f32' : '#666', fontWeight: 'bold', width: '16px' }}>{i + 1}.</span>
-                      <span style={{ color: isPlayer ? '#44ff88' : '#aaa', fontWeight: isPlayer ? 'bold' : 'normal' }}>
-                        {isPlayer ? '🎣 YOU' : boat?.name || `Boat ${pos.id}`}
-                      </span>
-                      {isPlayer && <span style={{ color: '#44ff88', fontSize: '8px' }}>◀</span>}
-                    </div>
-                  );
-                })}
-              </div>
+            {/* EXIT button (singleplayer) */}
+            {!isMultiplayer && onExitToMenu && (
+              <button onClick={onExitToMenu} className="pointer-events-auto px-4 py-2 rounded-lg font-bold" style={{ fontFamily: 'Bangers', background: 'rgba(0,0,0,0.6)', color: '#ff6644', border: '1px solid rgba(255,102,68,0.4)', cursor: 'pointer' }}>
+                🚪 EXIT
+              </button>
             )}
           </div>
         </div>
       </div>
-
-      {/* Position indicator (single player) */}
-      {!isMultiplayer && (
-        <div className="absolute right-6 top-1/2 -translate-y-1/2 z-10 pointer-events-none text-center">
-          <div className="bg-black/60 backdrop-blur-sm rounded-xl px-5 py-4">
-            <div className="text-6xl font-bold" style={{ fontFamily: 'Bangers, cursive', color: playerPlace <= 1 ? '#44ff88' : playerPlace <= 3 ? '#ffcc44' : '#ff6644', textShadow: '0 0 20px rgba(68,255,136,0.3), 3px 3px 0 #000' }}>
-              {playerPlace}{playerPlace === 1 ? 'st' : playerPlace === 2 ? 'nd' : playerPlace === 3 ? 'rd' : 'th'}
-            </div>
-            <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: '#888' }}>of {AI_BOATS.length + 1}</div>
-          </div>
-        </div>
-      )}
 
       {/* Boost/hit/checkpoint messages */}
       {boostMessage && (
@@ -573,13 +525,23 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
                 )}
               </>
             ) : (
-              <div className="text-6xl font-bold mb-4" style={{
-                fontFamily: 'Bangers, cursive',
-                color: state.finishPlace === 1 ? '#ffd700' : state.finishPlace! <= 3 ? '#44ff88' : '#ff6644',
-                textShadow: '0 0 30px rgba(255,215,0,0.5), 4px 4px 0 #000',
-              }}>
-                {state.finishPlace === 1 ? '🏆 YOU WIN!' : `FINISHED ${state.finishPlace}${state.finishPlace === 2 ? 'nd' : state.finishPlace === 3 ? 'rd' : 'th'}`}
-              </div>
+              <>
+                <div className="text-6xl font-bold mb-4" style={{
+                  fontFamily: 'Bangers, cursive',
+                  color: '#ffd700',
+                  textShadow: '0 0 30px rgba(255,215,0,0.5), 4px 4px 0 #000',
+                }}>
+                  🏁 RACE COMPLETE!
+                </div>
+                {playerFinishTime && (
+                  <div className="text-3xl font-mono font-bold mb-2" style={{ color: '#44ff88', textShadow: '2px 2px 0 #000' }}>
+                    ⏱️ {formatTime(playerFinishTime)}
+                  </div>
+                )}
+                {leaderboardSubmitted && (
+                  <div className="text-xs mb-2" style={{ fontFamily: 'Rajdhani', color: '#44ff88' }}>✅ Time submitted to leaderboard</div>
+                )}
+              </>
             )}
 
             <div className="text-2xl mb-6" style={{ fontFamily: 'Bangers', color: '#44ff88', textShadow: '2px 2px 0 #000' }}>
@@ -736,10 +698,7 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
 
           <Boat key={`player-${resetKey}`} onPositionUpdate={handleBoatPosition} speedRef={wakeSpeedRef} posRef={wakePosRef} headingRef={wakeHeadingRef} raceStarted={state.raceStarted} boostMultiplier={boostMultiplier * tokenMultiplier} paddleDisabled={paddleDisabled} obstacleColliders={obstacleColliders} startX={playerStartX} fishColor={playerColor} />
 
-          {/* AI boats (single player only) */}
-          {!isMultiplayer && AI_BOATS.map((boat, i) => (
-            <AIBoat key={`${boat.id}-${resetKey}`} id={boat.id} color={boat.color} speed={state.raceStarted ? boat.speed : 0} startOffset={i * 0.3} onProgress={handleAIProgress} obstacles={obstacles} obstacleColliders={obstacleColliders} tokenMultiplier={tokenMultiplier} />
-          ))}
+          {/* Opponent boat (multiplayer only) */}
 
           {/* Opponent boat (multiplayer only) */}
           {isMultiplayer && multiplayerData && (
