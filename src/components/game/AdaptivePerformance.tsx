@@ -114,22 +114,61 @@ export const AdaptivePerformanceProvider = ({ children }: { children: React.Reac
 
 function AdaptivePerformanceMonitor({ perfRef, initialTier }: { perfRef: React.MutableRefObject<PerformanceTier>; initialTier: number }) {
   const fpsBuffer = useRef<number[]>([]);
-  const sampleWindows = useRef(0);
   const currentTier = useRef(initialTier);
-  const stableHighCount = useRef(0); // consecutive high-FPS windows for upgrade
-  const lastTransition = useRef(0); // timestamp of last tier change
+  const stableHighCount = useRef(0);
+  const lastTransition = useRef(performance.now());
 
-  // Set initial tier — no DPR changes (causes white flashes)
   useEffect(() => {
     perfRef.current = { ...TIERS[initialTier] };
     console.log(`[Perf] Initial tier: ${initialTier} (${initialTier === 0 ? 'high' : initialTier === 1 ? 'medium' : 'low'})`);
   }, []);
 
-  // Tier changes during gameplay cause white flashes — disabled.
-  // Initial hardware detection sets the tier once on mount.
-  // This monitor now only logs FPS for debugging, no tier changes.
+  // Dynamic tier adjustment — only downgrades smoothly (no remounts, just ref updates)
   useFrame((_, delta) => {
     if (delta <= 0) return;
+    const fps = 1 / delta;
+    fpsBuffer.current.push(fps);
+
+    // Evaluate every ~45 frames
+    if (fpsBuffer.current.length < 45) return;
+
+    const avg = fpsBuffer.current.reduce((a, b) => a + b, 0) / fpsBuffer.current.length;
+    fpsBuffer.current = [];
+
+    const now = performance.now();
+    // Cooldown: wait at least 5s between tier changes to avoid oscillation
+    if (now - lastTransition.current < 5000) return;
+
+    const tier = currentTier.current;
+
+    // Downgrade: if avg FPS is consistently low
+    if (tier < 2 && avg < 24) {
+      currentTier.current = 2;
+      perfRef.current = { ...TIERS[2] };
+      lastTransition.current = now;
+      console.log(`[Perf] Downgraded to LOW (avg FPS: ${avg.toFixed(0)})`);
+      stableHighCount.current = 0;
+    } else if (tier === 0 && avg < 38) {
+      currentTier.current = 1;
+      perfRef.current = { ...TIERS[1] };
+      lastTransition.current = now;
+      console.log(`[Perf] Downgraded to MEDIUM (avg FPS: ${avg.toFixed(0)})`);
+      stableHighCount.current = 0;
+    }
+    // Upgrade: only after sustained high FPS (3 consecutive good windows)
+    else if (tier > 0 && avg > 55) {
+      stableHighCount.current++;
+      if (stableHighCount.current >= 3) {
+        const newTier = Math.max(0, tier - 1);
+        currentTier.current = newTier;
+        perfRef.current = { ...TIERS[newTier] };
+        lastTransition.current = now;
+        stableHighCount.current = 0;
+        console.log(`[Perf] Upgraded to ${newTier === 0 ? 'HIGH' : 'MEDIUM'} (avg FPS: ${avg.toFixed(0)})`);
+      }
+    } else {
+      stableHighCount.current = 0;
+    }
   });
 
   return null;
