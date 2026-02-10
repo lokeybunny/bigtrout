@@ -97,17 +97,36 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
       }
     }
 
-    headingRef.current += vel.turn * delta;
+    headingRef.current += vel.turn * Math.min(delta, 0.1);
+
+    // Guard: if delta is unreasonably large (tab was hidden), clamp it
+    const safeDelta = Math.min(delta, 0.1);
 
     // Save pre-collision position
     const prevX = posRef.current.x;
     const prevZ = posRef.current.z;
 
+    // Guard: if heading became NaN, reset it
+    if (!Number.isFinite(headingRef.current)) {
+      headingRef.current = 0;
+      vel.forward = 0;
+      vel.turn = 0;
+    }
+
     // Move in heading direction
-    const dx = -Math.sin(headingRef.current) * vel.forward * delta;
-    const dz = -Math.cos(headingRef.current) * vel.forward * delta;
+    const dx = -Math.sin(headingRef.current) * vel.forward * safeDelta;
+    const dz = -Math.cos(headingRef.current) * vel.forward * safeDelta;
     posRef.current.x += dx;
     posRef.current.z += dz;
+
+    // Guard: if position became NaN, reset to safe values
+    if (!Number.isFinite(posRef.current.x) || !Number.isFinite(posRef.current.z)) {
+      console.warn('[Boat] Position became NaN, resetting');
+      posRef.current.x = prevX || startX;
+      posRef.current.z = prevZ || -15;
+      vel.forward = 0;
+      vel.turn = 0;
+    }
 
     // Resolve solid collisions (world objects + obstacles)
     const resolved = resolveCollisions(posRef.current.x, posRef.current.z, 1.2, obstacleColliders);
@@ -209,11 +228,17 @@ export const Boat = ({ onPositionUpdate, speedRef: externalSpeedRef, posRef: ext
     _camOffset.set(0, 3.5, 8);
     _camOffset.applyAxisAngle(_yAxis, headingRef.current);
     _targetCamPos.copy(posRef.current).add(_camOffset);
-    camera.position.lerp(_targetCamPos, 0.04);
+
+    // Guard: only lerp if target is valid
+    if (Number.isFinite(_targetCamPos.x) && Number.isFinite(_targetCamPos.y) && Number.isFinite(_targetCamPos.z)) {
+      camera.position.lerp(_targetCamPos, 0.04);
+    }
 
     _lookTarget.set(0, 0.5, -5).applyAxisAngle(_yAxis, headingRef.current);
     _lookTarget.add(posRef.current);
-    camera.lookAt(_lookTarget);
+    if (Number.isFinite(_lookTarget.x) && Number.isFinite(_lookTarget.y) && Number.isFinite(_lookTarget.z)) {
+      camera.lookAt(_lookTarget);
+    }
 
     onPositionUpdate?.(posRef.current, headingRef.current);
   });

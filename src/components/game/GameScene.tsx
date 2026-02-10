@@ -12,6 +12,7 @@ import { Sky } from './Sky';
 import { SpeedBoost, generateBoosts, BoostPickup } from './SpeedBoost';
 import { Obstacles, generateObstacles, Obstacle } from './Obstacles';
 import { AdaptivePerformanceProvider } from './AdaptivePerformance';
+import { RenderHealthWatchdog } from './RenderHealthWatchdog';
 import { AudioMuteProvider, useAudioMute } from './AudioMuteContext';
 import { Minimap } from './Minimap';
 import { CircleCollider } from './Colliders';
@@ -656,31 +657,40 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
       <Canvas
         camera={{ position: [0, 3, -5], fov: 70, near: 0.1, far: 500 }}
         dpr={1}
-        gl={{ antialias: false, powerPreference: 'high-performance', stencil: false, depth: true, alpha: false, failIfMajorPerformanceCaveat: false }}
+        gl={{ antialias: false, powerPreference: 'high-performance', stencil: false, depth: true, alpha: false, failIfMajorPerformanceCaveat: false, preserveDrawingBuffer: true }}
         shadows={false}
+        frameloop="always"
         onCreated={({ gl }) => {
           gl.setClearColor('#0a1525', 1);
+          // Force a clear to prevent any stale buffer
+          gl.clear();
           const canvas = gl.domElement;
           canvas.addEventListener('webglcontextlost', (e) => {
             e.preventDefault();
-            // Hide canvas during context loss to prevent white frame
             canvas.style.visibility = 'hidden';
             console.warn('[WebGL] Context lost — hidden');
           });
           canvas.addEventListener('webglcontextrestored', () => {
             gl.setClearColor('#0a1525', 1);
-            // Delay showing canvas until renderer has had a frame to re-render
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
+            gl.clear();
+            // Wait several frames before showing to ensure GPU has rendered
+            let frames = 0;
+            const waitForFrame = () => {
+              frames++;
+              if (frames >= 5) {
                 canvas.style.visibility = 'visible';
                 console.log('[WebGL] Context restored — visible');
-              });
-            });
+              } else {
+                requestAnimationFrame(waitForFrame);
+              }
+            };
+            requestAnimationFrame(waitForFrame);
           });
         }}
         style={{ background: '#0a1525', position: 'relative', zIndex: 1 }}
       >
         <AdaptivePerformanceProvider>
+          <RenderHealthWatchdog />
           <ambientLight intensity={0.8} color="#6688bb" />
           <fog attach="fog" args={['#0a1525', 50, 200]} />
           <Sky />

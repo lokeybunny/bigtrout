@@ -23,6 +23,9 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
     
+    // Guard: don't update if camera position is invalid
+    if (!Number.isFinite(camera.position.x) || !Number.isFinite(camera.position.z)) return;
+    
     meshRef.current.position.x = camera.position.x;
     meshRef.current.position.z = camera.position.z;
     
