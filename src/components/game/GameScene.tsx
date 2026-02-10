@@ -114,6 +114,8 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
   const [boostMessage, setBoostMessage] = useState<string | null>(null);
   const [hitMessage, setHitMessage] = useState<string | null>(null);
   const [chartExpanded, setChartExpanded] = useState(false);
+  const [webglLost, setWebglLost] = useState(false);
+  const webglLostTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [passedCheckpoints, setPassedCheckpoints] = useState<Set<number>>(new Set());
   const [checkpointFlash, setCheckpointFlash] = useState<string | null>(null);
   const [paddleDisabled, setPaddleDisabled] = useState(false);
@@ -634,6 +636,28 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
 
       <Minimap playerPos={boatPosRef} aiPositions={aiMinimapData} boosts={boosts} />
 
+      {/* WebGL context loss recovery overlay */}
+      {webglLost && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(10,21,37,0.95)' }}>
+          <div className="text-center">
+            <div className="text-5xl mb-4">⚠️</div>
+            <div className="text-2xl font-bold mb-2" style={{ fontFamily: 'Bangers, cursive', color: '#ffcc44', textShadow: '2px 2px 0 #000' }}>
+              RENDER LOST
+            </div>
+            <div className="text-sm mb-6" style={{ fontFamily: 'Rajdhani', color: '#aaa' }}>
+              GPU context was lost. This can happen on mobile or with heavy browser tabs.
+            </div>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-8 py-3 rounded-lg font-bold text-lg transition-all hover:scale-105 active:scale-95"
+              style={{ fontFamily: 'Bangers', background: 'linear-gradient(135deg, #1a6b3a, #44ff88)', color: '#0a1525', cursor: 'pointer', border: 'none', letterSpacing: '0.1em', boxShadow: '0 0 30px rgba(68,255,136,0.3)' }}
+            >
+              🔄 RELOAD GAME
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* CA */}
       <div className="absolute bottom-2 z-10 transition-all duration-300" style={{ left: chartExpanded ? 'calc(50% + 200px)' : '50%', transform: 'translateX(-50%)' }}>
         <button
@@ -662,24 +686,33 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
         frameloop="always"
         onCreated={({ gl }) => {
           gl.setClearColor('#0a1525', 1);
-          // Force a clear to prevent any stale buffer
           gl.clear();
           const canvas = gl.domElement;
           canvas.addEventListener('webglcontextlost', (e) => {
             e.preventDefault();
-            canvas.style.visibility = 'hidden';
-            console.warn('[WebGL] Context lost — hidden');
+            console.warn('[WebGL] Context lost');
+            // Close chart to free GPU memory
+            setChartExpanded(false);
+            // Show recovery overlay after 3s if not restored
+            if (webglLostTimerRef.current) clearTimeout(webglLostTimerRef.current);
+            webglLostTimerRef.current = setTimeout(() => {
+              setWebglLost(true);
+            }, 3000);
           });
           canvas.addEventListener('webglcontextrestored', () => {
+            console.log('[WebGL] Context restored');
+            if (webglLostTimerRef.current) {
+              clearTimeout(webglLostTimerRef.current);
+              webglLostTimerRef.current = null;
+            }
+            setWebglLost(false);
             gl.setClearColor('#0a1525', 1);
             gl.clear();
-            // Wait several frames before showing to ensure GPU has rendered
             let frames = 0;
             const waitForFrame = () => {
               frames++;
               if (frames >= 5) {
                 canvas.style.visibility = 'visible';
-                console.log('[WebGL] Context restored — visible');
               } else {
                 requestAnimationFrame(waitForFrame);
               }
