@@ -3,6 +3,7 @@ import { Footer } from '@/components/Footer';
 import { ArrowLeft, ExternalLink, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import liveArchiveBg from '@/assets/live-archive-bg.jpg';
+import liveThumbnail from '@/assets/live-thumbnail.png';
 
 interface Broadcast {
   title: string;
@@ -17,14 +18,14 @@ const BROADCASTS: Broadcast[] = [
     title: 'BigTrout300 Live — Community Session',
     date: 'FEB 9, 2026',
     description: 'Latest live broadcast with the Trout Squad — updates, vibes, and community hang.',
-    thumbnail: 'https://pbs.twimg.com/broadcast_thumbnail/live_video_thumb/1mnxeNARBBQKX/img/eLj8VqZkm3GpKABb.jpg',
+    thumbnail: liveThumbnail,
     url: 'https://x.com/i/broadcasts/1BRKjgmAEnWGw',
   },
   {
     title: 'BigTrout300 Live — Pump.fun Chart Session',
     date: 'FEB 2026',
     description: 'Live charting session with the Trout Squad — market updates, community Q&A, and full transparency.',
-    thumbnail: 'https://pbs.twimg.com/broadcast_thumbnail/live_video_thumb/1mnxeNARBBQKX/img/eLj8VqZkm3GpKABb.jpg',
+    thumbnail: liveThumbnail,
     url: 'https://x.com/i/broadcasts/1ZkKzZYoRQDKv',
   },
 ];
