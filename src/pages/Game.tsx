@@ -50,9 +50,9 @@ const Game = () => {
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
         />
-        {/* Bottom vignette for text readability */}
+        {/* Dark overlay for text readability */}
         <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 30%, transparent 60%)',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.25) 70%, rgba(0,0,0,0.15) 100%)',
         }} />
 
         <div className="relative z-10 text-center mt-auto pb-12 md:pb-16 px-4">
