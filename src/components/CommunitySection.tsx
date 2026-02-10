@@ -1,6 +1,5 @@
 import { Twitter } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useState } from 'react';
 import heroBanner from '@/assets/bigtrout-hero-banner.jpg';
 
 // Import logo images
@@ -23,22 +22,7 @@ import poloniexLogo from '@/assets/logos/poloniex.png';
 import bitrueLogo from '@/assets/logos/bitrue.svg';
 import moontokLogo from '@/assets/logos/moontok.svg';
 import binanceLogo from '@/assets/logos/binance.png';
-import phantomLogo from '@/assets/logos/phantom.png';
-import okxLogo from '@/assets/logos/okx.png';
-import coin98Logo from '@/assets/logos/coin98.png';
-import cryptocomLogo from '@/assets/logos/cryptocom.svg';
-import kcexLogo from '@/assets/logos/kcex.png';
-import bilaxyLogo from '@/assets/logos/bilaxy.png';
-import bigoneLogo from '@/assets/logos/bigone.png';
-import pumpswapLogo from '@/assets/logos/pumpswap.png';
-import meteoraLogo from '@/assets/logos/meteora.svg';
-import raydiumLogo from '@/assets/logos/raydium.png';
-import fomoLogo from '@/assets/logos/fomo.png';
-import solflareLogo from '@/assets/logos/solflare.png';
-import solanaLogo from '@/assets/logos/solana.png';
-import bitgetWalletLogo from '@/assets/logos/bitget-wallet.png';
-import pionexLogo from '@/assets/logos/pionex.jpg';
-import bitmartIconLogo from '@/assets/logos/bitmart-icon.png';
+
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
 const socialLinks = [
@@ -65,23 +49,6 @@ const exchangeLogos = [
   { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue', hasBorder: true },
   { name: 'Moontok', logo: moontokLogo, url: 'https://moontok.io/coins/the-big-trout', alt: 'View BIGTROUT on Moontok' },
   { name: 'Binance', logo: binanceLogo, url: 'https://web3.binance.com/en/token/sol/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Binance' },
-  { name: 'Phantom', logo: phantomLogo, url: 'https://x.com/BigTrout300/status/2020657287921279428', alt: 'BIGTROUT on Phantom' },
-  { name: 'OKX', logo: okxLogo, url: 'https://web3.okx.com/token/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on OKX' },
-  { name: 'Coin98', logo: coin98Logo, url: 'https://coin98.com/blockchain', alt: 'View BIGTROUT on Coin98' },
-  { name: 'Crypto.com', logo: cryptocomLogo, url: 'https://onchain.crypto.com/en/coin?id=the-big-trout', alt: 'View BIGTROUT on Crypto.com' },
-  { name: 'KCEX', logo: kcexLogo, url: 'https://www.kcex.com/exchange/BIGTROUT_USDT', alt: 'Trade BIGTROUT on KCEX' },
-  { name: 'Bilaxy', logo: bilaxyLogo, url: 'https://bilaxy.com/exchange', alt: 'Trade BIGTROUT on Bilaxy' },
-  { name: 'Ourbit', logo: null, url: 'https://www.ourbit.com', alt: 'Trade BIGTROUT on Ourbit' },
-  { name: 'BigONE', logo: bigoneLogo, url: 'https://big.one', alt: 'Trade BIGTROUT on BigONE' },
-  { name: 'PumpSwap', logo: pumpswapLogo, url: `https://pumpswap.io/token/${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on PumpSwap' },
-  { name: 'Meteora', logo: meteoraLogo, url: 'https://www.meteora.ag', alt: 'Trade BIGTROUT on Meteora' },
-  { name: 'Raydium', logo: raydiumLogo, url: 'https://raydium.io/swap', alt: 'Trade BIGTROUT on Raydium' },
-  { name: 'Fomo', logo: fomoLogo, url: 'https://fomo.family', alt: 'Trade BIGTROUT on Fomo' },
-  { name: 'Solflare', logo: solflareLogo, url: 'https://www.solflare.com', alt: 'BIGTROUT on Solflare' },
-  { name: 'Solana Wallet', logo: solanaLogo, url: 'https://solana.com', alt: 'BIGTROUT on Solana Wallet' },
-  { name: 'Bitget Wallet', logo: bitgetWalletLogo, url: 'https://web3.bitget.com', alt: 'BIGTROUT on Bitget Wallet' },
-  { name: 'Pionex', logo: pionexLogo, url: 'https://x.com/pionex/status/2020938017666630043', alt: 'Trade BIGTROUT on Pionex' },
-  { name: 'BitMart', logo: bitmartIconLogo, url: 'https://www.bitmart.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on BitMart' },
 ];
 
 // Generate fireflies
@@ -110,25 +77,6 @@ const generatePetals = (count: number) => {
 export const CommunitySection = () => {
   const [fireflies] = useState(() => generateFireflies(15));
   const [petals] = useState(() => generatePetals(10));
-  const [dbLogos, setDbLogos] = useState<{ name: string; logo: string | null; url: string; alt: string }[]>([]);
-
-  useEffect(() => {
-    supabase
-      .from('listing_logos')
-      .select('name, logo_url, link_url, alt_text, display_order')
-      .eq('is_active', true)
-      .order('display_order', { ascending: true })
-      .then(({ data }) => {
-        if (data) {
-          setDbLogos(data.map(d => ({
-            name: d.name,
-            logo: d.logo_url,
-            url: d.link_url,
-            alt: d.alt_text || `Trade BIGTROUT on ${d.name}`,
-          })));
-        }
-      });
-  }, []);
 
   return (
     <section className="relative py-24 px-4 overflow-hidden">
@@ -217,9 +165,8 @@ export const CommunitySection = () => {
           </h3>
 
           <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 lg:gap-12 mb-10">
-            {/* Hardcoded logos */}
             {exchangeLogos.map((exchange, index) => (
-              <a key={`static-${index}`} href={exchange.url} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110" title={exchange.alt}>
+              <a key={index} href={exchange.url} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110" title={exchange.alt}>
                 {exchange.logo ? (
                   <img
                     src={exchange.logo}
@@ -232,21 +179,6 @@ export const CommunitySection = () => {
                     <span className="font-display font-bold text-sm md:text-base text-foreground/80 group-hover:text-foreground transition-colors">{exchange.name}</span>
                   </div>
                 )}
-                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{
-                  background: 'radial-gradient(circle, hsl(130 45% 42% / 0.2), transparent 70%)',
-                  filter: 'blur(15px)',
-                }} />
-              </a>
-            ))}
-            {/* Database-managed logos */}
-            {dbLogos.map((logo, index) => (
-              <a key={`db-${index}`} href={logo.url} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110" title={logo.alt}>
-                <img
-                  src={logo.logo}
-                  alt={logo.alt}
-                  className="h-10 md:h-12 lg:h-14 w-auto max-w-[120px] md:max-w-[150px] object-contain transition-all duration-300 brightness-90 grayscale-[30%] group-hover:brightness-110 group-hover:grayscale-0"
-                  style={{ filter: 'drop-shadow(0 0 6px hsl(0 0% 100% / 0.15))' }}
-                />
                 <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{
                   background: 'radial-gradient(circle, hsl(130 45% 42% / 0.2), transparent 70%)',
                   filter: 'blur(15px)',

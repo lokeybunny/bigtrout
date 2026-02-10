@@ -14,188 +14,16 @@ export type Database = {
   }
   public: {
     Tables: {
-      leaderboard: {
-        Row: {
-          created_at: string
-          id: string
-          laps: number
-          mode: string
-          time_ms: number
-          username: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          laps?: number
-          mode?: string
-          time_ms: number
-          username: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          laps?: number
-          mode?: string
-          time_ms?: number
-          username?: string
-        }
-        Relationships: []
-      }
-      listing_logos: {
-        Row: {
-          alt_text: string | null
-          created_at: string
-          created_by: string | null
-          display_order: number
-          id: string
-          is_active: boolean
-          link_url: string
-          logo_url: string
-          name: string
-        }
-        Insert: {
-          alt_text?: string | null
-          created_at?: string
-          created_by?: string | null
-          display_order?: number
-          id?: string
-          is_active?: boolean
-          link_url: string
-          logo_url: string
-          name: string
-        }
-        Update: {
-          alt_text?: string | null
-          created_at?: string
-          created_by?: string | null
-          display_order?: number
-          id?: string
-          is_active?: boolean
-          link_url?: string
-          logo_url?: string
-          name?: string
-        }
-        Relationships: []
-      }
-      matchmaking: {
-        Row: {
-          created_at: string
-          id: string
-          player1_fish: string
-          player1_id: string
-          player1_name: string
-          player2_fish: string | null
-          player2_id: string | null
-          player2_name: string | null
-          status: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          player1_fish?: string
-          player1_id: string
-          player1_name: string
-          player2_fish?: string | null
-          player2_id?: string | null
-          player2_name?: string | null
-          status?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          player1_fish?: string
-          player1_id?: string
-          player1_name?: string
-          player2_fish?: string | null
-          player2_id?: string | null
-          player2_name?: string | null
-          status?: string
-        }
-        Relationships: []
-      }
-      race_positions: {
-        Row: {
-          finish_time_ms: number | null
-          finished: boolean
-          heading: number
-          id: string
-          lap: number
-          match_id: string | null
-          player_id: string
-          pos_x: number
-          pos_z: number
-          updated_at: string
-        }
-        Insert: {
-          finish_time_ms?: number | null
-          finished?: boolean
-          heading?: number
-          id?: string
-          lap?: number
-          match_id?: string | null
-          player_id: string
-          pos_x?: number
-          pos_z?: number
-          updated_at?: string
-        }
-        Update: {
-          finish_time_ms?: number | null
-          finished?: boolean
-          heading?: number
-          id?: string
-          lap?: number
-          match_id?: string | null
-          player_id?: string
-          pos_x?: number
-          pos_z?: number
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "race_positions_match_id_fkey"
-            columns: ["match_id"]
-            isOneToOne: false
-            referencedRelation: "matchmaking"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -322,8 +150,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "moderator", "user"],
-    },
+    Enums: {},
   },
 } as const

@@ -9,22 +9,19 @@ interface OceanProps {
 
 export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const matRef = useRef<THREE.MeshLambertMaterial>(null);
+  const matRef = useRef<THREE.MeshStandardMaterial>(null);
   const { camera } = useThree();
   const frameSkip = useRef(0);
   const perfRef = useAdaptivePerf();
   
-  // Fixed geometry — don't recreate based on tier (causes flash)
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(400, 400, 16, 16);
+    // Reduced from 100x100 (10K verts) to 40x40 (1.6K verts) — 6x fewer
+    const geo = new THREE.PlaneGeometry(600, 600, 40, 40);
     return geo;
   }, []);
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
-    
-    // Guard: don't update if camera position is invalid
-    if (!Number.isFinite(camera.position.x) || !Number.isFinite(camera.position.z)) return;
     
     meshRef.current.position.x = camera.position.x;
     meshRef.current.position.z = camera.position.z;
@@ -67,12 +64,14 @@ export const Ocean = ({ tokenMultiplier = 1 }: OceanProps) => {
 
   return (
     <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} geometry={geometry}>
-      <meshLambertMaterial 
+      <meshStandardMaterial 
         ref={matRef}
         color="#0a4a3a"
         transparent
         opacity={0.85}
         side={THREE.FrontSide}
+        metalness={0.3}
+        roughness={0.4}
       />
     </mesh>
   );

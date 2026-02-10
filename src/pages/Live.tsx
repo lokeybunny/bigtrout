@@ -1,50 +1,56 @@
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { ArrowLeft, Play, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Radio, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import streamThumb1 from '@/assets/stream-thumb-1.jpg';
-import pondBg from '@/assets/live-pond-bg.jpg';
 
-interface StreamEntry {
-  title: string;
-  date: string;
-  thumbnail: string;
-  url: string;
-  description: string;
-}
-
-const streams: StreamEntry[] = [
-  {
-    title: 'BigTrout300 Live — Community Session',
-    date: 'Feb 9, 2026',
-    thumbnail: streamThumb1,
-    url: 'https://x.com/i/broadcasts/1BRKjgmAEnWGw',
-    description: 'Latest live broadcast with the Trout Squad — updates, vibes, and community hang.',
-  },
-  {
-    title: 'BigTrout300 Live — Pump.fun Chart Session',
-    date: 'Feb 2026',
-    thumbnail: streamThumb1,
-    url: 'https://x.com/i/broadcasts/1ZkKzZYoRQDKv',
-    description: 'Live charting session with the Trout Squad — market updates, community Q&A, and full transparency.',
-  },
-];
+const STREAM_URL = 'https://x.com/i/broadcasts/1mnxeNARBBQKX';
+const IS_LIVE = false;
 
 const Live = () => {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      {/* Pond background */}
-      <div className="fixed inset-0 z-0">
-        <img src={pondBg} alt="" className="w-full h-full object-cover" />
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(180deg, hsl(220 40% 4% / 0.75) 0%, hsl(220 40% 4% / 0.6) 50%, hsl(220 40% 4% / 0.85) 100%)',
-        }} />
+      {/* Dark night sky with fire glow at top */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          background: `
+            radial-gradient(ellipse at 50% 0%, hsl(20 100% 45% / 0.35) 0%, hsl(25 100% 40% / 0.15) 30%, transparent 60%),
+            radial-gradient(ellipse at 30% 10%, hsl(35 100% 50% / 0.2) 0%, transparent 40%),
+            radial-gradient(ellipse at 70% 5%, hsl(15 100% 45% / 0.18) 0%, transparent 35%),
+            linear-gradient(180deg, 
+              hsl(220 40% 4%) 0%, 
+              hsl(230 35% 5%) 30%,
+              hsl(240 30% 4%) 60%, 
+              hsl(235 35% 3%) 100%
+            )
+          `,
+        }}
+      />
+
+      {/* Ember particles rising */}
+      <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            key={`ember-${i}`}
+            className="absolute rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              bottom: '-10px',
+              width: `${2 + Math.random() * 3}px`,
+              height: `${2 + Math.random() * 3}px`,
+              background: `radial-gradient(circle, hsl(${15 + Math.random() * 25} 100% 60%), transparent)`,
+              boxShadow: `0 0 6px hsl(${15 + Math.random() * 25} 100% 50% / 0.6)`,
+              animation: `fireDustRise ${5 + Math.random() * 5}s ease-out infinite`,
+              animationDelay: `${Math.random() * 6}s`,
+            }}
+          />
+        ))}
       </div>
 
       <Navbar />
 
       <main className="relative z-10 pt-24 pb-16 px-4">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <Link
             to="/"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8"
@@ -53,52 +59,73 @@ const Live = () => {
             <span className="font-display text-sm tracking-wider">BACK HOME</span>
           </Link>
 
-          <h1 className="font-display text-5xl md:text-7xl font-black mb-2">
-            <span className="text-fire">LIVE</span>{' '}
-            <span className="text-ice">ARCHIVE</span>
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mb-12">
-            Catch up on past @bigtrout300 livestreams — market updates, dev sessions, and community hangs.
+          <div className="flex items-center gap-4 mb-4">
+            <div
+              className="w-14 h-14 rounded-xl flex items-center justify-center glow-fire relative"
+              style={{
+                background: 'linear-gradient(135deg, hsl(20 100% 50%), hsl(35 100% 55%))',
+              }}
+            >
+              <Radio className="w-7 h-7 text-storm-dark" />
+              {/* Status dot */}
+              {IS_LIVE && <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 animate-pulse border-2 border-background" />}
+            </div>
+            <h1 className="font-display text-5xl md:text-7xl font-black">
+              <span className="text-fire">LIVE</span>{' '}
+              <span className="text-ice">STREAM</span>
+            </h1>
+          </div>
+          <p className="text-muted-foreground text-lg max-w-2xl mb-16">
+            Tune into the official $BIGTROUT dev stream — real-time updates, community chat, and full transparency.
           </p>
 
-          {/* Stream grid */}
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {streams.map((stream, i) => (
+          {/* Stream card */}
+          <div className="card-volcanic p-8 md:p-12 text-center max-w-2xl mx-auto">
+            {/* Status indicator */}
+            <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border mb-8 ${
+              IS_LIVE 
+                ? 'border-red-500/50 bg-red-500/10' 
+                : 'border-muted-foreground/30 bg-muted/10'
+            }`}>
+              <span className={`w-2.5 h-2.5 rounded-full ${
+                IS_LIVE ? 'bg-red-500 animate-pulse' : 'bg-muted-foreground/50'
+              }`} />
+              <span className={`font-display text-sm tracking-widest ${
+                IS_LIVE ? 'text-red-400' : 'text-muted-foreground'
+              }`}>
+                {IS_LIVE ? 'LIVE NOW' : 'OFFLINE'}
+              </span>
+            </div>
+
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-4">
+              BigTrout300 Stream
+            </h2>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              {IS_LIVE
+                ? 'Join the stream on X to watch live development updates, ask questions, and hang with the Trout Squad.'
+                : 'The stream is currently offline. Check back later or follow us on X to get notified when we go live.'}
+            </p>
+
+            {IS_LIVE ? (
               <a
-                key={i}
-                href={stream.url}
+                href={STREAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group block rounded-xl overflow-hidden border border-white/10 hover:border-pepe/40 transition-all duration-300 hover:scale-[1.02]"
-                style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)' }}
+                className="btn-fire inline-flex items-center gap-3 text-lg"
               >
-                {/* Thumbnail */}
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    src={stream.thumbnail}
-                    alt={stream.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                    <div className="w-14 h-14 rounded-full bg-pepe/80 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Play className="w-7 h-7 text-storm-dark fill-storm-dark ml-1" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Info */}
-                <div className="p-4">
-                  <p className="text-xs text-muted-foreground mb-1 font-display tracking-wider">{stream.date}</p>
-                  <h3 className="font-display font-bold text-foreground text-sm leading-snug mb-2 group-hover:text-pepe transition-colors">
-                    {stream.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground line-clamp-2">{stream.description}</p>
-                  <div className="mt-3 inline-flex items-center gap-1 text-xs text-pepe font-bold">
-                    Watch on X <ExternalLink className="w-3 h-3" />
-                  </div>
-                </div>
+                <Radio className="w-5 h-5" />
+                Watch Live on X
+                <ExternalLink className="w-4 h-4" />
               </a>
-            ))}
+            ) : (
+              <button
+                disabled
+                className="btn-fire inline-flex items-center gap-3 text-lg opacity-50 cursor-not-allowed pointer-events-none"
+              >
+                <Radio className="w-5 h-5" />
+                Currently Offline
+              </button>
+            )}
           </div>
         </div>
       </main>

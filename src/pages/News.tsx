@@ -1,7 +1,6 @@
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ParticleField } from '@/components/ParticleField';
-import { ScrollToTopButton } from '@/components/ScrollToTopButton';
 import { timelineEntries } from '@/data/newsTimeline';
 import { ArrowLeft, ExternalLink, Calendar, Clock, Fish } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -206,7 +205,6 @@ const News = () => {
       </main>
 
       <Footer />
-      <ScrollToTopButton />
     </div>
   );
 };

@@ -9,7 +9,6 @@ import { NewsLoreSection } from '@/components/NewsLoreSection';
 import { Footer } from '@/components/Footer';
 import { ParticleField } from '@/components/ParticleField';
 import { MusicPlayer } from '@/components/MusicPlayer';
-import { ScrollToTopButton } from '@/components/ScrollToTopButton';
 import { usePerformanceMode } from '@/hooks/usePerformanceMode';
 
 const Index = () => {
@@ -44,7 +43,6 @@ const Index = () => {
       </main>
       <Footer />
       <MusicPlayer />
-      <ScrollToTopButton />
     </div>
   );
 };
