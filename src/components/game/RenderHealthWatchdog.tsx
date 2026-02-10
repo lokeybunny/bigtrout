@@ -26,7 +26,7 @@ export const RenderHealthWatchdog = () => {
   const lastGoodPos = useRef(new THREE.Vector3().copy(SAFE_POS));
   const lastGoodQuat = useRef(new THREE.Quaternion());
   const frameCount = useRef(0);
-  const contextLostFired = useRef(false);
+  
 
   useFrame(() => {
     frameCount.current++;
@@ -61,15 +61,13 @@ export const RenderHealthWatchdog = () => {
     lastGoodPos.current.copy(camera.position);
     lastGoodQuat.current.copy(camera.quaternion);
 
-    // Check WebGL context health every ~120 frames
-    if (frameCount.current % 120 === 0 && !contextLostFired.current) {
+    // Passive context health check — log only, never dispatch synthetic events
+    // (dispatching synthetic webglcontextlost caused an infinite loss/restore loop)
+    if (frameCount.current % 300 === 0) {
       try {
         const ctx = gl.getContext();
         if (ctx && (ctx as WebGLRenderingContext).isContextLost?.()) {
-          console.warn('[Watchdog] WebGL context lost detected');
-          contextLostFired.current = true;
-          // Dispatch a synthetic contextlost event so the handler in GameScene fires
-          gl.domElement.dispatchEvent(new Event('webglcontextlost'));
+          console.warn('[Watchdog] WebGL context appears lost (passive check)');
         }
       } catch {
         // ignore
