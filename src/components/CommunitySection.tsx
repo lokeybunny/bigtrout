@@ -1,5 +1,6 @@
 import { Twitter } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import heroBanner from '@/assets/bigtrout-hero-banner.jpg';
 
 // Import logo images
@@ -109,6 +110,25 @@ const generatePetals = (count: number) => {
 export const CommunitySection = () => {
   const [fireflies] = useState(() => generateFireflies(15));
   const [petals] = useState(() => generatePetals(10));
+  const [dbLogos, setDbLogos] = useState<{ name: string; logo: string | null; url: string; alt: string }[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from('listing_logos')
+      .select('name, logo_url, link_url, alt_text, display_order')
+      .eq('is_active', true)
+      .order('display_order', { ascending: true })
+      .then(({ data }) => {
+        if (data) {
+          setDbLogos(data.map(d => ({
+            name: d.name,
+            logo: d.logo_url,
+            url: d.link_url,
+            alt: d.alt_text || `Trade BIGTROUT on ${d.name}`,
+          })));
+        }
+      });
+  }, []);
 
   return (
     <section className="relative py-24 px-4 overflow-hidden">
@@ -197,8 +217,9 @@ export const CommunitySection = () => {
           </h3>
 
           <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 lg:gap-12 mb-10">
+            {/* Hardcoded logos */}
             {exchangeLogos.map((exchange, index) => (
-              <a key={index} href={exchange.url} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110" title={exchange.alt}>
+              <a key={`static-${index}`} href={exchange.url} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110" title={exchange.alt}>
                 {exchange.logo ? (
                   <img
                     src={exchange.logo}
@@ -211,6 +232,21 @@ export const CommunitySection = () => {
                     <span className="font-display font-bold text-sm md:text-base text-foreground/80 group-hover:text-foreground transition-colors">{exchange.name}</span>
                   </div>
                 )}
+                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{
+                  background: 'radial-gradient(circle, hsl(130 45% 42% / 0.2), transparent 70%)',
+                  filter: 'blur(15px)',
+                }} />
+              </a>
+            ))}
+            {/* Database-managed logos */}
+            {dbLogos.map((logo, index) => (
+              <a key={`db-${index}`} href={logo.url} target="_blank" rel="noopener noreferrer" className="group relative flex items-center justify-center p-4 rounded-xl transition-all duration-300 hover:scale-110" title={logo.alt}>
+                <img
+                  src={logo.logo}
+                  alt={logo.alt}
+                  className="h-10 md:h-12 lg:h-14 w-auto max-w-[120px] md:max-w-[150px] object-contain transition-all duration-300 brightness-90 grayscale-[30%] group-hover:brightness-110 group-hover:grayscale-0"
+                  style={{ filter: 'drop-shadow(0 0 6px hsl(0 0% 100% / 0.15))' }}
+                />
                 <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{
                   background: 'radial-gradient(circle, hsl(130 45% 42% / 0.2), transparent 70%)',
                   filter: 'blur(15px)',
