@@ -36,6 +36,9 @@ import solflareLogo from '@/assets/logos/solflare.png';
 import solanaWalletLogo from '@/assets/logos/solana-wallet.png';
 import bitgetWalletLogo from '@/assets/logos/bitget-wallet.png';
 import pionexLogo from '@/assets/logos/pionex.png';
+import bingxLogo from '@/assets/logos/bingx.png';
+import phemexLogo from '@/assets/logos/phemex.png';
+import tangemLogo from '@/assets/logos/tangem.png';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -79,6 +82,9 @@ const exchangeLogos = [
   { name: 'Solana Wallet', logo: solanaWalletLogo, url: `https://solana.com/`, alt: 'BIGTROUT on Solana Wallet' },
   { name: 'Bitget Wallet', logo: bitgetWalletLogo, url: `https://web3.bitget.com/en/swap/solana?toToken=${CONTRACT_ADDRESS}`, alt: 'BIGTROUT on Bitget Wallet' },
   { name: 'Pionex', logo: pionexLogo, url: `https://www.pionex.com/en/trade/BIGTROUT_USDT/Bot`, alt: 'Trade BIGTROUT on Pionex' },
+  { name: 'BingX', logo: bingxLogo, url: `https://bingx.com/en/spot/BIGTROUTUSDT/`, alt: 'Trade BIGTROUT on BingX' },
+  { name: 'Phemex', logo: phemexLogo, url: `https://phemex.com/`, alt: 'Trade BIGTROUT on Phemex Onchain' },
+  { name: 'Tangem', logo: tangemLogo, url: `https://tangem.com/en/coins/the-big-trout/`, alt: 'BIGTROUT on Tangem' },
 ];
 
 // Generate fireflies
