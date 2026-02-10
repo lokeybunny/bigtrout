@@ -654,6 +654,8 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
           canvas.addEventListener('webglcontextlost', (e) => {
             e.preventDefault();
             console.warn('[WebGL] Context lost');
+            // IMMEDIATELY hide canvas to prevent white flash
+            canvas.style.visibility = 'hidden';
             // Close chart to free GPU memory
             setChartExpanded(false);
             // Show recovery overlay after 3s if not restored
@@ -669,12 +671,18 @@ const GameSceneInner = ({ mode = 'singleplayer', multiplayerData, onExitToMenu }
               webglLostTimerRef.current = null;
             }
             setWebglLost(false);
-            gl.setClearColor('#0a1525', 1);
-            gl.clear();
+            // Re-initialize clear color after context restore
+            try {
+              gl.setClearColor('#0a1525', 1);
+              gl.clear();
+            } catch (e) {
+              // GL may not be ready yet, ignore
+            }
+            // Wait several frames for GPU to produce valid output before showing
             let frames = 0;
             const waitForFrame = () => {
               frames++;
-              if (frames >= 5) {
+              if (frames >= 8) {
                 canvas.style.visibility = 'visible';
               } else {
                 requestAnimationFrame(waitForFrame);
