@@ -40,6 +40,7 @@ import pionexLogo from '@/assets/logos/pionex.png';
 import bingxLogo from '@/assets/logos/bingx.png';
 import phemexLogo from '@/assets/logos/phemex.png';
 import tangemLogo from '@/assets/logos/tangem.png';
+import wasabiLogo from '@/assets/logos/wasabi.svg';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 
@@ -83,6 +84,7 @@ const exchangeLogos = [
   { name: 'Fomo', logo: fomoLogo, url: 'https://fomo.family/', alt: 'Trade BIGTROUT on Fomo', category: 'dex' as const },
   { name: 'MobyAgent', logo: mobyagentLogo, url: `https://www.mobyscreener.com/solana/${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on MobyAgent', category: 'dex' as const },
   { name: 'Phemex', logo: phemexLogo, url: 'https://phemex.com/', alt: 'Trade BIGTROUT on Phemex Onchain', category: 'dex' as const },
+  { name: 'Wasabi', logo: wasabiLogo, url: 'https://app.wasabi.xyz/?market=BigTroutUSDC&network=solana', alt: 'Trade BIGTROUT on Wasabi', category: 'dex' as const },
   // Listed & Verified
   { name: 'CoinGecko', logo: coingeckoLogo, url: 'https://www.coingecko.com/en/coins/bigtrout', alt: 'View BIGTROUT on CoinGecko', category: 'dex' as const },
   { name: 'CoinMarketCap', logo: coinmarketcapLogo, url: 'https://coinmarketcap.com/mobile/', alt: 'View BIGTROUT on CoinMarketCap', category: 'dex' as const },
