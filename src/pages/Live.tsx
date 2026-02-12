@@ -22,6 +22,13 @@ const BROADCASTS: Broadcast[] = [
     url: 'https://x.com/BigTrout300/status/2021726614430867874',
   },
   {
+    title: 'BigTrout300 Live — Community Hang',
+    date: 'FEB 12, 2026',
+    description: 'Another session with the Trout Squad — catching up on everything BIGTROUT.',
+    thumbnail: liveThumbnail,
+    url: 'https://x.com/BigTrout300/status/2021297864111210642',
+  },
+  {
     title: 'BigTrout300 Live — Community Session',
     date: 'FEB 9, 2026',
     description: 'Latest live broadcast with the Trout Squad — updates, vibes, and community hang.',
