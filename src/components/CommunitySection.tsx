@@ -11,7 +11,7 @@ import mobyagentLogo from '@/assets/logos/mobyagent.svg';
 import jupiterLogo from '@/assets/logos/jupiter.svg';
 import coinmarketcapLogo from '@/assets/logos/coinmarketcap.png';
 import coingeckoLogo from '@/assets/logos/coingecko.png';
-import bitmartLogo from '@/assets/logos/bitmart.png';
+import bitmartLogo from '@/assets/logos/bitmart-2025.png';
 import btseLogo from '@/assets/logos/btse.png';
 import blynexLogo from '@/assets/logos/blynex.png';
 import weexLogo from '@/assets/logos/weex.png';
@@ -30,6 +30,7 @@ import kcexLogo from '@/assets/logos/kcex.png';
 import bilaxyLogo from '@/assets/logos/bilaxy.png';
 import bigoneLogo from '@/assets/logos/bigone.svg';
 import pumpswapLogo from '@/assets/logos/pumpswap.png';
+import meteoraLogo from '@/assets/logos/meteora.png';
 import raydiumLogo from '@/assets/logos/raydium.png';
 import fomoLogo from '@/assets/logos/fomo.png';
 import solflareLogo from '@/assets/logos/solflare.png';
@@ -55,44 +56,48 @@ const socialLinks = [
 ];
 
 const exchangeLogos = [
-  { name: 'MEXC', logo: mexcLogo, url: 'https://www.mexc.com/exchange/BIGTROUT_USDT?_from=search_spot_trade', alt: 'Trade BIGTROUT on MEXC' },
+  // CEX & Trading Platforms
   { name: 'LBank', logo: lbankLogo, url: 'https://www.lbank.com/trade/bigtrout_usdt', alt: 'Trade BIGTROUT on LBank' },
-  { name: 'Moonshot', logo: moonshotLogo, url: 'https://moonshot.money', alt: 'Trade BIGTROUT on Moonshot' },
-  { name: 'PocketFi', logo: pocketfiLogo, url: 'https://pocketfi.org/en/', alt: 'Trade BIGTROUT on PocketFi' },
-  { name: 'MobyAgent', logo: mobyagentLogo, url: 'https://www.mobyscreener.com/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on MobyAgent' },
-  { name: 'Jupiter', logo: jupiterLogo, url: `https://jup.ag/tokens/${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on Jupiter' },
-  { name: 'CoinMarketCap', logo: coinmarketcapLogo, url: 'https://coinmarketcap.com/mobile/', alt: 'View BIGTROUT on CoinMarketCap' },
-  { name: 'CoinGecko', logo: coingeckoLogo, url: 'https://www.coingecko.com/en/coins/bigtrout', alt: 'View BIGTROUT on CoinGecko' },
-  { name: 'BTSE', logo: btseLogo, url: 'https://www.btse.com/en/trading/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BTSE' },
   { name: 'BitMart', logo: bitmartLogo, url: 'https://www.bitmart.com/en-US/trade/BIGTROUT_USDT?type=spot', alt: 'Trade BIGTROUT on BitMart' },
-  { name: 'Blynex', logo: blynexLogo, url: 'https://blynex.com/spot/TheBigTrout_USDT', alt: 'Trade BIGTROUT on Blynex' },
-  { name: 'WEEX', logo: weexLogo, url: 'https://www.weex.com/spot/BIGTROUT-USDT?vipCode=ipqs', alt: 'Trade BIGTROUT on WEEX' },
-  { name: 'Coindar', logo: coindarLogo, url: 'https://coindar.org/en/event/the-big-trout-to-be-listed-on-weex-140441', alt: 'View BIGTROUT on Coindar' },
-  { name: 'KuCoin', logo: kucoinLogo, url: 'https://www.kucoin.com/announcement/en-kucoin-alpha-has-listed-token-bigtrout-and-usor?utm_source=social_listing_2026_twitter&utm_medium=social_media_pos', alt: 'Trade BIGTROUT on KuCoin' },
-  { name: 'DexScreener', logo: dexscreenerLogo, url: 'https://dexscreener.com/solana/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'View BIGTROUT on DexScreener' },
+  { name: 'KuCoin', logo: kucoinLogo, url: 'https://www.kucoin.com/announcement/en-kucoin-alpha-has-listed-token-bigtrout-and-usor?utm_source=social_listing_2026_twitter&utm_medium=social_media_pos', alt: 'Trade BIGTROUT on KuCoin Alpha' },
   { name: 'Poloniex', logo: poloniexLogo, url: 'https://www.poloniex.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Poloniex' },
-  { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue', hasBorder: true },
-  { name: 'Moontok', logo: moontokLogo, url: 'https://moontok.io/coins/the-big-trout', alt: 'View BIGTROUT on Moontok' },
-  { name: 'Binance', logo: binanceLogo, url: 'https://web3.binance.com/en/token/sol/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Binance' },
-  { name: 'Phantom', logo: phantomLogo, url: `https://phantom.app/tokens/solana/${CONTRACT_ADDRESS}`, alt: 'BIGTROUT on Phantom' },
-  { name: 'OKX', logo: okxLogo, url: `https://www.okx.com/web3/dex-swap#inputChain=501&inputCurrency=${CONTRACT_ADDRESS}`, alt: 'View BIGTROUT on OKX' },
-  { name: 'Coin98', logo: coin98Logo, url: `https://coin98.com/`, alt: 'View BIGTROUT on Coin98' },
-  { name: 'Crypto.com', logo: cryptoComLogo, url: `https://crypto.com/`, alt: 'View BIGTROUT on Crypto.com' },
-  { name: 'KCEX', logo: kcexLogo, url: `https://www.kcex.com/exchange/BIGTROUT_USDT`, alt: 'Trade BIGTROUT on KCEX' },
-  { name: 'Bilaxy', logo: bilaxyLogo, url: `https://bilaxy.com/trade/BIGTROUT_USDT`, alt: 'Trade BIGTROUT on Bilaxy' },
-  { name: 'Ourbit', logo: null, url: `https://www.ourbit.com/exchange/BIGTROUT_USDT`, alt: 'Trade BIGTROUT on Ourbit' },
-  { name: 'BigONE', logo: bigoneLogo, url: `https://big.one/en/trade/BIGTROUT-USDT`, alt: 'Trade BIGTROUT on BigONE' },
+  { name: 'KCEX', logo: kcexLogo, url: 'https://www.kcex.com/exchange/BIGTROUT_USDT', alt: 'Trade BIGTROUT on KCEX' },
+  { name: 'WEEX', logo: weexLogo, url: 'https://www.weex.com/spot/BIGTROUT-USDT?vipCode=ipqs', alt: 'Trade BIGTROUT on WEEX' },
+  { name: 'Bilaxy', logo: bilaxyLogo, url: 'https://bilaxy.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Bilaxy' },
+  { name: 'Ourbit', logo: null, url: 'https://www.ourbit.com/exchange/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Ourbit' },
+  { name: 'BTSE', logo: btseLogo, url: 'https://www.btse.com/en/trading/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BTSE' },
+  { name: 'Blynex', logo: blynexLogo, url: 'https://blynex.com/spot/TheBigTrout_USDT', alt: 'Trade BIGTROUT on Blynex' },
+  { name: 'BigONE', logo: bigoneLogo, url: 'https://big.one/en/trade/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BigONE Alpha' },
+  { name: 'MEXC', logo: mexcLogo, url: 'https://www.mexc.com/exchange/BIGTROUT_USDT?_from=search_spot_trade', alt: 'Trade BIGTROUT on MEXC Meme+' },
+  { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue Alpha', hasBorder: true },
+  { name: 'BingX', logo: bingxLogo, url: 'https://bingx.com/en/perpetual/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BingX' },
+  { name: 'Pionex', logo: pionexLogo, url: 'https://www.pionex.com/en/trade/BIGTROUT_USDT/Bot', alt: 'Trade BIGTROUT on Pionex' },
+  // DEX & Platforms
   { name: 'PumpSwap', logo: pumpswapLogo, url: `https://pump.fun/coin/${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on PumpSwap' },
-  { name: 'Meteora', logo: null, url: `https://app.meteora.ag/pools?token=${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on Meteora' },
+  { name: 'Meteora', logo: meteoraLogo, url: `https://app.meteora.ag/pools?token=${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on Meteora' },
   { name: 'Raydium', logo: raydiumLogo, url: `https://raydium.io/swap/?inputMint=sol&outputMint=${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on Raydium' },
-  { name: 'Fomo', logo: fomoLogo, url: `https://fomo.family/`, alt: 'Trade BIGTROUT on Fomo' },
-  { name: 'Solflare', logo: solflareLogo, url: `https://solflare.com/`, alt: 'BIGTROUT on Solflare' },
-  { name: 'Solana Wallet', logo: solanaWalletLogo, url: `https://solana.com/`, alt: 'BIGTROUT on Solana Wallet' },
+  { name: 'Jupiter', logo: jupiterLogo, url: `https://jup.ag/tokens/${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on Jupiter' },
+  { name: 'Moonshot', logo: moonshotLogo, url: 'https://moonshot.money', alt: 'Trade BIGTROUT on Moonshot' },
+  { name: 'Fomo', logo: fomoLogo, url: 'https://fomo.family/', alt: 'Trade BIGTROUT on Fomo' },
+  { name: 'MobyAgent', logo: mobyagentLogo, url: `https://www.mobyscreener.com/solana/${CONTRACT_ADDRESS}`, alt: 'Trade BIGTROUT on MobyAgent' },
+  { name: 'Phemex', logo: phemexLogo, url: 'https://phemex.com/', alt: 'Trade BIGTROUT on Phemex Onchain' },
+  // Listed & Verified
+  { name: 'CoinGecko', logo: coingeckoLogo, url: 'https://www.coingecko.com/en/coins/bigtrout', alt: 'View BIGTROUT on CoinGecko' },
+  { name: 'CoinMarketCap', logo: coinmarketcapLogo, url: 'https://coinmarketcap.com/mobile/', alt: 'View BIGTROUT on CoinMarketCap' },
+  { name: 'DexScreener', logo: dexscreenerLogo, url: `https://dexscreener.com/solana/${CONTRACT_ADDRESS}`, alt: 'View BIGTROUT on DexScreener' },
+  { name: 'Coindar', logo: coindarLogo, url: 'https://coindar.org/en/event/the-big-trout-to-be-listed-on-weex-140441', alt: 'View BIGTROUT on Coindar' },
+  { name: 'Moontok', logo: moontokLogo, url: 'https://moontok.io/coins/the-big-trout', alt: 'View BIGTROUT on Moontok' },
+  { name: 'PocketFi', logo: pocketfiLogo, url: 'https://pocketfi.org/en/', alt: 'Trade BIGTROUT on PocketFi' },
+  // Wallets
+  { name: 'Phantom', logo: phantomLogo, url: `https://phantom.app/tokens/solana/${CONTRACT_ADDRESS}`, alt: 'BIGTROUT on Phantom' },
+  { name: 'Solflare', logo: solflareLogo, url: 'https://solflare.com/', alt: 'BIGTROUT on Solflare' },
+  { name: 'Solana Wallet', logo: solanaWalletLogo, url: 'https://solana.com/', alt: 'BIGTROUT on Solana Wallet' },
+  { name: 'OKX', logo: okxLogo, url: `https://www.okx.com/web3/dex-swap#inputChain=501&inputCurrency=${CONTRACT_ADDRESS}`, alt: 'BIGTROUT on OKX Wallet' },
+  { name: 'Crypto.com', logo: cryptoComLogo, url: 'https://crypto.com/', alt: 'BIGTROUT on Crypto.com Wallet' },
+  { name: 'Coin98', logo: coin98Logo, url: 'https://coin98.com/', alt: 'BIGTROUT on Coin98 Wallet' },
+  { name: 'Binance', logo: binanceLogo, url: `https://web3.binance.com/en/token/sol/${CONTRACT_ADDRESS}`, alt: 'BIGTROUT on Binance Web3 Wallet' },
   { name: 'Bitget Wallet', logo: bitgetWalletLogo, url: `https://web3.bitget.com/en/swap/solana?toToken=${CONTRACT_ADDRESS}`, alt: 'BIGTROUT on Bitget Wallet' },
-  { name: 'Pionex', logo: pionexLogo, url: `https://www.pionex.com/en/trade/BIGTROUT_USDT/Bot`, alt: 'Trade BIGTROUT on Pionex' },
-  { name: 'BingX', logo: bingxLogo, url: `https://bingx.com/en/spot/BIGTROUTUSDT/`, alt: 'Trade BIGTROUT on BingX' },
-  { name: 'Phemex', logo: phemexLogo, url: `https://phemex.com/`, alt: 'Trade BIGTROUT on Phemex Onchain' },
-  { name: 'Tangem', logo: tangemLogo, url: `https://tangem.com/en/coins/the-big-trout/`, alt: 'BIGTROUT on Tangem' },
+  { name: 'Tangem', logo: tangemLogo, url: 'https://tangem.com/en/coins/the-big-trout/', alt: 'BIGTROUT on Tangem' },
 ];
 
 // Generate fireflies
