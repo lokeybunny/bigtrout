@@ -15,6 +15,13 @@ interface Broadcast {
 
 const BROADCASTS: Broadcast[] = [
   {
+    title: 'BigTrout300 Live — Latest Session',
+    date: 'FEB 12, 2026',
+    description: 'Fresh broadcast with the Trout Squad — community updates, market talk, and good vibes.',
+    thumbnail: liveThumbnail,
+    url: 'https://x.com/BigTrout300/status/2021726614430867874',
+  },
+  {
     title: 'BigTrout300 Live — Community Session',
     date: 'FEB 9, 2026',
     description: 'Latest live broadcast with the Trout Squad — updates, vibes, and community hang.',
