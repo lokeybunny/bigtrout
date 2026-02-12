@@ -95,7 +95,7 @@ const Live = () => {
             {BROADCASTS.map((broadcast, i) => (
               <div key={i} className="card-volcanic overflow-hidden group">
                 {/* Thumbnail */}
-                <div className="relative aspect-video overflow-hidden">
+                <a href={broadcast.url} target="_blank" rel="noopener noreferrer" className="relative aspect-video overflow-hidden block">
                   <img
                     src={broadcast.thumbnail}
                     alt={broadcast.title}
@@ -108,7 +108,7 @@ const Live = () => {
                       <Play className="w-6 h-6 text-white ml-0.5" fill="white" fillOpacity={0.8} />
                     </div>
                   </div>
-                </div>
+                </a>
 
                 {/* Card body */}
                 <div className="p-5">
