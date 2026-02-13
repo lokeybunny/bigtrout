@@ -6,9 +6,9 @@ const corsHeaders = {
 };
 
 const TRACKED_WALLET = "2U4zpVocENRnsotRZ1jmxf4zQ5w7k6YeZX5o2ZenzjnJ";
+const BIGTROUT_MINT = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 const SOLANA_RPC = "https://api.mainnet-beta.solana.com";
 
-// Known program IDs mapped to platform names
 const PROGRAM_MAP: Record<string, string> = {
   "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4": "Jupiter",
   "JUP4Fb2cqiRUcaTHdrPC8h2gNsA2ETXiPDD33WcPX7rE": "Jupiter",
@@ -49,7 +49,6 @@ function classifyTransaction(tx: any): string {
 
   const instructions = tx.transaction?.message?.instructions || [];
   const innerInstructions = tx.meta?.innerInstructions || [];
-  const accountKeys = tx.transaction?.message?.accountKeys || [];
 
   const allProgramIds = new Set<string>();
   for (const ix of instructions) {
@@ -71,6 +70,7 @@ function classifyTransaction(tx: any): string {
   }
 
   if (platform === "Direct Transfer") {
+    const accountKeys = tx.transaction?.message?.accountKeys || [];
     for (const key of accountKeys) {
       const pubkey = key.pubkey?.toString() || key;
       if (CEX_WALLETS[pubkey]) {
@@ -83,45 +83,95 @@ function classifyTransaction(tx: any): string {
   return platform;
 }
 
+// Extract BIGTROUT token deposit amount from a transaction
+function extractDepositAmount(tx: any): number {
+  const preBalances = tx.meta?.preTokenBalances || [];
+  const postBalances = tx.meta?.postTokenBalances || [];
+
+  // Find BIGTROUT balances for our tracked wallet's token accounts
+  const walletAccountIndices = new Set<number>();
+  const accountKeys = tx.transaction?.message?.accountKeys || [];
+  accountKeys.forEach((key: any, idx: number) => {
+    const pubkey = key.pubkey?.toString() || key;
+    if (pubkey === TRACKED_WALLET) walletAccountIndices.add(idx);
+  });
+
+  // Look for BIGTROUT mint in post balances owned by tracked wallet
+  let preAmount = 0;
+  let postAmount = 0;
+
+  for (const bal of preBalances) {
+    if (bal.mint === BIGTROUT_MINT && bal.owner === TRACKED_WALLET) {
+      preAmount = parseFloat(bal.uiTokenAmount?.uiAmountString || "0");
+    }
+  }
+  for (const bal of postBalances) {
+    if (bal.mint === BIGTROUT_MINT && bal.owner === TRACKED_WALLET) {
+      postAmount = parseFloat(bal.uiTokenAmount?.uiAmountString || "0");
+    }
+  }
+
+  const delta = postAmount - preAmount;
+  return delta > 0 ? delta : 0; // Only count inflows
+}
+
+type RangeKey = "24h" | "7d" | "30d";
+
+const RANGE_CONFIG: Record<RangeKey, { ms: number; sigLimit: number; bucketType: "hourly" | "daily" }> = {
+  "24h": { ms: 24 * 60 * 60 * 1000, sigLimit: 100, bucketType: "hourly" },
+  "7d":  { ms: 7 * 24 * 60 * 60 * 1000, sigLimit: 200, bucketType: "daily" },
+  "30d": { ms: 30 * 24 * 60 * 60 * 1000, sigLimit: 500, bucketType: "daily" },
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    const url = new URL(req.url);
+    const range = (url.searchParams.get("range") || "24h") as RangeKey;
+    const config = RANGE_CONFIG[range] || RANGE_CONFIG["24h"];
+
     const now = Date.now();
-    const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
+    const rangeStart = now - config.ms;
 
     // Get recent transaction signatures
     const signatures = await rpcCall("getSignaturesForAddress", [
       TRACKED_WALLET,
-      { limit: 100 },
+      { limit: config.sigLimit },
     ]);
 
     const platformCounts: Record<string, number> = {};
-    const recentTxs: Array<{ platform: string; time: number; signature: string }> = [];
-    // Hourly buckets for the last 24 hours
-    const hourlyActivity: Record<string, { hour: string; count: number; deposits: number }> = {};
+    const recentTxs: Array<{ platform: string; time: number; signature: string; amount: number }> = [];
+    let totalDeposited = 0;
 
-    // Initialize 24 hourly buckets
-    for (let i = 23; i >= 0; i--) {
-      const bucketTime = new Date(now - i * 60 * 60 * 1000);
-      const hourKey = bucketTime.toISOString().slice(0, 13); // e.g. "2026-02-13T01"
-      const hourLabel = bucketTime.getUTCHours().toString().padStart(2, '0') + ':00';
-      hourlyActivity[hourKey] = { hour: hourLabel, count: 0, deposits: 0 };
+    // Build time buckets
+    const buckets: Record<string, { label: string; count: number; deposits: number; amount: number }> = {};
+
+    if (config.bucketType === "hourly") {
+      for (let i = 23; i >= 0; i--) {
+        const t = new Date(now - i * 60 * 60 * 1000);
+        const key = t.toISOString().slice(0, 13);
+        buckets[key] = { label: t.getUTCHours().toString().padStart(2, '0') + ':00', count: 0, deposits: 0, amount: 0 };
+      }
+    } else {
+      const days = range === "7d" ? 7 : 30;
+      for (let i = days - 1; i >= 0; i--) {
+        const t = new Date(now - i * 24 * 60 * 60 * 1000);
+        const key = t.toISOString().slice(0, 10);
+        const label = `${(t.getUTCMonth() + 1).toString().padStart(2, '0')}/${t.getUTCDate().toString().padStart(2, '0')}`;
+        buckets[key] = { label, count: 0, deposits: 0, amount: 0 };
+      }
     }
 
     let processedCount = 0;
-
-    // Process transactions (up to 50 to avoid rate limits)
-    const batch = signatures.slice(0, 50);
+    const batch = signatures.slice(0, Math.min(signatures.length, 80));
 
     for (const sig of batch) {
       try {
         const blockTimeMs = sig.blockTime * 1000;
-
-        // Skip transactions older than 24h for hourly chart (but still count for platform bars)
-        const isWithin24h = blockTimeMs >= twentyFourHoursAgo;
+        if (blockTimeMs < rangeStart) continue; // Skip out-of-range
 
         const tx = await rpcCall("getTransaction", [
           sig.signature,
@@ -131,31 +181,35 @@ serve(async (req) => {
         if (!tx || !tx.meta || tx.meta.err) continue;
 
         const platform = classifyTransaction(tx);
+        const depositAmount = extractDepositAmount(tx);
 
         platformCounts[platform] = (platformCounts[platform] || 0) + 1;
+        totalDeposited += depositAmount;
+
         recentTxs.push({
           platform,
           time: blockTimeMs,
           signature: sig.signature,
+          amount: depositAmount,
         });
         processedCount++;
 
-        // Add to hourly bucket if within 24h
-        if (isWithin24h) {
-          const txDate = new Date(blockTimeMs);
-          const hourKey = txDate.toISOString().slice(0, 13);
-          if (hourlyActivity[hourKey]) {
-            hourlyActivity[hourKey].count += 1;
-            // Count deposits (incoming = not Direct Transfer or any platform swap into wallet)
-            hourlyActivity[hourKey].deposits += 1;
-          }
+        // Bucket assignment
+        const txDate = new Date(blockTimeMs);
+        const bucketKey = config.bucketType === "hourly"
+          ? txDate.toISOString().slice(0, 13)
+          : txDate.toISOString().slice(0, 10);
+
+        if (buckets[bucketKey]) {
+          buckets[bucketKey].count += 1;
+          buckets[bucketKey].deposits += 1;
+          buckets[bucketKey].amount += depositAmount;
         }
       } catch (_e) {
         continue;
       }
     }
 
-    // Sort platforms by count
     const platforms = Object.entries(platformCounts)
       .map(([name, count]) => ({
         name,
@@ -164,19 +218,21 @@ serve(async (req) => {
       }))
       .sort((a, b) => b.count - a.count);
 
-    // Convert hourly activity to sorted array
-    const hourlyData = Object.values(hourlyActivity).map(h => ({
-      hour: h.hour,
-      transactions: h.count,
-      deposits: h.deposits,
+    const activityData = Object.values(buckets).map(b => ({
+      label: b.label,
+      transactions: b.count,
+      deposits: b.deposits,
+      amount: b.amount,
     }));
 
     return new Response(
       JSON.stringify({
         wallet: TRACKED_WALLET,
+        range,
         totalTransactions: processedCount,
+        totalDeposited,
         platforms,
-        hourlyActivity: hourlyData,
+        activityData,
         recentTransactions: recentTxs.slice(0, 10),
         lastUpdated: Date.now(),
       }),

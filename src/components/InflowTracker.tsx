@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Activity, TrendingUp, ExternalLink } from 'lucide-react';
+import { Activity, TrendingUp, ExternalLink, Fish } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface PlatformData {
   name: string;
@@ -9,18 +10,21 @@ interface PlatformData {
   percentage: number;
 }
 
-interface HourlyData {
-  hour: string;
+interface ActivityData {
+  label: string;
   transactions: number;
   deposits: number;
+  amount: number;
 }
 
 interface InflowData {
   wallet: string;
+  range: string;
   totalTransactions: number;
+  totalDeposited: number;
   platforms: PlatformData[];
-  hourlyActivity: HourlyData[];
-  recentTransactions: Array<{ platform: string; time: number; signature: string }>;
+  activityData: ActivityData[];
+  recentTransactions: Array<{ platform: string; time: number; signature: string; amount: number }>;
   lastUpdated: number;
 }
 
@@ -39,11 +43,32 @@ const PLATFORM_COLORS: Record<string, string> = {
   'Direct Transfer': 'hsl(0 0% 50%)',
 };
 
-const fetchInflowData = async (): Promise<InflowData> => {
-  const { data, error } = await supabase.functions.invoke('inflow-tracker');
-  if (error) throw error;
-  return data;
+type RangeKey = '24h' | '7d' | '30d';
+
+const RANGE_LABELS: Record<RangeKey, string> = {
+  '24h': '24 Hours',
+  '7d': '7 Days',
+  '30d': '30 Days',
 };
+
+const fetchInflowData = async (range: RangeKey): Promise<InflowData> => {
+  const projectUrl = import.meta.env.VITE_SUPABASE_URL;
+  const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  const res = await fetch(`${projectUrl}/functions/v1/inflow-tracker?range=${range}`, {
+    headers: {
+      'apikey': anonKey,
+      'Authorization': `Bearer ${anonKey}`,
+    },
+  });
+  if (!res.ok) throw new Error('Failed to fetch inflow data');
+  return res.json();
+};
+
+function formatNumber(n: number): string {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + 'M';
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
+  return n.toFixed(0);
+}
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
@@ -56,20 +81,27 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <p style={{ color: 'hsl(160 60% 55%)' }}>
         {payload[0].value} txn{payload[0].value !== 1 ? 's' : ''}
       </p>
+      {payload[0]?.payload?.amount > 0 && (
+        <p style={{ color: 'hsl(45 80% 60%)' }}>
+          +{formatNumber(payload[0].payload.amount)} $BIGTROUT
+        </p>
+      )}
     </div>
   );
 };
 
 export const InflowTracker = () => {
+  const [range, setRange] = useState<RangeKey>('24h');
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ['inflow-tracker'],
-    queryFn: fetchInflowData,
+    queryKey: ['inflow-tracker', range],
+    queryFn: () => fetchInflowData(range),
     refetchInterval: 120_000,
     staleTime: 60_000,
   });
 
   const maxCount = data?.platforms?.[0]?.count || 1;
-  const hasHourlyData = data?.hourlyActivity?.some(h => h.transactions > 0);
+  const hasActivityData = data?.activityData?.some(h => h.transactions > 0);
 
   return (
     <section className="relative py-12 px-4 overflow-hidden" style={{ background: 'hsl(210 25% 7%)' }}>
@@ -77,7 +109,7 @@ export const InflowTracker = () => {
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="flex items-center justify-center gap-3 mb-4">
           <Activity className="w-4 h-4 text-pepe/60" />
           <h4 className="font-display text-sm md:text-base font-bold tracking-widest uppercase" style={{
             color: 'hsl(0 0% 55%)',
@@ -88,9 +120,65 @@ export const InflowTracker = () => {
           <TrendingUp className="w-4 h-4 text-sakura/60" />
         </div>
 
-        <p className="text-center text-muted-foreground/50 text-xs mb-8 max-w-lg mx-auto">
+        <p className="text-center text-muted-foreground/50 text-xs mb-6 max-w-lg mx-auto">
           Live analysis of recent $BIGTROUT transactions — see where the community is buying from.
         </p>
+
+        {/* Range Toggle */}
+        <div className="flex justify-center mb-6">
+          <ToggleGroup
+            type="single"
+            value={range}
+            onValueChange={(val) => val && setRange(val as RangeKey)}
+            className="rounded-lg p-0.5"
+            style={{ background: 'hsl(210 20% 12%)' }}
+          >
+            {(['24h', '7d', '30d'] as RangeKey[]).map((r) => (
+              <ToggleGroupItem
+                key={r}
+                value={r}
+                className="px-4 py-1.5 text-[11px] font-mono font-bold uppercase tracking-wider rounded-md transition-all data-[state=on]:text-white"
+                style={{
+                  color: range === r ? 'white' : 'hsl(0 0% 40%)',
+                  background: range === r ? 'hsl(160 50% 30%)' : 'transparent',
+                }}
+              >
+                {r}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </div>
+
+        {/* Live Deposit Counter */}
+        {data && (
+          <div className="flex justify-center mb-8">
+            <div className="flex items-center gap-4 px-6 py-3 rounded-xl border" style={{
+              background: 'linear-gradient(135deg, hsl(160 30% 10%), hsl(210 25% 10%))',
+              borderColor: 'hsl(160 40% 25%)',
+            }}>
+              <Fish className="w-5 h-5" style={{ color: 'hsl(160 60% 50%)' }} />
+              <div className="text-center">
+                <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color: 'hsl(0 0% 45%)' }}>
+                  $BIGTROUT deposited ({RANGE_LABELS[range]})
+                </p>
+                <p className="text-xl md:text-2xl font-display font-bold tabular-nums" style={{
+                  color: 'hsl(160 60% 55%)',
+                  textShadow: '0 0 20px hsl(160 60% 40% / 0.3)',
+                }}>
+                  {formatNumber(data.totalDeposited)}
+                </p>
+              </div>
+              <div className="text-center ml-4 pl-4 border-l" style={{ borderColor: 'hsl(210 15% 20%)' }}>
+                <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color: 'hsl(0 0% 45%)' }}>
+                  Transactions
+                </p>
+                <p className="text-xl md:text-2xl font-display font-bold tabular-nums" style={{ color: 'hsl(45 80% 55%)' }}>
+                  {data.totalTransactions}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {isLoading && (
           <div className="flex justify-center py-8">
@@ -108,20 +196,20 @@ export const InflowTracker = () => {
 
         {data && (
           <>
-            {/* 24h Activity Chart */}
+            {/* Activity Chart */}
             <div className="mb-10">
               <h5 className="text-[11px] font-mono font-bold uppercase tracking-wider mb-4 text-center" style={{ color: 'hsl(0 0% 45%)' }}>
-                24-Hour Deposit Activity
+                {range === '24h' ? '24-Hour' : range === '7d' ? '7-Day' : '30-Day'} Deposit Activity
               </h5>
               <div className="w-full h-36 md:h-44">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={data.hourlyActivity} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+                  <BarChart data={data.activityData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
                     <XAxis
-                      dataKey="hour"
+                      dataKey="label"
                       tick={{ fontSize: 9, fill: 'hsl(0 0% 35%)' }}
                       tickLine={false}
                       axisLine={{ stroke: 'hsl(210 15% 18%)' }}
-                      interval={2}
+                      interval={range === '24h' ? 2 : range === '7d' ? 0 : 3}
                     />
                     <YAxis
                       tick={{ fontSize: 9, fill: 'hsl(0 0% 35%)' }}
@@ -131,7 +219,7 @@ export const InflowTracker = () => {
                     />
                     <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(210 20% 15%)' }} />
                     <Bar dataKey="transactions" radius={[3, 3, 0, 0]} maxBarSize={20}>
-                      {data.hourlyActivity.map((entry, index) => (
+                      {data.activityData.map((entry, index) => (
                         <Cell
                           key={index}
                           fill={entry.transactions > 0 ? 'hsl(160 55% 45%)' : 'hsl(210 15% 15%)'}
@@ -142,8 +230,8 @@ export const InflowTracker = () => {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              {!hasHourlyData && (
-                <p className="text-center text-muted-foreground/30 text-[10px] mt-2">No transactions in the last 24 hours</p>
+              {!hasActivityData && (
+                <p className="text-center text-muted-foreground/30 text-[10px] mt-2">No transactions in this period</p>
               )}
             </div>
 
@@ -213,6 +301,11 @@ export const InflowTracker = () => {
                         <span className="text-[10px] font-mono" style={{ color: PLATFORM_COLORS[tx.platform] || 'hsl(0 0% 50%)' }}>
                           {tx.platform}
                         </span>
+                        {tx.amount > 0 && (
+                          <span className="text-[10px] font-mono" style={{ color: 'hsl(160 55% 50%)' }}>
+                            +{formatNumber(tx.amount)}
+                          </span>
+                        )}
                         <span className="text-[10px] font-mono" style={{ color: 'hsl(0 0% 35%)' }}>
                           {tx.signature.slice(0, 8)}…{tx.signature.slice(-4)}
                         </span>
