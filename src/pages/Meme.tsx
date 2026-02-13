@@ -29,7 +29,7 @@ const Meme = () => {
               🐟 MEME STREAM
             </h1>
             <p className="text-muted-foreground text-lg">
-              The latest <span className="text-pepe-glow font-bold">#BIGTROUT</span> posts from X
+              The latest <span className="text-pepe-glow font-bold">$BIGTROUT</span> posts from X
             </p>
           </div>
 
@@ -42,9 +42,9 @@ const Meme = () => {
                 data-chrome="noheader nofooter noborders transparent"
                 data-height="800"
                 data-link-color="#4ADE80"
-                href="https://twitter.com/search?q=%23BIGTROUT"
+                href="https://twitter.com/search?q=%24BIGTROUT"
               >
-                Loading #BIGTROUT tweets...
+                Loading $BIGTROUT tweets...
               </a>
             </div>
           </div>
@@ -52,7 +52,7 @@ const Meme = () => {
           {/* Fallback CTA */}
           <div className="text-center mt-8">
             <a
-              href="https://twitter.com/search?q=%23BIGTROUT"
+              href="https://twitter.com/search?q=%24BIGTROUT"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-fire text-sm py-2 px-6 inline-block"
