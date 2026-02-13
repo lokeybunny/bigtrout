@@ -310,49 +310,6 @@ export const InflowTracker = () => {
               )}
             </div>
 
-            {/* Platform breakdown bars */}
-            {data.platforms.length > 0 && (
-              <div className="space-y-3">
-                <h5 className="text-[11px] font-mono font-bold uppercase tracking-wider mb-4 text-center" style={{ color: 'hsl(0 0% 45%)' }}>
-                  Platform Breakdown
-                </h5>
-                {data.platforms.map((platform) => {
-                  const color = PLATFORM_COLORS[platform.name] || 'hsl(130 40% 45%)';
-                  const barWidth = Math.max((platform.count / maxCount) * 100, 8);
-
-                  return (
-                    <div key={platform.name} className="group">
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-medium w-28 md:w-36 text-right truncate" style={{ color: 'hsl(0 0% 60%)' }}>
-                          {platform.name}
-                        </span>
-                        <div className="flex-1 h-5 rounded-sm overflow-hidden" style={{ background: 'hsl(210 20% 12%)' }}>
-                          <div
-                            className="h-full rounded-sm transition-all duration-700 ease-out flex items-center justify-end pr-2"
-                            style={{
-                              width: `${barWidth}%`,
-                              background: `linear-gradient(90deg, ${color}33, ${color}aa)`,
-                              borderRight: `2px solid ${color}`,
-                            }}
-                          >
-                            <span className="text-[10px] font-mono font-bold" style={{ color }}>
-                              {platform.percentage}%
-                            </span>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-mono w-8 text-right" style={{ color: 'hsl(0 0% 40%)' }}>
-                          {platform.count}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {data.platforms.length === 0 && (
-              <p className="text-center text-muted-foreground/40 text-xs py-6">No recent transactions found</p>
-            )}
 
             {/* Recent transactions list */}
             {data.recentTransactions.length > 0 && (
