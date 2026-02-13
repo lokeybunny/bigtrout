@@ -17,7 +17,7 @@ export const NewsLoreSection = () => {
 
       <div className="relative z-10 max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-          <div id="news" className="text-center md:text-left">
+          <div id="news" className="text-center">
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
               <span className="text-pepe">LATEST</span>{' '}
               <span className="text-sakura">NEWS</span>
@@ -31,7 +31,7 @@ export const NewsLoreSection = () => {
             </Link>
           </div>
 
-          <div id="lore" className="text-center md:text-left">
+          <div id="lore" className="text-center">
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
               <span className="text-sakura">THE</span>{' '}
               <span className="text-pepe">LORE</span>
