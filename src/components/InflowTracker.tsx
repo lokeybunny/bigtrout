@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Activity, TrendingUp, ExternalLink } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 interface PlatformData {
   name: string;
@@ -8,10 +9,17 @@ interface PlatformData {
   percentage: number;
 }
 
+interface HourlyData {
+  hour: string;
+  transactions: number;
+  deposits: number;
+}
+
 interface InflowData {
   wallet: string;
   totalTransactions: number;
   platforms: PlatformData[];
+  hourlyActivity: HourlyData[];
   recentTransactions: Array<{ platform: string; time: number; signature: string }>;
   lastUpdated: number;
 }
@@ -37,15 +45,31 @@ const fetchInflowData = async (): Promise<InflowData> => {
   return data;
 };
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-md border px-3 py-2 text-xs" style={{
+      background: 'hsl(210 25% 10%)',
+      borderColor: 'hsl(210 15% 20%)',
+    }}>
+      <p className="font-mono font-bold" style={{ color: 'hsl(0 0% 70%)' }}>{label} UTC</p>
+      <p style={{ color: 'hsl(160 60% 55%)' }}>
+        {payload[0].value} txn{payload[0].value !== 1 ? 's' : ''}
+      </p>
+    </div>
+  );
+};
+
 export const InflowTracker = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['inflow-tracker'],
     queryFn: fetchInflowData,
-    refetchInterval: 120_000, // refresh every 2 min
+    refetchInterval: 120_000,
     staleTime: 60_000,
   });
 
   const maxCount = data?.platforms?.[0]?.count || 1;
+  const hasHourlyData = data?.hourlyActivity?.some(h => h.transactions > 0);
 
   return (
     <section className="relative py-12 px-4 overflow-hidden" style={{ background: 'hsl(210 25% 7%)' }}>
@@ -82,49 +106,126 @@ export const InflowTracker = () => {
           <p className="text-center text-muted-foreground/40 text-xs py-6">Unable to load inflow data</p>
         )}
 
-        {data && data.platforms.length > 0 && (
-          <div className="space-y-3">
-            {data.platforms.map((platform) => {
-              const color = PLATFORM_COLORS[platform.name] || 'hsl(130 40% 45%)';
-              const barWidth = Math.max((platform.count / maxCount) * 100, 8);
+        {data && (
+          <>
+            {/* 24h Activity Chart */}
+            <div className="mb-10">
+              <h5 className="text-[11px] font-mono font-bold uppercase tracking-wider mb-4 text-center" style={{ color: 'hsl(0 0% 45%)' }}>
+                24-Hour Deposit Activity
+              </h5>
+              <div className="w-full h-36 md:h-44">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={data.hourlyActivity} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+                    <XAxis
+                      dataKey="hour"
+                      tick={{ fontSize: 9, fill: 'hsl(0 0% 35%)' }}
+                      tickLine={false}
+                      axisLine={{ stroke: 'hsl(210 15% 18%)' }}
+                      interval={2}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 9, fill: 'hsl(0 0% 35%)' }}
+                      tickLine={false}
+                      axisLine={false}
+                      allowDecimals={false}
+                    />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(210 20% 15%)' }} />
+                    <Bar dataKey="transactions" radius={[3, 3, 0, 0]} maxBarSize={20}>
+                      {data.hourlyActivity.map((entry, index) => (
+                        <Cell
+                          key={index}
+                          fill={entry.transactions > 0 ? 'hsl(160 55% 45%)' : 'hsl(210 15% 15%)'}
+                          fillOpacity={entry.transactions > 0 ? 0.8 : 0.4}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              {!hasHourlyData && (
+                <p className="text-center text-muted-foreground/30 text-[10px] mt-2">No transactions in the last 24 hours</p>
+              )}
+            </div>
 
-              return (
-                <div key={platform.name} className="group">
-                  <div className="flex items-center gap-3">
-                    {/* Platform name */}
-                    <span className="text-xs font-medium w-28 md:w-36 text-right truncate" style={{ color: 'hsl(0 0% 60%)' }}>
-                      {platform.name}
-                    </span>
+            {/* Platform breakdown bars */}
+            {data.platforms.length > 0 && (
+              <div className="space-y-3">
+                <h5 className="text-[11px] font-mono font-bold uppercase tracking-wider mb-4 text-center" style={{ color: 'hsl(0 0% 45%)' }}>
+                  Platform Breakdown
+                </h5>
+                {data.platforms.map((platform) => {
+                  const color = PLATFORM_COLORS[platform.name] || 'hsl(130 40% 45%)';
+                  const barWidth = Math.max((platform.count / maxCount) * 100, 8);
 
-                    {/* Bar */}
-                    <div className="flex-1 h-5 rounded-sm overflow-hidden" style={{ background: 'hsl(210 20% 12%)' }}>
-                      <div
-                        className="h-full rounded-sm transition-all duration-700 ease-out flex items-center justify-end pr-2"
-                        style={{
-                          width: `${barWidth}%`,
-                          background: `linear-gradient(90deg, ${color}33, ${color}aa)`,
-                          borderRight: `2px solid ${color}`,
-                        }}
-                      >
-                        <span className="text-[10px] font-mono font-bold" style={{ color }}>
-                          {platform.percentage}%
+                  return (
+                    <div key={platform.name} className="group">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-medium w-28 md:w-36 text-right truncate" style={{ color: 'hsl(0 0% 60%)' }}>
+                          {platform.name}
+                        </span>
+                        <div className="flex-1 h-5 rounded-sm overflow-hidden" style={{ background: 'hsl(210 20% 12%)' }}>
+                          <div
+                            className="h-full rounded-sm transition-all duration-700 ease-out flex items-center justify-end pr-2"
+                            style={{
+                              width: `${barWidth}%`,
+                              background: `linear-gradient(90deg, ${color}33, ${color}aa)`,
+                              borderRight: `2px solid ${color}`,
+                            }}
+                          >
+                            <span className="text-[10px] font-mono font-bold" style={{ color }}>
+                              {platform.percentage}%
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-mono w-8 text-right" style={{ color: 'hsl(0 0% 40%)' }}>
+                          {platform.count}
                         </span>
                       </div>
                     </div>
+                  );
+                })}
+              </div>
+            )}
 
-                    {/* Count */}
-                    <span className="text-[10px] font-mono w-8 text-right" style={{ color: 'hsl(0 0% 40%)' }}>
-                      {platform.count}
-                    </span>
-                  </div>
+            {data.platforms.length === 0 && (
+              <p className="text-center text-muted-foreground/40 text-xs py-6">No recent transactions found</p>
+            )}
+
+            {/* Recent transactions list */}
+            {data.recentTransactions.length > 0 && (
+              <div className="mt-8">
+                <h5 className="text-[11px] font-mono font-bold uppercase tracking-wider mb-3 text-center" style={{ color: 'hsl(0 0% 45%)' }}>
+                  Recent Transactions
+                </h5>
+                <div className="space-y-1.5">
+                  {data.recentTransactions.slice(0, 5).map((tx, i) => {
+                    const timeAgo = Math.round((Date.now() - tx.time) / 60000);
+                    const timeLabel = timeAgo < 60 ? `${timeAgo}m ago` : `${Math.round(timeAgo / 60)}h ago`;
+                    return (
+                      <a
+                        key={i}
+                        href={`https://solscan.io/tx/${tx.signature}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between px-3 py-1.5 rounded transition-colors"
+                        style={{ background: 'hsl(210 20% 10%)' }}
+                      >
+                        <span className="text-[10px] font-mono" style={{ color: PLATFORM_COLORS[tx.platform] || 'hsl(0 0% 50%)' }}>
+                          {tx.platform}
+                        </span>
+                        <span className="text-[10px] font-mono" style={{ color: 'hsl(0 0% 35%)' }}>
+                          {tx.signature.slice(0, 8)}…{tx.signature.slice(-4)}
+                        </span>
+                        <span className="text-[10px] font-mono" style={{ color: 'hsl(0 0% 35%)' }}>
+                          {timeLabel}
+                        </span>
+                      </a>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
-        )}
-
-        {data && data.platforms.length === 0 && (
-          <p className="text-center text-muted-foreground/40 text-xs py-6">No recent transactions found</p>
+              </div>
+            )}
+          </>
         )}
 
         {/* Footer info */}
