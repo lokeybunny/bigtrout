@@ -67,7 +67,8 @@ const fetchInflowData = async (range: RangeKey): Promise<InflowData> => {
   return res.json();
 };
 
-function formatNumber(n: number): string {
+function formatNumber(n: number | undefined | null): string {
+  if (n == null || isNaN(n)) return '0';
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + 'M';
   if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
   if (n > 0 && n < 1) return n.toFixed(4);
