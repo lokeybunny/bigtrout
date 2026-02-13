@@ -156,7 +156,8 @@ export const InflowTracker = () => {
           className="flex items-center justify-center gap-1.5 mb-6 transition-colors hover:text-pepe/80"
           style={{ color: 'hsl(0 0% 45%)' }}
         >
-          <span className="font-mono text-[11px]">2U4z…zjnJ</span>
+          <span className="font-mono text-[11px] inline md:hidden">2U4z…zjnJ</span>
+          <span className="font-mono text-[11px] hidden md:inline">2U4zpVocENRnsotRZ1jmxf4zQ5w7k6YeZX5o2ZenzjnJ</span>
           <ExternalLink className="w-3 h-3" />
         </a>
 
