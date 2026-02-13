@@ -9,6 +9,13 @@ const TRACKED_WALLET = "2U4zpVocENRnsotRZ1jmxf4zQ5w7k6YeZX5o2ZenzjnJ";
 const BIGTROUT_MINT = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
 const SOLANA_RPC = "https://api.mainnet-beta.solana.com";
 
+// LP / AMM programs — token outflows to these are "Add Liquidity", not sells
+const LP_PROGRAMS = new Set([
+  "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo", // Meteora
+  "Eo7WjKq67rjJQSZxS6z3YkapzY3eMj6Xy8X5EQVn5UaB", // Meteora
+  "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK", // Raydium CLMM
+]);
+
 const PROGRAM_MAP: Record<string, string> = {
   "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4": "Jupiter",
   "JUP4Fb2cqiRUcaTHdrPC8h2gNsA2ETXiPDD33WcPX7rE": "Jupiter",
@@ -44,23 +51,26 @@ async function rpcCall(method: string, params: unknown[]) {
   return json.result;
 }
 
-function classifyTransaction(tx: any): string {
-  let platform = "Direct Transfer";
-
+function getProgramIds(tx: any): Set<string> {
+  const allProgramIds = new Set<string>();
   const instructions = tx.transaction?.message?.instructions || [];
   const innerInstructions = tx.meta?.innerInstructions || [];
-
-  const allProgramIds = new Set<string>();
   for (const ix of instructions) {
-    const programId = ix.programId?.toString() || ix.program;
-    if (programId) allProgramIds.add(programId);
+    const pid = ix.programId?.toString() || ix.program;
+    if (pid) allProgramIds.add(pid);
   }
   for (const inner of innerInstructions) {
     for (const ix of inner.instructions || []) {
-      const programId = ix.programId?.toString() || ix.program;
-      if (programId) allProgramIds.add(programId);
+      const pid = ix.programId?.toString() || ix.program;
+      if (pid) allProgramIds.add(pid);
     }
   }
+  return allProgramIds;
+}
+
+function classifyTransaction(tx: any): string {
+  let platform = "Direct Transfer";
+  const allProgramIds = getProgramIds(tx);
 
   for (const pid of allProgramIds) {
     if (PROGRAM_MAP[pid]) {
@@ -83,7 +93,16 @@ function classifyTransaction(tx: any): string {
   return platform;
 }
 
-// Extract BIGTROUT token change amount from a transaction (positive = buy, negative = sell)
+// Determine if this is an LP operation (add/remove liquidity) vs a swap/sell
+function isLPOperation(tx: any): boolean {
+  const programIds = getProgramIds(tx);
+  for (const pid of programIds) {
+    if (LP_PROGRAMS.has(pid)) return true;
+  }
+  return false;
+}
+
+// Extract BIGTROUT token change for the tracked wallet
 function extractTokenChange(tx: any, signature: string): number {
   const preBalances = tx.meta?.preTokenBalances || [];
   const postBalances = tx.meta?.postTokenBalances || [];
@@ -108,21 +127,23 @@ function extractTokenChange(tx: any, signature: string): number {
 
   const pre = preAmountByOwner[TRACKED_WALLET] || 0;
   const post = postAmountByOwner[TRACKED_WALLET] || 0;
-  const delta = post - pre;
+  return post - pre;
+}
 
-  if (delta !== 0) {
-    console.log(`[${signature.slice(0, 8)}] BIGTROUT ${delta > 0 ? 'BUY' : 'SELL'}: ${Math.abs(delta).toFixed(2)} tokens`);
-  }
-
-  return delta; // positive = buy, negative = sell
+// Classify the transaction type based on token change and program
+function classifyTxType(tokenChange: number, isLP: boolean): string {
+  if (tokenChange > 0) return "buy";
+  if (tokenChange < 0 && isLP) return "add_lp";
+  if (tokenChange < 0) return "sell";
+  return "other";
 }
 
 type RangeKey = "24h" | "7d" | "30d";
 
-const RANGE_CONFIG: Record<RangeKey, { ms: number; sigLimit: number; bucketType: "hourly" | "daily" }> = {
-  "24h": { ms: 24 * 60 * 60 * 1000, sigLimit: 100, bucketType: "hourly" },
-  "7d":  { ms: 7 * 24 * 60 * 60 * 1000, sigLimit: 200, bucketType: "daily" },
-  "30d": { ms: 30 * 24 * 60 * 60 * 1000, sigLimit: 500, bucketType: "daily" },
+const RANGE_CONFIG: Record<RangeKey, { ms: number; sigLimit: number; batchSize: number; bucketType: "hourly" | "daily" }> = {
+  "24h": { ms: 24 * 60 * 60 * 1000, sigLimit: 100, batchSize: 30, bucketType: "hourly" },
+  "7d":  { ms: 7 * 24 * 60 * 60 * 1000, sigLimit: 200, batchSize: 40, bucketType: "daily" },
+  "30d": { ms: 30 * 24 * 60 * 60 * 1000, sigLimit: 500, batchSize: 50, bucketType: "daily" },
 };
 
 serve(async (req) => {
@@ -138,25 +159,48 @@ serve(async (req) => {
     const now = Date.now();
     const rangeStart = now - config.ms;
 
-    // Get recent transaction signatures
+    // Step 1: Find the wallet's BIGTROUT Associated Token Account (ATA)
+    // Querying the ATA directly gives us ONLY BIGTROUT-related transactions
+    let queryAddress = TRACKED_WALLET;
+    try {
+      const tokenAccounts = await rpcCall("getTokenAccountsByOwner", [
+        TRACKED_WALLET,
+        { mint: BIGTROUT_MINT },
+        { encoding: "jsonParsed" },
+      ]);
+      if (tokenAccounts?.value?.length > 0) {
+        queryAddress = tokenAccounts.value[0].pubkey;
+        console.log("Using BIGTROUT ATA:", queryAddress);
+      }
+    } catch (e) {
+      console.log("ATA lookup failed, using main wallet:", e.message);
+    }
+
+    // Step 2: Get signatures from the ATA (BIGTROUT-specific transactions only)
     const signatures = await rpcCall("getSignaturesForAddress", [
-      TRACKED_WALLET,
+      queryAddress,
       { limit: config.sigLimit },
     ]);
+    console.log(`Found ${signatures.length} BIGTROUT signatures`);
+
+    // Filter to range
+    const inRangeSigs = signatures.filter((s: any) => s.blockTime * 1000 >= rangeStart);
+    console.log(`In-range signatures: ${inRangeSigs.length}`);
 
     const platformCounts: Record<string, number> = {};
     const recentTxs: Array<{ platform: string; time: number; signature: string; amount: number; type: string }> = [];
     let totalBought = 0;
     let totalSold = 0;
+    let totalAddedLP = 0;
 
     // Build time buckets
-    const buckets: Record<string, { label: string; count: number; buys: number; sells: number; buyAmount: number; sellAmount: number }> = {};
+    const buckets: Record<string, { label: string; count: number; buys: number; sells: number; addLp: number; buyAmount: number; sellAmount: number; lpAmount: number }> = {};
 
     if (config.bucketType === "hourly") {
       for (let i = 23; i >= 0; i--) {
         const t = new Date(now - i * 60 * 60 * 1000);
         const key = t.toISOString().slice(0, 13);
-        buckets[key] = { label: t.getUTCHours().toString().padStart(2, '0') + ':00', count: 0, buys: 0, sells: 0, buyAmount: 0, sellAmount: 0 };
+        buckets[key] = { label: t.getUTCHours().toString().padStart(2, '0') + ':00', count: 0, buys: 0, sells: 0, addLp: 0, buyAmount: 0, sellAmount: 0, lpAmount: 0 };
       }
     } else {
       const days = range === "7d" ? 7 : 30;
@@ -164,17 +208,17 @@ serve(async (req) => {
         const t = new Date(now - i * 24 * 60 * 60 * 1000);
         const key = t.toISOString().slice(0, 10);
         const label = `${(t.getUTCMonth() + 1).toString().padStart(2, '0')}/${t.getUTCDate().toString().padStart(2, '0')}`;
-        buckets[key] = { label, count: 0, buys: 0, sells: 0, buyAmount: 0, sellAmount: 0 };
+        buckets[key] = { label, count: 0, buys: 0, sells: 0, addLp: 0, buyAmount: 0, sellAmount: 0, lpAmount: 0 };
       }
     }
 
     let processedCount = 0;
-    const batch = signatures.slice(0, Math.min(signatures.length, 80));
+    const batch = inRangeSigs.slice(0, config.batchSize);
+    console.log(`Processing ${batch.length} in-range signatures (of ${inRangeSigs.length} total in range)`);
 
     for (const sig of batch) {
       try {
         const blockTimeMs = sig.blockTime * 1000;
-        if (blockTimeMs < rangeStart) continue; // Skip out-of-range
 
         const tx = await rpcCall("getTransaction", [
           sig.signature,
@@ -185,11 +229,19 @@ serve(async (req) => {
 
         const platform = classifyTransaction(tx);
         const tokenChange = extractTokenChange(tx, sig.signature);
-        const txType = tokenChange > 0 ? "buy" : tokenChange < 0 ? "sell" : "other";
+        const isLP = isLPOperation(tx);
+        const txType = classifyTxType(tokenChange, isLP);
+
+        // Only count transactions that involve BIGTROUT
+        const involvesBigtrout = tokenChange !== 0;
 
         platformCounts[platform] = (platformCounts[platform] || 0) + 1;
-        if (tokenChange > 0) totalBought += tokenChange;
-        if (tokenChange < 0) totalSold += Math.abs(tokenChange);
+
+        if (txType === "buy") totalBought += tokenChange;
+        else if (txType === "sell") totalSold += Math.abs(tokenChange);
+        else if (txType === "add_lp") totalAddedLP += Math.abs(tokenChange);
+
+        console.log(`[${sig.signature.slice(0, 8)}] ${platform} | ${txType} | ${tokenChange !== 0 ? Math.abs(tokenChange).toFixed(0) + ' BIGTROUT' : 'no BIGTROUT'}`);
 
         recentTxs.push({
           platform,
@@ -208,12 +260,15 @@ serve(async (req) => {
 
         if (buckets[bucketKey]) {
           buckets[bucketKey].count += 1;
-          if (tokenChange > 0) {
+          if (txType === "buy") {
             buckets[bucketKey].buys += 1;
             buckets[bucketKey].buyAmount += tokenChange;
-          } else if (tokenChange < 0) {
+          } else if (txType === "sell") {
             buckets[bucketKey].sells += 1;
             buckets[bucketKey].sellAmount += Math.abs(tokenChange);
+          } else if (txType === "add_lp") {
+            buckets[bucketKey].addLp += 1;
+            buckets[bucketKey].lpAmount += Math.abs(tokenChange);
           }
         }
       } catch (_e) {
@@ -234,8 +289,10 @@ serve(async (req) => {
       transactions: b.count,
       buys: b.buys,
       sells: b.sells,
+      addLp: b.addLp,
       buyAmount: b.buyAmount,
       sellAmount: b.sellAmount,
+      lpAmount: b.lpAmount,
     }));
 
     return new Response(
@@ -245,9 +302,10 @@ serve(async (req) => {
         totalTransactions: processedCount,
         totalBought,
         totalSold,
+        totalAddedLP,
         platforms,
         activityData,
-        recentTransactions: recentTxs.slice(0, 10),
+        recentTransactions: recentTxs.slice(0, 15),
         lastUpdated: Date.now(),
       }),
       {
