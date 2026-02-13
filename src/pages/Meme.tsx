@@ -1,29 +1,15 @@
-import { useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ExternalLink } from 'lucide-react';
 
-const TWEETS = [
-  '1886879224939327489',
+const TWEET_IDS = [
   '1886879224939327489',
   '1887185046248239104',
-  '1887529397310378192',
   '1887529397310378192',
   '1887836457839358345',
 ];
 
 const Meme = () => {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://platform.twitter.com/widgets.js';
-    script.async = true;
-    script.charset = 'utf-8';
-    document.body.appendChild(script);
-    return () => {
-      try { document.body.removeChild(script); } catch {}
-    };
-  }, []);
-
   return (
     <div className="relative min-h-screen" style={{ background: 'hsl(210 25% 10%)' }}>
       <Navbar />
@@ -47,11 +33,17 @@ const Meme = () => {
           </div>
 
           <div className="space-y-4">
-            {TWEETS.map((id, i) => (
-              <div key={`${id}-${i}`} className="rounded-xl overflow-hidden">
-                <blockquote className="twitter-tweet" data-theme="dark" data-conversation="none">
-                  <a href={`https://twitter.com/x/status/${id}`}>Loading tweet...</a>
-                </blockquote>
+            {TWEET_IDS.map((id) => (
+              <div key={id} className="rounded-xl overflow-hidden border border-white/10">
+                <iframe
+                  src={`https://platform.twitter.com/embed/Tweet.html?id=${id}&theme=dark`}
+                  className="w-full border-0"
+                  style={{ height: '300px' }}
+                  allowFullScreen
+                  loading="lazy"
+                  title={`Tweet ${id}`}
+                  sandbox="allow-scripts allow-same-origin allow-popups"
+                />
               </div>
             ))}
           </div>
