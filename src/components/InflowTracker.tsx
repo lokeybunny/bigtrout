@@ -146,9 +146,19 @@ export const InflowTracker = () => {
           <TrendingUp className="w-4 h-4 text-sakura/60" />
         </div>
 
-        <p className="text-center text-muted-foreground/50 text-xs mb-6 max-w-lg mx-auto">
+        <p className="text-center text-muted-foreground/50 text-xs mb-2 max-w-lg mx-auto">
           Full transparency — every $BIGTROUT buy, sell & LP addition from the dev wallet, verified on-chain.
         </p>
+        <a
+          href="https://solscan.io/account/2U4zpVocENRnsotRZ1jmxf4zQ5w7k6YeZX5o2ZenzjnJ"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-1.5 mb-6 transition-colors hover:text-pepe/80"
+          style={{ color: 'hsl(0 0% 45%)' }}
+        >
+          <span className="font-mono text-[11px]">2U4z…zjnJ</span>
+          <ExternalLink className="w-3 h-3" />
+        </a>
 
         {/* Range Toggle */}
         <div className="flex justify-center mb-6">
