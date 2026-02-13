@@ -141,9 +141,9 @@ function classifyTxType(tokenChange: number, isLP: boolean): string {
 type RangeKey = "24h" | "7d" | "30d";
 
 const RANGE_CONFIG: Record<RangeKey, { ms: number; sigLimit: number; batchSize: number; bucketType: "hourly" | "daily" }> = {
-  "24h": { ms: 24 * 60 * 60 * 1000, sigLimit: 100, batchSize: 30, bucketType: "hourly" },
-  "7d":  { ms: 7 * 24 * 60 * 60 * 1000, sigLimit: 200, batchSize: 40, bucketType: "daily" },
-  "30d": { ms: 30 * 24 * 60 * 60 * 1000, sigLimit: 500, batchSize: 50, bucketType: "daily" },
+  "24h": { ms: 24 * 60 * 60 * 1000, sigLimit: 200, batchSize: 200, bucketType: "hourly" },
+  "7d":  { ms: 7 * 24 * 60 * 60 * 1000, sigLimit: 500, batchSize: 300, bucketType: "daily" },
+  "30d": { ms: 30 * 24 * 60 * 60 * 1000, sigLimit: 1000, batchSize: 500, bucketType: "daily" },
 };
 
 serve(async (req) => {
@@ -176,16 +176,33 @@ serve(async (req) => {
       console.log("ATA lookup failed, using main wallet:", e.message);
     }
 
-    // Step 2: Get signatures from the ATA (BIGTROUT-specific transactions only)
-    const signatures = await rpcCall("getSignaturesForAddress", [
-      queryAddress,
-      { limit: config.sigLimit },
-    ]);
-    console.log(`Found ${signatures.length} BIGTROUT signatures`);
+    // Step 2: Get signatures from the ATA — paginate to get all within range
+    let allSignatures: any[] = [];
+    let lastSig: string | undefined = undefined;
+    let keepFetching = true;
 
-    // Filter to range
-    const inRangeSigs = signatures.filter((s: any) => s.blockTime * 1000 >= rangeStart);
-    console.log(`In-range signatures: ${inRangeSigs.length}`);
+    while (keepFetching && allSignatures.length < config.sigLimit) {
+      const params: any = { limit: 1000 };
+      if (lastSig) params.before = lastSig;
+      const sigs = await rpcCall("getSignaturesForAddress", [queryAddress, params]);
+      if (!sigs || sigs.length === 0) break;
+
+      for (const s of sigs) {
+        if (s.blockTime * 1000 >= rangeStart) {
+          allSignatures.push(s);
+        } else {
+          keepFetching = false;
+          break;
+        }
+      }
+      lastSig = sigs[sigs.length - 1].signature;
+      if (sigs.length < 1000) break;
+    }
+
+    console.log(`Found ${allSignatures.length} BIGTROUT signatures in range`);
+
+    const batch = allSignatures.slice(0, config.batchSize);
+    console.log(`Processing ${batch.length} signatures`);
 
     const platformCounts: Record<string, number> = {};
     const recentTxs: Array<{ platform: string; time: number; signature: string; amount: number; type: string }> = [];
@@ -213,35 +230,35 @@ serve(async (req) => {
     }
 
     let processedCount = 0;
-    const batch = inRangeSigs.slice(0, config.batchSize);
-    console.log(`Processing ${batch.length} in-range signatures (of ${inRangeSigs.length} total in range)`);
+    console.log(`Processing ${batch.length} signatures`);
 
-    for (const sig of batch) {
-      try {
-        const blockTimeMs = sig.blockTime * 1000;
-
-        const tx = await rpcCall("getTransaction", [
+    // Process in parallel batches of 10 to avoid rate limits but stay fast
+    const PARALLEL = 10;
+    for (let i = 0; i < batch.length; i += PARALLEL) {
+      const chunk = batch.slice(i, i + PARALLEL);
+      const txResults = await Promise.allSettled(
+        chunk.map(sig => rpcCall("getTransaction", [
           sig.signature,
           { encoding: "jsonParsed", maxSupportedTransactionVersion: 0 },
-        ]);
+        ]).then(tx => ({ tx, sig })))
+      );
 
+      for (const result of txResults) {
+        if (result.status !== "fulfilled") continue;
+        const { tx, sig } = result.value;
         if (!tx || !tx.meta || tx.meta.err) continue;
 
+        const blockTimeMs = sig.blockTime * 1000;
         const platform = classifyTransaction(tx);
         const tokenChange = extractTokenChange(tx, sig.signature);
         const isLP = isLPOperation(tx);
         const txType = classifyTxType(tokenChange, isLP);
-
-        // Only count transactions that involve BIGTROUT
-        const involvesBigtrout = tokenChange !== 0;
 
         platformCounts[platform] = (platformCounts[platform] || 0) + 1;
 
         if (txType === "buy") totalBought += tokenChange;
         else if (txType === "sell") totalSold += Math.abs(tokenChange);
         else if (txType === "add_lp") totalAddedLP += Math.abs(tokenChange);
-
-        console.log(`[${sig.signature.slice(0, 8)}] ${platform} | ${txType} | ${tokenChange !== 0 ? Math.abs(tokenChange).toFixed(0) + ' BIGTROUT' : 'no BIGTROUT'}`);
 
         recentTxs.push({
           platform,
@@ -271,8 +288,6 @@ serve(async (req) => {
             buckets[bucketKey].lpAmount += Math.abs(tokenChange);
           }
         }
-      } catch (_e) {
-        continue;
       }
     }
 
