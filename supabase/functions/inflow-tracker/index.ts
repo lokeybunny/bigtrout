@@ -40,15 +40,28 @@ const CEX_WALLETS: Record<string, string> = {
   "ASTyfSima4LLAdDgoFGkgqoKowG1LZFDr9fAQrg7iaJZ": "MEXC",
 };
 
-async function rpcCall(method: string, params: unknown[]) {
-  const res = await fetch(SOLANA_RPC, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
-  });
-  const json = await res.json();
-  if (json.error) throw new Error(json.error.message);
-  return json.result;
+async function rpcCall(method: string, params: unknown[], retries = 3) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const res = await fetch(SOLANA_RPC, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+      });
+      if (res.status === 429) {
+        const wait = Math.pow(2, attempt) * 1000;
+        console.log(`Rate limited, waiting ${wait}ms (attempt ${attempt + 1})`);
+        await new Promise(r => setTimeout(r, wait));
+        continue;
+      }
+      const json = await res.json();
+      if (json.error) throw new Error(json.error.message);
+      return json.result;
+    } catch (e) {
+      if (attempt === retries - 1) throw e;
+      await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
+    }
+  }
 }
 
 function getProgramIds(tx: any): Set<string> {
@@ -141,9 +154,9 @@ function classifyTxType(tokenChange: number, isLP: boolean): string {
 type RangeKey = "24h" | "7d" | "30d";
 
 const RANGE_CONFIG: Record<RangeKey, { ms: number; sigLimit: number; batchSize: number; bucketType: "hourly" | "daily" }> = {
-  "24h": { ms: 24 * 60 * 60 * 1000, sigLimit: 200, batchSize: 200, bucketType: "hourly" },
-  "7d":  { ms: 7 * 24 * 60 * 60 * 1000, sigLimit: 500, batchSize: 300, bucketType: "daily" },
-  "30d": { ms: 30 * 24 * 60 * 60 * 1000, sigLimit: 1000, batchSize: 500, bucketType: "daily" },
+  "24h": { ms: 24 * 60 * 60 * 1000, sigLimit: 200, batchSize: 30, bucketType: "hourly" },
+  "7d":  { ms: 7 * 24 * 60 * 60 * 1000, sigLimit: 500, batchSize: 60, bucketType: "daily" },
+  "30d": { ms: 30 * 24 * 60 * 60 * 1000, sigLimit: 1000, batchSize: 100, bucketType: "daily" },
 };
 
 serve(async (req) => {
@@ -230,22 +243,21 @@ serve(async (req) => {
     }
 
     let processedCount = 0;
+    let failedCount = 0;
     console.log(`Processing ${batch.length} signatures`);
 
-    // Process in parallel batches of 10 to avoid rate limits but stay fast
-    const PARALLEL = 10;
-    for (let i = 0; i < batch.length; i += PARALLEL) {
-      const chunk = batch.slice(i, i + PARALLEL);
-      const txResults = await Promise.allSettled(
-        chunk.map(sig => rpcCall("getTransaction", [
+    // Process sequentially with delay to avoid rate limits on public RPC
+    for (let idx = 0; idx < batch.length; idx++) {
+      const sig = batch[idx];
+      try {
+        // Add 150ms delay between calls to stay under rate limits
+        if (idx > 0) await new Promise(r => setTimeout(r, 150));
+
+        const tx = await rpcCall("getTransaction", [
           sig.signature,
           { encoding: "jsonParsed", maxSupportedTransactionVersion: 0 },
-        ]).then(tx => ({ tx, sig })))
-      );
+        ]);
 
-      for (const result of txResults) {
-        if (result.status !== "fulfilled") continue;
-        const { tx, sig } = result.value;
         if (!tx || !tx.meta || tx.meta.err) continue;
 
         const blockTimeMs = sig.blockTime * 1000;
@@ -288,8 +300,12 @@ serve(async (req) => {
             buckets[bucketKey].lpAmount += Math.abs(tokenChange);
           }
         }
+      } catch (e) {
+        failedCount++;
+        if (failedCount <= 3) console.log(`TX fetch failed: ${e.message}`);
       }
     }
+    console.log(`Processed: ${processedCount}, Failed: ${failedCount}`);
 
     const platforms = Object.entries(platformCounts)
       .map(([name, count]) => ({
