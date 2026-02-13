@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Activity, TrendingUp, ExternalLink, Fish } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Activity, TrendingUp, TrendingDown, ExternalLink, Fish } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface PlatformData {
@@ -13,18 +13,21 @@ interface PlatformData {
 interface ActivityData {
   label: string;
   transactions: number;
-  deposits: number;
-  amount: number;
+  buys: number;
+  sells: number;
+  buyAmount: number;
+  sellAmount: number;
 }
 
 interface InflowData {
   wallet: string;
   range: string;
   totalTransactions: number;
-  totalDeposited: number;
+  totalBought: number;
+  totalSold: number;
   platforms: PlatformData[];
   activityData: ActivityData[];
-  recentTransactions: Array<{ platform: string; time: number; signature: string; amount: number }>;
+  recentTransactions: Array<{ platform: string; time: number; signature: string; amount: number; type: string }>;
   lastUpdated: number;
 }
 
@@ -67,24 +70,31 @@ const fetchInflowData = async (range: RangeKey): Promise<InflowData> => {
 function formatNumber(n: number): string {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + 'M';
   if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
+  if (n > 0 && n < 1) return n.toFixed(4);
   return n.toFixed(0);
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
+  const data = payload[0]?.payload;
   return (
     <div className="rounded-md border px-3 py-2 text-xs" style={{
       background: 'hsl(210 25% 10%)',
       borderColor: 'hsl(210 15% 20%)',
     }}>
-      <p className="font-mono font-bold" style={{ color: 'hsl(0 0% 70%)' }}>{label} UTC</p>
-      <p style={{ color: 'hsl(160 60% 55%)' }}>
-        {payload[0].value} txn{payload[0].value !== 1 ? 's' : ''}
-      </p>
-      {payload[0]?.payload?.amount > 0 && (
-        <p style={{ color: 'hsl(45 80% 60%)' }}>
-          +{formatNumber(payload[0].payload.amount)} $BIGTROUT
+      <p className="font-mono font-bold mb-1" style={{ color: 'hsl(0 0% 70%)' }}>{label} UTC</p>
+      {data?.buys > 0 && (
+        <p style={{ color: 'hsl(160 60% 55%)' }}>
+          🟢 {data.buys} buy{data.buys !== 1 ? 's' : ''} · +{formatNumber(data.buyAmount)}
         </p>
+      )}
+      {data?.sells > 0 && (
+        <p style={{ color: 'hsl(0 65% 55%)' }}>
+          🔴 {data.sells} sell{data.sells !== 1 ? 's' : ''} · -{formatNumber(data.sellAmount)}
+        </p>
+      )}
+      {data?.buys === 0 && data?.sells === 0 && (
+        <p style={{ color: 'hsl(0 0% 40%)' }}>No $BIGTROUT activity</p>
       )}
     </div>
   );
@@ -115,13 +125,13 @@ export const InflowTracker = () => {
             color: 'hsl(0 0% 55%)',
             letterSpacing: '0.15em',
           }}>
-            Platform Inflow Tracker
+            Dev Wallet Transparency Tracker
           </h4>
           <TrendingUp className="w-4 h-4 text-sakura/60" />
         </div>
 
         <p className="text-center text-muted-foreground/50 text-xs mb-6 max-w-lg mx-auto">
-          Live analysis of recent $BIGTROUT transactions — see where the community is buying from.
+          Full transparency — every $BIGTROUT buy & sell from the dev wallet, verified on-chain.
         </p>
 
         {/* Range Toggle */}
@@ -149,30 +159,57 @@ export const InflowTracker = () => {
           </ToggleGroup>
         </div>
 
-        {/* Live Deposit Counter */}
+        {/* Live Stats Counter */}
         {data && (
           <div className="flex justify-center mb-8">
-            <div className="flex items-center gap-4 px-6 py-3 rounded-xl border" style={{
+            <div className="flex items-center gap-4 sm:gap-6 px-5 py-3 rounded-xl border" style={{
               background: 'linear-gradient(135deg, hsl(160 30% 10%), hsl(210 25% 10%))',
               borderColor: 'hsl(160 40% 25%)',
             }}>
-              <Fish className="w-5 h-5" style={{ color: 'hsl(160 60% 50%)' }} />
+              {/* Buys */}
               <div className="text-center">
-                <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color: 'hsl(0 0% 45%)' }}>
-                  $BIGTROUT deposited ({RANGE_LABELS[range]})
-                </p>
-                <p className="text-xl md:text-2xl font-display font-bold tabular-nums" style={{
+                <div className="flex items-center gap-1.5 justify-center mb-0.5">
+                  <TrendingUp className="w-3.5 h-3.5" style={{ color: 'hsl(160 60% 50%)' }} />
+                  <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color: 'hsl(0 0% 45%)' }}>
+                    Bought
+                  </p>
+                </div>
+                <p className="text-lg md:text-xl font-display font-bold tabular-nums" style={{
                   color: 'hsl(160 60% 55%)',
                   textShadow: '0 0 20px hsl(160 60% 40% / 0.3)',
                 }}>
-                  {formatNumber(data.totalDeposited)}
+                  {formatNumber(data.totalBought)}
                 </p>
               </div>
-              <div className="text-center ml-4 pl-4 border-l" style={{ borderColor: 'hsl(210 15% 20%)' }}>
-                <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color: 'hsl(0 0% 45%)' }}>
-                  Transactions
+
+              <div className="w-px h-10" style={{ background: 'hsl(210 15% 20%)' }} />
+
+              {/* Sells */}
+              <div className="text-center">
+                <div className="flex items-center gap-1.5 justify-center mb-0.5">
+                  <TrendingDown className="w-3.5 h-3.5" style={{ color: 'hsl(0 65% 55%)' }} />
+                  <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color: 'hsl(0 0% 45%)' }}>
+                    Sold
+                  </p>
+                </div>
+                <p className="text-lg md:text-xl font-display font-bold tabular-nums" style={{
+                  color: 'hsl(0 65% 55%)',
+                }}>
+                  {formatNumber(data.totalSold)}
                 </p>
-                <p className="text-xl md:text-2xl font-display font-bold tabular-nums" style={{ color: 'hsl(45 80% 55%)' }}>
+              </div>
+
+              <div className="w-px h-10" style={{ background: 'hsl(210 15% 20%)' }} />
+
+              {/* Txns */}
+              <div className="text-center">
+                <div className="flex items-center gap-1.5 justify-center mb-0.5">
+                  <Fish className="w-3.5 h-3.5" style={{ color: 'hsl(45 80% 55%)' }} />
+                  <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color: 'hsl(0 0% 45%)' }}>
+                    Txns
+                  </p>
+                </div>
+                <p className="text-lg md:text-xl font-display font-bold tabular-nums" style={{ color: 'hsl(45 80% 55%)' }}>
                   {data.totalTransactions}
                 </p>
               </div>
@@ -196,11 +233,19 @@ export const InflowTracker = () => {
 
         {data && (
           <>
-            {/* Activity Chart */}
+            {/* Activity Chart - Stacked buys/sells */}
             <div className="mb-10">
               <h5 className="text-[11px] font-mono font-bold uppercase tracking-wider mb-4 text-center" style={{ color: 'hsl(0 0% 45%)' }}>
-                {range === '24h' ? '24-Hour' : range === '7d' ? '7-Day' : '30-Day'} Deposit Activity
+                {range === '24h' ? '24-Hour' : range === '7d' ? '7-Day' : '30-Day'} Buy/Sell Activity
               </h5>
+              <div className="flex justify-center gap-4 mb-3">
+                <span className="flex items-center gap-1.5 text-[10px] font-mono" style={{ color: 'hsl(160 55% 50%)' }}>
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'hsl(160 55% 45%)' }} /> Buys
+                </span>
+                <span className="flex items-center gap-1.5 text-[10px] font-mono" style={{ color: 'hsl(0 65% 50%)' }}>
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'hsl(0 55% 45%)' }} /> Sells
+                </span>
+              </div>
               <div className="w-full h-36 md:h-44">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data.activityData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
@@ -218,15 +263,8 @@ export const InflowTracker = () => {
                       allowDecimals={false}
                     />
                     <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(210 20% 15%)' }} />
-                    <Bar dataKey="transactions" radius={[3, 3, 0, 0]} maxBarSize={20}>
-                      {data.activityData.map((entry, index) => (
-                        <Cell
-                          key={index}
-                          fill={entry.transactions > 0 ? 'hsl(160 55% 45%)' : 'hsl(210 15% 15%)'}
-                          fillOpacity={entry.transactions > 0 ? 0.8 : 0.4}
-                        />
-                      ))}
-                    </Bar>
+                    <Bar dataKey="buys" stackId="a" fill="hsl(160 55% 45%)" radius={[0, 0, 0, 0]} maxBarSize={20} fillOpacity={0.85} />
+                    <Bar dataKey="sells" stackId="a" fill="hsl(0 55% 45%)" radius={[3, 3, 0, 0]} maxBarSize={20} fillOpacity={0.85} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -283,27 +321,39 @@ export const InflowTracker = () => {
             {data.recentTransactions.length > 0 && (
               <div className="mt-8">
                 <h5 className="text-[11px] font-mono font-bold uppercase tracking-wider mb-3 text-center" style={{ color: 'hsl(0 0% 45%)' }}>
-                  Recent Transactions
+                  Recent $BIGTROUT Transactions
                 </h5>
                 <div className="space-y-1.5">
-                  {data.recentTransactions.slice(0, 5).map((tx, i) => {
+                  {data.recentTransactions.slice(0, 8).map((tx, i) => {
                     const timeAgo = Math.round((Date.now() - tx.time) / 60000);
                     const timeLabel = timeAgo < 60 ? `${timeAgo}m ago` : `${Math.round(timeAgo / 60)}h ago`;
+                    const isBuy = tx.type === 'buy';
+                    const isSell = tx.type === 'sell';
                     return (
                       <a
                         key={i}
                         href={`https://solscan.io/tx/${tx.signature}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between px-3 py-1.5 rounded transition-colors"
-                        style={{ background: 'hsl(210 20% 10%)' }}
+                        className="flex items-center justify-between px-3 py-2 rounded transition-colors hover:brightness-110"
+                        style={{
+                          background: isBuy ? 'hsl(160 30% 10%)' : isSell ? 'hsl(0 30% 10%)' : 'hsl(210 20% 10%)',
+                          borderLeft: `3px solid ${isBuy ? 'hsl(160 60% 45%)' : isSell ? 'hsl(0 60% 45%)' : 'hsl(210 20% 25%)'}`,
+                        }}
                       >
+                        <span className="text-[10px] font-mono font-bold" style={{
+                          color: isBuy ? 'hsl(160 60% 55%)' : isSell ? 'hsl(0 65% 55%)' : 'hsl(0 0% 50%)',
+                        }}>
+                          {isBuy ? '🟢 BUY' : isSell ? '🔴 SELL' : '⚪ TXN'}
+                        </span>
                         <span className="text-[10px] font-mono" style={{ color: PLATFORM_COLORS[tx.platform] || 'hsl(0 0% 50%)' }}>
                           {tx.platform}
                         </span>
-                        {tx.amount > 0 && (
-                          <span className="text-[10px] font-mono" style={{ color: 'hsl(160 55% 50%)' }}>
-                            +{formatNumber(tx.amount)}
+                        {tx.amount !== 0 && (
+                          <span className="text-[10px] font-mono font-bold" style={{
+                            color: tx.amount > 0 ? 'hsl(160 55% 50%)' : 'hsl(0 60% 50%)',
+                          }}>
+                            {tx.amount > 0 ? '+' : ''}{formatNumber(Math.abs(tx.amount))}
                           </span>
                         )}
                         <span className="text-[10px] font-mono" style={{ color: 'hsl(0 0% 35%)' }}>
@@ -333,7 +383,7 @@ export const InflowTracker = () => {
             className="flex items-center gap-1 text-[10px] font-mono transition-colors hover:text-pepe/80"
             style={{ color: 'hsl(0 0% 35%)' }}
           >
-            View on Solscan <ExternalLink className="w-2.5 h-2.5" />
+            Verify on Solscan <ExternalLink className="w-2.5 h-2.5" />
           </a>
         </div>
       </div>
