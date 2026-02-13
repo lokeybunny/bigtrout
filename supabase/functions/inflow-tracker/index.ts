@@ -83,36 +83,38 @@ function classifyTransaction(tx: any): string {
   return platform;
 }
 
-// Extract BIGTROUT token deposit amount from a transaction
-function extractDepositAmount(tx: any): number {
+// Extract BIGTROUT token change amount from a transaction (positive = buy, negative = sell)
+function extractTokenChange(tx: any, signature: string): number {
   const preBalances = tx.meta?.preTokenBalances || [];
   const postBalances = tx.meta?.postTokenBalances || [];
 
-  // Find BIGTROUT balances for our tracked wallet's token accounts
-  const walletAccountIndices = new Set<number>();
-  const accountKeys = tx.transaction?.message?.accountKeys || [];
-  accountKeys.forEach((key: any, idx: number) => {
-    const pubkey = key.pubkey?.toString() || key;
-    if (pubkey === TRACKED_WALLET) walletAccountIndices.add(idx);
-  });
-
-  // Look for BIGTROUT mint in post balances owned by tracked wallet
-  let preAmount = 0;
-  let postAmount = 0;
+  const preAmountByOwner: Record<string, number> = {};
+  const postAmountByOwner: Record<string, number> = {};
 
   for (const bal of preBalances) {
-    if (bal.mint === BIGTROUT_MINT && bal.owner === TRACKED_WALLET) {
-      preAmount = parseFloat(bal.uiTokenAmount?.uiAmountString || "0");
+    if (bal.mint === BIGTROUT_MINT) {
+      const owner = bal.owner || "";
+      const amount = parseFloat(bal.uiTokenAmount?.uiAmountString || bal.uiTokenAmount?.uiAmount?.toString() || "0");
+      preAmountByOwner[owner] = (preAmountByOwner[owner] || 0) + amount;
     }
   }
   for (const bal of postBalances) {
-    if (bal.mint === BIGTROUT_MINT && bal.owner === TRACKED_WALLET) {
-      postAmount = parseFloat(bal.uiTokenAmount?.uiAmountString || "0");
+    if (bal.mint === BIGTROUT_MINT) {
+      const owner = bal.owner || "";
+      const amount = parseFloat(bal.uiTokenAmount?.uiAmountString || bal.uiTokenAmount?.uiAmount?.toString() || "0");
+      postAmountByOwner[owner] = (postAmountByOwner[owner] || 0) + amount;
     }
   }
 
-  const delta = postAmount - preAmount;
-  return delta > 0 ? delta : 0; // Only count inflows
+  const pre = preAmountByOwner[TRACKED_WALLET] || 0;
+  const post = postAmountByOwner[TRACKED_WALLET] || 0;
+  const delta = post - pre;
+
+  if (delta !== 0) {
+    console.log(`[${signature.slice(0, 8)}] BIGTROUT ${delta > 0 ? 'BUY' : 'SELL'}: ${Math.abs(delta).toFixed(2)} tokens`);
+  }
+
+  return delta; // positive = buy, negative = sell
 }
 
 type RangeKey = "24h" | "7d" | "30d";
@@ -143,17 +145,18 @@ serve(async (req) => {
     ]);
 
     const platformCounts: Record<string, number> = {};
-    const recentTxs: Array<{ platform: string; time: number; signature: string; amount: number }> = [];
-    let totalDeposited = 0;
+    const recentTxs: Array<{ platform: string; time: number; signature: string; amount: number; type: string }> = [];
+    let totalBought = 0;
+    let totalSold = 0;
 
     // Build time buckets
-    const buckets: Record<string, { label: string; count: number; deposits: number; amount: number }> = {};
+    const buckets: Record<string, { label: string; count: number; buys: number; sells: number; buyAmount: number; sellAmount: number }> = {};
 
     if (config.bucketType === "hourly") {
       for (let i = 23; i >= 0; i--) {
         const t = new Date(now - i * 60 * 60 * 1000);
         const key = t.toISOString().slice(0, 13);
-        buckets[key] = { label: t.getUTCHours().toString().padStart(2, '0') + ':00', count: 0, deposits: 0, amount: 0 };
+        buckets[key] = { label: t.getUTCHours().toString().padStart(2, '0') + ':00', count: 0, buys: 0, sells: 0, buyAmount: 0, sellAmount: 0 };
       }
     } else {
       const days = range === "7d" ? 7 : 30;
@@ -161,7 +164,7 @@ serve(async (req) => {
         const t = new Date(now - i * 24 * 60 * 60 * 1000);
         const key = t.toISOString().slice(0, 10);
         const label = `${(t.getUTCMonth() + 1).toString().padStart(2, '0')}/${t.getUTCDate().toString().padStart(2, '0')}`;
-        buckets[key] = { label, count: 0, deposits: 0, amount: 0 };
+        buckets[key] = { label, count: 0, buys: 0, sells: 0, buyAmount: 0, sellAmount: 0 };
       }
     }
 
@@ -181,16 +184,19 @@ serve(async (req) => {
         if (!tx || !tx.meta || tx.meta.err) continue;
 
         const platform = classifyTransaction(tx);
-        const depositAmount = extractDepositAmount(tx);
+        const tokenChange = extractTokenChange(tx, sig.signature);
+        const txType = tokenChange > 0 ? "buy" : tokenChange < 0 ? "sell" : "other";
 
         platformCounts[platform] = (platformCounts[platform] || 0) + 1;
-        totalDeposited += depositAmount;
+        if (tokenChange > 0) totalBought += tokenChange;
+        if (tokenChange < 0) totalSold += Math.abs(tokenChange);
 
         recentTxs.push({
           platform,
           time: blockTimeMs,
           signature: sig.signature,
-          amount: depositAmount,
+          amount: tokenChange,
+          type: txType,
         });
         processedCount++;
 
@@ -202,8 +208,13 @@ serve(async (req) => {
 
         if (buckets[bucketKey]) {
           buckets[bucketKey].count += 1;
-          buckets[bucketKey].deposits += 1;
-          buckets[bucketKey].amount += depositAmount;
+          if (tokenChange > 0) {
+            buckets[bucketKey].buys += 1;
+            buckets[bucketKey].buyAmount += tokenChange;
+          } else if (tokenChange < 0) {
+            buckets[bucketKey].sells += 1;
+            buckets[bucketKey].sellAmount += Math.abs(tokenChange);
+          }
         }
       } catch (_e) {
         continue;
@@ -221,8 +232,10 @@ serve(async (req) => {
     const activityData = Object.values(buckets).map(b => ({
       label: b.label,
       transactions: b.count,
-      deposits: b.deposits,
-      amount: b.amount,
+      buys: b.buys,
+      sells: b.sells,
+      buyAmount: b.buyAmount,
+      sellAmount: b.sellAmount,
     }));
 
     return new Response(
@@ -230,7 +243,8 @@ serve(async (req) => {
         wallet: TRACKED_WALLET,
         range,
         totalTransactions: processedCount,
-        totalDeposited,
+        totalBought,
+        totalSold,
         platforms,
         activityData,
         recentTransactions: recentTxs.slice(0, 10),
