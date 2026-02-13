@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
+import { VerifiedListings } from '@/components/VerifiedListings';
 import { ParticleField } from '@/components/ParticleField';
 import { timelineEntries } from '@/data/newsTimeline';
 import { ArrowLeft, ExternalLink, Calendar, Clock, Fish } from 'lucide-react';
@@ -201,6 +202,11 @@ const News = () => {
             Keep swimming strong with <span className="text-fire-ice font-bold">$BIGTROUT</span> –
             more updates coming soon! 🐟
           </p>
+        </div>
+
+        {/* Verified Listings */}
+        <div className="max-w-4xl mx-auto mt-8">
+          <VerifiedListings />
         </div>
       </main>
 
