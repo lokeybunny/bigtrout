@@ -1,4 +1,5 @@
 import { Suspense, useState } from 'react';
+import { BuyNowPopup } from '@/components/BuyNowPopup';
 import { GameScene } from '@/components/game/GameScene';
 import raceMenuBg from '@/assets/game-landing-bg.jpeg';
 import raceHowtoBg from '@/assets/bigtrout-race-howto.png';
@@ -40,9 +41,11 @@ const HOW_IT_WORKS = [
 
 const Game = () => {
   const [screen, setScreen] = useState<Screen>('menu');
+  const [isBuyOpen, setIsBuyOpen] = useState(false);
 
   if (screen === 'menu') {
     return (
+      <>
       <div className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center">
         {/* Background image */}
         <img
@@ -89,6 +92,14 @@ const Game = () => {
               🏁 PLAY GAME
             </button>
 
+            <button
+              onClick={() => setIsBuyOpen(true)}
+              className="btn-fire px-10 py-3 text-lg font-bold"
+              style={{ fontFamily: 'Bangers, cursive', letterSpacing: '0.08em' }}
+            >
+              💰 BUY $BIGTROUT
+            </button>
+
             <a
               href="https://bigtrout.fun"
               className="px-8 py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
@@ -122,11 +133,14 @@ const Game = () => {
           </div>
         </div>
       </div>
+      <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
+      </>
     );
   }
 
   if (screen === 'howto') {
     return (
+      <>
       <div className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center">
         <img
           src={raceHowtoBg}
@@ -244,10 +258,13 @@ const Game = () => {
           </div>
         </div>
       </div>
+      <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
+      </>
     );
   }
 
   return (
+    <>
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Game title */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
@@ -299,6 +316,8 @@ const Game = () => {
         }
       `}</style>
     </div>
+    <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
+    </>
   );
 };
 
