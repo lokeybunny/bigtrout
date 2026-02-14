@@ -3,7 +3,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/u
 import { useIsMobile } from '@/hooks/use-mobile';
 import axiomLogo from '@/assets/logos/axiom.png';
 import padreLogo from '@/assets/logos/padre.png';
-import photonLogo from '@/assets/logos/photon.png';
+import photonLogo from '@/assets/logos/photon.svg';
 import pumpfunLogo from '@/assets/logos/pumpfun.png';
 
 const platforms = [
