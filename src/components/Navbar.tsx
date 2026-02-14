@@ -1,9 +1,11 @@
 import { Fish, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { BuyNowPopup } from '@/components/BuyNowPopup';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isBuyOpen, setIsBuyOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
@@ -72,14 +74,12 @@ export const Navbar = () => {
           >
             Listings
           </a>
-          <a
-            href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => setIsBuyOpen(true)}
             className="btn-fire text-sm py-2 px-4"
           >
             Buy Now
-          </a>
+          </button>
         </div>
       </div>
 
@@ -101,10 +101,11 @@ export const Navbar = () => {
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             </Link>
             <a href="#listings" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={(e) => { handleAnchorClick(e, '#listings'); setIsMenuOpen(false); }}>Listings</a>
-            <a href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG" target="_blank" rel="noopener noreferrer" className="btn-fire text-sm py-2 px-4 w-full max-w-[200px] text-center" onClick={() => setIsMenuOpen(false)}>Buy Now</a>
+            <button className="btn-fire text-sm py-2 px-4 w-full max-w-[200px] text-center" onClick={() => { setIsMenuOpen(false); setIsBuyOpen(true); }}>Buy Now</button>
           </div>
         </div>
       )}
+      <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
     </nav>
   );
 };
