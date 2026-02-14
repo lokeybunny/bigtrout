@@ -21,9 +21,12 @@ const Meme = () => {
 
           {/* Meme Generator */}
           <div className="mb-16">
-            <h2 className="text-2xl font-black text-foreground text-center mb-6">
+            <h2 className="text-2xl font-black text-foreground text-center mb-2">
               🎨 Meme Generator
             </h2>
+            <p className="text-sm text-muted-foreground text-center mb-6">
+              Add stickers, text & bling to the BigTrout — then download & share!
+            </p>
             <MemeGenerator />
           </div>
 
@@ -34,7 +37,6 @@ const Meme = () => {
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-2xl font-black text-foreground mb-6">Browse Community Memes</h2>
 
-            {/* Main CTA Card */}
             <a
               href="https://x.com/search?q=%24BIGTROUT&src=typed_query&f=live"
               target="_blank"
@@ -53,7 +55,6 @@ const Meme = () => {
               </span>
             </a>
 
-            {/* Secondary links */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
               <a
                 href="https://x.com/BigTrout300"
