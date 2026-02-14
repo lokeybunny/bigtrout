@@ -90,12 +90,12 @@ const STICKER_CATEGORIES = [
 ];
 
 const AI_PRESETS = [
-  'Add gold chains and diamond sunglasses',
-  'Add a crown and cash raining down',
-  'Add laser eyes and fire background',
-  'Add a top hat and monocle',
-  'Add a backwards cap and gold teeth',
-  'Add diamond hands and rockets',
+  'Wearing gold chains and diamond sunglasses',
+  'Wearing a crown with cash raining down',
+  'With laser eyes and fire background',
+  'In a top hat and monocle, fancy gentleman',
+  'As a crypto whale surfing a wave of coins',
+  'As a superhero flying through space with rockets',
 ];
 
 const MemeGenerator: React.FC = () => {
@@ -179,16 +179,6 @@ const MemeGenerator: React.FC = () => {
     setIsGenerating(true);
 
     try {
-      const sourceImg = aiImage || baseImage;
-      if (!sourceImg) throw new Error('No base image');
-
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = sourceImg.naturalWidth || sourceImg.width;
-      tempCanvas.height = sourceImg.naturalHeight || sourceImg.height;
-      const tempCtx = tempCanvas.getContext('2d')!;
-      tempCtx.drawImage(sourceImg, 0, 0);
-      const imageDataUrl = tempCanvas.toDataURL('image/jpeg', 0.85);
-
       const resp = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/meme-ai`,
         {
@@ -197,7 +187,7 @@ const MemeGenerator: React.FC = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ image: imageDataUrl, prompt }),
+          body: JSON.stringify({ prompt }),
         }
       );
 
@@ -339,12 +329,12 @@ const MemeGenerator: React.FC = () => {
       {mode === 'ai' && (
         <div className="mb-5">
           <p className="text-xs text-muted-foreground text-center mb-3">
-            Powered by open-source AI (InstructPix2Pix) — completely free, no credits needed
+            Powered by open-source AI (FLUX.1) — completely free, no credits needed
           </p>
           <div className="flex gap-2 mb-3">
             <input
               type="text"
-              placeholder="Describe what to add... e.g. gold chains and sunglasses"
+              placeholder="Describe the meme... e.g. wearing gold chains and sunglasses"
               value={aiPrompt}
               onChange={(e) => setAiPrompt(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAiGenerate(aiPrompt)}
