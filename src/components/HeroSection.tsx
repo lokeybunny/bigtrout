@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { BuyNowPopup } from '@/components/BuyNowPopup';
 import { useIsMobile } from '@/hooks/use-mobile';
 import heroBanner from '@/assets/bigtrout-hero-banner.avif';
 import type { QualityLevel } from '@/hooks/usePerformanceMode';
@@ -10,6 +11,7 @@ interface HeroSectionProps {
 export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
   const isMobile = useIsMobile();
   const [scrollY, setScrollY] = useState(0);
+  const [isBuyOpen, setIsBuyOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const rafRef = useRef<number>(0);
 
@@ -36,6 +38,7 @@ export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
   }, [enableParallax]);
 
   return (
+    <>
     <section ref={sectionRef} className="relative flex flex-col items-center justify-end overflow-hidden" style={{ minHeight: isMobile ? 'auto' : '100svh' }}>
       {/* Mobile: static full image, no effects */}
       {isMobile ? (
@@ -164,14 +167,12 @@ export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="https://pump.fun/coin/EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => setIsBuyOpen(true)}
             className="btn-fire"
           >
             Buy $BIGTROUT
-          </a>
+          </button>
           <a
             href="#live-chart"
             onClick={(e) => {
@@ -194,5 +195,7 @@ export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
         </div>
       )}
     </section>
+    <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
+    </>
   );
 };
