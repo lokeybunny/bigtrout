@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const HF_API_URL =
-  "https://api-inference.huggingface.co/models/timbrooks/instruct-pix2pix";
+  "https://router.huggingface.co/hf-inference/models/timbrooks/instruct-pix2pix";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
