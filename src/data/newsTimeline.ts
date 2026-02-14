@@ -79,6 +79,16 @@ export const timelineEntries: TimelineEntry[] = [
       'BigTrout announced a sweet giveaway: $100-200 in $BIGTROUT to a random winner who buys and holds on @moonshot. Just reply with your proof pic – winner picked tomorrow AM! Spreading the love and encouraging that hold energy.',
     tweetUrl: 'https://x.com/BigTrout300',
   },
+  {
+    id: 'origin-story',
+    date: 'February 6, 2026',
+    time: '12:00 PM UTC',
+    title: 'How $BIGTROUT Came to Be',
+    emoji: '🐟',
+    description:
+      'BigTrout shared the full origin story of $BIGTROUT — how a spontaneous moment turned into a full-blown community movement. From accidental creation to organic growth, this is the tale of how the trout started swimming.',
+    tweetUrl: 'https://x.com/BigTrout300/status/2022538376113770576',
+  },
   // ── February 7, 2026 ──
   {
     id: 'midnight-hustle',
