@@ -62,7 +62,7 @@ const MemeGenerator: React.FC = () => {
   const [aiPrompt, setAiPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiImage, setAiImage] = useState<HTMLImageElement | null>(null);
-  const [mode, setMode] = useState<'sticker' | 'ai'>('ai');
+  const [mode, setMode] = useState<'sticker' | 'ai'>('sticker');
 
   // Load base image
   useEffect(() => {
@@ -290,6 +290,9 @@ const MemeGenerator: React.FC = () => {
       {/* AI Mode */}
       {mode === 'ai' && (
         <div className="mb-5">
+          <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 mb-4 text-sm text-yellow-200">
+            ⚠️ AI generation requires Lovable AI credits. Go to <strong>Settings → Workspace → Usage</strong> to add credits. Use <strong>Sticker mode</strong> in the meantime!
+          </div>
           <div className="flex gap-2 mb-3">
             <input
               type="text"
