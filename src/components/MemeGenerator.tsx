@@ -472,7 +472,7 @@ const MemeGenerator: React.FC = () => {
             </div>
           )}
           <div className="mb-5">
-            <div className="flex gap-2 mb-3 overflow-x-auto pb-1 scrollbar-none">
+            <div className="flex flex-wrap gap-2 mb-3 justify-center pb-1">
               {STICKER_CATEGORIES.map((cat, i) => (
                 <button
                   key={cat.name}
