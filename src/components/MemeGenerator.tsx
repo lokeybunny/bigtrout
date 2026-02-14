@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Download, RotateCcw, Plus, Minus, Move, Type } from 'lucide-react';
+import { Download, RotateCcw, Plus, Minus, Move, Type, Sparkles, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import memeBase from '@/assets/bigtrout-meme-base.jpg';
 
 interface Sticker {
@@ -88,6 +89,15 @@ const STICKER_CATEGORIES = [
   },
 ];
 
+const AI_PRESETS = [
+  'Add gold chains and diamond sunglasses',
+  'Add a crown and cash raining down',
+  'Add laser eyes and fire background',
+  'Add a top hat and monocle',
+  'Add a backwards cap and gold teeth',
+  'Add diamond hands and rockets',
+];
+
 const MemeGenerator: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [stickers, setStickers] = useState<Sticker[]>([]);
@@ -99,6 +109,10 @@ const MemeGenerator: React.FC = () => {
   const [baseImage, setBaseImage] = useState<HTMLImageElement | null>(null);
   const [canvasSize, setCanvasSize] = useState({ w: 500, h: 500 });
   const [activeCategory, setActiveCategory] = useState(0);
+  const [mode, setMode] = useState<'sticker' | 'ai'>('sticker');
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiImage, setAiImage] = useState<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const img = new Image();
@@ -119,10 +133,13 @@ const MemeGenerator: React.FC = () => {
   const drawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx || !baseImage) return;
+    if (!canvas || !ctx) return;
+
+    const imgToDraw = aiImage || baseImage;
+    if (!imgToDraw) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(imgToDraw, 0, 0, canvas.width, canvas.height);
 
     stickers.forEach((s) => {
       ctx.save();
@@ -150,11 +167,65 @@ const MemeGenerator: React.FC = () => {
 
     drawMemeText(topText, canvasSize.h * 0.1);
     drawMemeText(bottomText, canvasSize.h * 0.92);
-  }, [baseImage, stickers, topText, bottomText, canvasSize]);
+  }, [baseImage, aiImage, stickers, topText, bottomText, canvasSize]);
 
   useEffect(() => {
     drawCanvas();
   }, [drawCanvas]);
+
+  // AI generation via HuggingFace (open-source, no Lovable credits)
+  const handleAiGenerate = async (prompt: string) => {
+    if (!prompt.trim() || isGenerating) return;
+    setIsGenerating(true);
+
+    try {
+      const sourceImg = aiImage || baseImage;
+      if (!sourceImg) throw new Error('No base image');
+
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = sourceImg.naturalWidth || sourceImg.width;
+      tempCanvas.height = sourceImg.naturalHeight || sourceImg.height;
+      const tempCtx = tempCanvas.getContext('2d')!;
+      tempCtx.drawImage(sourceImg, 0, 0);
+      const imageDataUrl = tempCanvas.toDataURL('image/jpeg', 0.85);
+
+      const resp = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/meme-ai`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ image: imageDataUrl, prompt }),
+        }
+      );
+
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        if (data.loading) {
+          toast.info(`AI model is loading — try again in ~${data.estimatedTime}s`);
+          return;
+        }
+        throw new Error(data.error || 'AI generation failed');
+      }
+
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        setAiImage(img);
+        toast.success('Meme generated! 🐟🔥');
+      };
+      img.onerror = () => toast.error('Failed to load generated image');
+      img.src = data.image;
+    } catch (err: any) {
+      console.error('AI generation error:', err);
+      toast.error(err.message || 'Failed to generate meme');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const addSticker = (emoji: string, label: string) => {
     const newSticker: Sticker = {
@@ -231,12 +302,85 @@ const MemeGenerator: React.FC = () => {
     setTopText('');
     setBottomText('');
     setSelectedSticker(null);
+    setAiImage(null);
+    setAiPrompt('');
   };
 
   const selected = stickers.find((s) => s.id === selectedSticker);
 
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Mode Tabs */}
+      <div className="flex justify-center gap-2 mb-6">
+        <button
+          onClick={() => setMode('sticker')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
+            mode === 'sticker'
+              ? 'bg-pepe-glow/20 border border-pepe-glow/50 text-pepe-glow'
+              : 'border border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10'
+          }`}
+        >
+          🎭 Stickers
+        </button>
+        <button
+          onClick={() => setMode('ai')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
+            mode === 'ai'
+              ? 'bg-pepe-glow/20 border border-pepe-glow/50 text-pepe-glow'
+              : 'border border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10'
+          }`}
+        >
+          <Sparkles className="w-4 h-4" /> AI Generate
+          <span className="text-[10px] opacity-60 ml-1">(free)</span>
+        </button>
+      </div>
+
+      {/* AI Mode */}
+      {mode === 'ai' && (
+        <div className="mb-5">
+          <p className="text-xs text-muted-foreground text-center mb-3">
+            Powered by open-source AI (InstructPix2Pix) — completely free, no credits needed
+          </p>
+          <div className="flex gap-2 mb-3">
+            <input
+              type="text"
+              placeholder="Describe what to add... e.g. gold chains and sunglasses"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAiGenerate(aiPrompt)}
+              className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-pepe/50"
+              disabled={isGenerating}
+            />
+            <button
+              onClick={() => handleAiGenerate(aiPrompt)}
+              disabled={isGenerating || !aiPrompt.trim()}
+              className="btn-fire flex items-center gap-2 px-5 py-2.5 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isGenerating ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</>
+              ) : (
+                <><Sparkles className="w-4 h-4" /> Generate</>
+              )}
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {AI_PRESETS.map((preset) => (
+              <button
+                key={preset}
+                onClick={() => {
+                  setAiPrompt(preset);
+                  handleAiGenerate(preset);
+                }}
+                disabled={isGenerating}
+                className="text-xs px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-muted-foreground hover:bg-pepe/10 hover:border-pepe/30 hover:text-foreground transition-all disabled:opacity-40"
+              >
+                {preset}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Text inputs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         <div className="relative">
@@ -281,6 +425,15 @@ const MemeGenerator: React.FC = () => {
           onTouchMove={handlePointerMove}
           onTouchEnd={handlePointerUp}
         />
+        {isGenerating && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+            <div className="text-center">
+              <Loader2 className="w-10 h-10 text-pepe-glow animate-spin mx-auto mb-2" />
+              <p className="text-foreground text-sm font-bold">AI is cooking your meme...</p>
+              <p className="text-muted-foreground text-xs mt-1">First run may take ~30s to load model</p>
+            </div>
+          </div>
+        )}
         {dragging && (
           <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-black/70 text-foreground text-xs px-3 py-1 rounded-full flex items-center gap-1">
             <Move className="w-3 h-3" /> Dragging...
@@ -288,82 +441,80 @@ const MemeGenerator: React.FC = () => {
         )}
       </div>
 
-      {/* Selected sticker controls */}
-      {selected && (
-        <div className="flex items-center justify-center gap-2 mb-4 flex-wrap bg-white/5 rounded-lg border border-white/10 p-3">
-          <span className="text-lg mr-1">{selected.emoji}</span>
-          <span className="text-sm text-muted-foreground mr-2">{selected.label}</span>
-          <button
-            onClick={() => updateSticker(selected.id, { size: Math.max(20, selected.size - 8) })}
-            className="p-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
-            title="Smaller"
-          >
-            <Minus className="w-3.5 h-3.5 text-foreground" />
-          </button>
-          <span className="text-xs text-muted-foreground w-8 text-center">{selected.size}</span>
-          <button
-            onClick={() => updateSticker(selected.id, { size: Math.min(120, selected.size + 8) })}
-            className="p-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
-            title="Bigger"
-          >
-            <Plus className="w-3.5 h-3.5 text-foreground" />
-          </button>
-          <button
-            onClick={() => updateSticker(selected.id, { rotation: selected.rotation - 15 })}
-            className="p-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
-            title="Rotate left"
-          >
-            <RotateCcw className="w-3.5 h-3.5 text-foreground" />
-          </button>
-          <button
-            onClick={() => updateSticker(selected.id, { rotation: selected.rotation + 15 })}
-            className="p-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
-            title="Rotate right"
-          >
-            <RotateCcw className="w-3.5 h-3.5 text-foreground scale-x-[-1]" />
-          </button>
-          <button
-            onClick={() => removeSticker(selected.id)}
-            className="px-3 py-1.5 rounded border border-destructive/30 bg-destructive/10 hover:bg-destructive/20 transition-colors text-destructive text-xs font-bold"
-          >
-            ✕ Remove
-          </button>
-        </div>
+      {/* Sticker controls */}
+      {mode === 'sticker' && (
+        <>
+          {selected && (
+            <div className="flex items-center justify-center gap-2 mb-4 flex-wrap bg-white/5 rounded-lg border border-white/10 p-3">
+              <span className="text-lg mr-1">{selected.emoji}</span>
+              <span className="text-sm text-muted-foreground mr-2">{selected.label}</span>
+              <button
+                onClick={() => updateSticker(selected.id, { size: Math.max(20, selected.size - 8) })}
+                className="p-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+              >
+                <Minus className="w-3.5 h-3.5 text-foreground" />
+              </button>
+              <span className="text-xs text-muted-foreground w-8 text-center">{selected.size}</span>
+              <button
+                onClick={() => updateSticker(selected.id, { size: Math.min(120, selected.size + 8) })}
+                className="p-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5 text-foreground" />
+              </button>
+              <button
+                onClick={() => updateSticker(selected.id, { rotation: selected.rotation - 15 })}
+                className="p-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-foreground" />
+              </button>
+              <button
+                onClick={() => updateSticker(selected.id, { rotation: selected.rotation + 15 })}
+                className="p-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-foreground scale-x-[-1]" />
+              </button>
+              <button
+                onClick={() => removeSticker(selected.id)}
+                className="px-3 py-1.5 rounded border border-destructive/30 bg-destructive/10 hover:bg-destructive/20 transition-colors text-destructive text-xs font-bold"
+              >
+                ✕ Remove
+              </button>
+            </div>
+          )}
+          <div className="mb-5">
+            <div className="flex gap-2 mb-3 overflow-x-auto pb-1 scrollbar-none">
+              {STICKER_CATEGORIES.map((cat, i) => (
+                <button
+                  key={cat.name}
+                  onClick={() => setActiveCategory(i)}
+                  className={`whitespace-nowrap text-xs px-3 py-1.5 rounded-full font-bold transition-all ${
+                    activeCategory === i
+                      ? 'bg-pepe-glow/20 border border-pepe-glow/50 text-pepe-glow'
+                      : 'border border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10'
+                  }`}
+                >
+                  {cat.name}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mb-2 text-center">
+              Tap to add — drag to position — resize & rotate above
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {STICKER_CATEGORIES[activeCategory].items.map((opt) => (
+                <button
+                  key={opt.emoji + opt.label}
+                  onClick={() => addSticker(opt.emoji, opt.label)}
+                  className="w-12 h-12 rounded-lg border border-white/10 bg-white/5 hover:bg-pepe/10 hover:border-pepe/30 transition-all text-2xl flex items-center justify-center"
+                  title={opt.label}
+                >
+                  {opt.emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
       )}
-
-      {/* Sticker categories */}
-      <div className="mb-5">
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-1 scrollbar-none">
-          {STICKER_CATEGORIES.map((cat, i) => (
-            <button
-              key={cat.name}
-              onClick={() => setActiveCategory(i)}
-              className={`whitespace-nowrap text-xs px-3 py-1.5 rounded-full font-bold transition-all ${
-                activeCategory === i
-                  ? 'bg-pepe-glow/20 border border-pepe-glow/50 text-pepe-glow'
-                  : 'border border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-        <p className="text-xs text-muted-foreground mb-2 text-center">
-          Tap to add — drag to position — resize & rotate above
-        </p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {STICKER_CATEGORIES[activeCategory].items.map((opt) => (
-            <button
-              key={opt.emoji + opt.label}
-              onClick={() => addSticker(opt.emoji, opt.label)}
-              className="w-12 h-12 rounded-lg border border-white/10 bg-white/5 hover:bg-pepe/10 hover:border-pepe/30 transition-all text-2xl flex flex-col items-center justify-center gap-0"
-              title={opt.label}
-            >
-              {opt.emoji}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* Actions */}
       <div className="flex justify-center gap-3">
