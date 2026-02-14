@@ -2,10 +2,19 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ExternalLink, Search, Fish } from 'lucide-react';
 import MemeGenerator from '@/components/MemeGenerator';
+import troutOceanBg from '@/assets/trout-ocean-bg.jpg';
 
 const Meme = () => {
   return (
     <div className="relative min-h-screen" style={{ background: 'hsl(210 25% 10%)' }}>
+      {/* Background trout image */}
+      <div
+        className="fixed inset-0 bg-cover bg-center pointer-events-none"
+        style={{
+          backgroundImage: `url(${troutOceanBg})`,
+          opacity: 0.08,
+        }}
+      />
       <Navbar />
       <main className="pt-24 pb-16 px-4">
         <div className="max-w-4xl mx-auto">
