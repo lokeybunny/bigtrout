@@ -60,10 +60,18 @@ export const Navbar = () => {
           </Link>
         </div>
 
-        {/* Mobile menu button */}
-        <button className={`md:hidden p-2 ${linkColor} transition-colors duration-300`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        {/* Mobile: Buy Now + menu button */}
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            onClick={() => setIsBuyOpen(true)}
+            className="btn-fire text-xs py-1.5 px-4 font-bold"
+          >
+            Buy Now
+          </button>
+          <button className={`p-2 ${linkColor} transition-colors duration-300`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
 
         {/* CTAs */}
         <div className="hidden sm:flex items-center gap-2">
@@ -101,7 +109,6 @@ export const Navbar = () => {
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             </Link>
             <a href="#listings" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={(e) => { handleAnchorClick(e, '#listings'); setIsMenuOpen(false); }}>Listings</a>
-            <button className="btn-fire text-sm py-2 px-4 w-full max-w-[200px] text-center" onClick={() => { setIsMenuOpen(false); setIsBuyOpen(true); }}>Buy Now</button>
           </div>
         </div>
       )}
