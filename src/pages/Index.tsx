@@ -9,7 +9,6 @@ import { NewsLoreSection } from '@/components/NewsLoreSection';
 import { InflowTracker } from '@/components/InflowTracker';
 import { Footer } from '@/components/Footer';
 import { ParticleField } from '@/components/ParticleField';
-import { MusicPlayer } from '@/components/MusicPlayer';
 import { usePerformanceMode } from '@/hooks/usePerformanceMode';
 
 const Index = () => {
@@ -44,7 +43,7 @@ const Index = () => {
         <InflowTracker />
       </main>
       <Footer />
-      <MusicPlayer />
+      <Footer />
     </div>
   );
 };
