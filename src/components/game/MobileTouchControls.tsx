@@ -99,12 +99,12 @@ export const MobileTouchControls = () => {
 
   return (
     <div className="absolute inset-0 z-20 pointer-events-none" style={{ touchAction: 'none' }}>
-      {/* Joystick area — bottom left */}
+      {/* Joystick area — bottom right */}
       <div
         ref={joystickRef}
         className="absolute pointer-events-auto"
         style={{
-          left: 20,
+          right: 20,
           bottom: 30,
           width: 130,
           height: 130,
@@ -150,11 +150,11 @@ export const MobileTouchControls = () => {
         </div>
       </div>
 
-      {/* Gas / Paddle button — bottom right */}
+      {/* Gas / Paddle button — bottom left */}
       <div
         className="absolute pointer-events-auto flex items-center justify-center"
         style={{
-          right: 25,
+          left: 25,
           bottom: 40,
           width: 90,
           height: 90,
