@@ -13,6 +13,7 @@ import { SpeedBoost, generateBoosts, BoostPickup } from './SpeedBoost';
 import { Obstacles, generateObstacles, Obstacle } from './Obstacles';
 import { AdaptivePerformanceProvider } from './AdaptivePerformance';
 import { Minimap } from './Minimap';
+import { MobileTouchControls } from './MobileTouchControls';
 import { useSolanaTransactions, GameEvent } from '../../hooks/useSolanaTransactions';
 import { useGameSFX } from '../../hooks/useGameSFX';
 
@@ -581,6 +582,9 @@ export const GameScene = () => {
         aiPositions={aiMinimapData}
         boosts={boosts}
       />
+
+      {/* Mobile touch controls */}
+      <MobileTouchControls />
 
       {/* 3D Canvas */}
       <Canvas 
