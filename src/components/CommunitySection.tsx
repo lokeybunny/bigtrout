@@ -4,7 +4,7 @@ import heroBanner from '@/assets/bigtrout-hero-banner.jpg';
 
 // Import logo images
 import mexcLogo from '@/assets/logos/mexc.png';
-import lbankLogo from '@/assets/logos/lbank-new.png';
+const lbankLogo = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSBhESEhMWEhAVGBcWGBYVGBYYGhYSFxYZGRUVFRcYICggGBolHRgVITEhJSkrLi4uFx82ODMtNzQtLisBCgoKDg0OGxAQGy4mICUtLS01LS0tLS0tLS0tLS8tLS0wLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBEQACEQEDEQH/xAAcAAEAAQUBAQAAAAAAAAAAAAAABgEEBQcIAwL/xABGEAACAQIDBAUEDQIFBAIDAAABAgADEQQFBgcSITFBUWFxgRMiM7GyFCMyNEJSU3JzkZOh0Bc0YoPBFRYkVIKSotE1Q2P/xAAbAQEAAgMBAQAAAAAAAAAAAAAAAwUBAgQGA//EADARAQACAQMDAQYFBAMAAAAAAAABAgMEETEFEiEGExQyQVGBIjNScZEVFjNhIyRC/9oADAMBAAIRAxEAPwDRoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUCgAAAAAAAAAAAAAAAAAAAVS4gXuZZRXoOPlqNSlvK8XOLSa7HyZHTLS/isxLM1mOVkSMKAALnBYCrWrbtGnOrO17QjKTt12XQa3yVpG9p2ZiszwyP91Md/k8R+FP9CD3zB+uP5bezt9BaUx3+TxH4U/0M+94P1x/LPs7fRZ4/KMRQSdahVpJ8nOLSa7HyZHTLS/isxLM1mOVkSMKAALnBYCrWrbtGnOrO17QjKTt12XQa3yVpG9p2ZiszwyP91Md/k8R+FP9CD3zB+uP5bezt9BaUx3+TxH4U/0M+94P1x/LPs7fRZ4/KMRQSdahVpJ8nOLSa7HyZHTLS/isxLM1mOVkSMKAALnBYCrWrbtGnOrO17QjKTt12XQa3yVpG9p2ZiszwyP91Md/k8R+FP9CD3zB+uP5bezt9BaUx3+TxH4U/0M+94P1x/LPs7fRZ4/KMRQSdahVpJ8nOLSa7HyZHTLS/isxLM1mOVkSMKAALnBYCrWrbtGnOrO17QjKTt12XQa3yVpG9p2ZiszwyP91Md/k8R+FP9CD3zB+uP5bezt9BaUx3+TxH4U/0M+94P1x/LPs7fRZ4/KMRQSdahVpJ8nOLSa7HyZHTLS/isxLM1mOVkSMKAALnBYCrWrbtGnOrO17QjKTt12XQa3yVpG9p2Zi';
 import moonshotLogo from '@/assets/logos/moonshot.png';
 import pocketfiLogo from '@/assets/logos/pocketfi.png';
 import mobyagentLogo from '@/assets/logos/mobyagent.svg';
@@ -12,14 +12,15 @@ import jupiterLogo from '@/assets/logos/jupiter.svg';
 import coinmarketcapLogo from '@/assets/logos/coinmarketcap.png';
 import coingeckoLogo from '@/assets/logos/coingecko.png';
 import bitmartLogo from '@/assets/logos/bitmart-2025.png';
-import btseLogo from '@/assets/logos/btse.png';
+import btseLogo from '@/assets/logos/btse-2026.svg';
 import blynexLogo from '@/assets/logos/blynex.png';
 import weexLogo from '@/assets/logos/weex.png';
 import coindarLogo from '@/assets/logos/coindar.png';
 import kucoinLogo from '@/assets/logos/kucoin.png';
 import dexscreenerLogo from '@/assets/logos/dexscreener.png';
 import poloniexLogo from '@/assets/logos/poloniex.png';
-import bitrueLogo from '@/assets/logos/bitrue.svg';
+import bitrueLogo from '@/assets/logos/bitrue-2026.jpg';
+import ourbitLogo from '@/assets/logos/ourbit.svg';
 import moontokLogo from '@/assets/logos/moontok.svg';
 import binanceLogo from '@/assets/logos/binance.png';
 import phantomLogo from '@/assets/logos/phantom.png';
@@ -67,12 +68,12 @@ const exchangeLogos = [
   { name: 'KCEX', logo: kcexLogo, url: 'https://www.kcex.com/exchange/BIGTROUT_USDT', alt: 'Trade BIGTROUT on KCEX', category: 'cex' as const },
   { name: 'WEEX', logo: weexLogo, url: 'https://www.weex.com/spot/BIGTROUT-USDT?vipCode=ipqs', alt: 'Trade BIGTROUT on WEEX', category: 'cex' as const },
   { name: 'Bilaxy', logo: bilaxyLogo, url: 'https://bilaxy.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Bilaxy', category: 'cex' as const },
-  { name: 'Ourbit', logo: null, url: 'https://www.ourbit.com/exchange/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Ourbit', category: 'cex' as const },
+  { name: 'Ourbit', logo: ourbitLogo, url: 'https://www.ourbit.com/exchange/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Ourbit', category: 'cex' as const },
   { name: 'BTSE', logo: btseLogo, url: 'https://www.btse.com/en/trading/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BTSE', category: 'cex' as const },
   { name: 'Blynex', logo: blynexLogo, url: 'https://blynex.com/spot/TheBigTrout_USDT', alt: 'Trade BIGTROUT on Blynex', category: 'cex' as const },
   { name: 'BigONE', logo: bigoneLogo, url: 'https://big.one/en/trade/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BigONE Alpha', category: 'cex' as const },
   { name: 'MEXC', logo: mexcLogo, url: 'https://www.mexc.com/exchange/BIGTROUT_USDT?_from=search_spot_trade', alt: 'Trade BIGTROUT on MEXC Meme+', category: 'cex' as const },
-  { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue Alpha', hasBorder: true, category: 'cex' as const },
+  { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue Alpha', category: 'cex' as const },
   { name: 'BingX', logo: bingxLogo, url: 'https://bingx.com/en/perpetual/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BingX', category: 'cex' as const },
   { name: 'Pionex', logo: pionexLogo, url: 'https://www.pionex.com/en/trade/BIGTROUT_USDT/Bot', alt: 'Trade BIGTROUT on Pionex', category: 'cex' as const },
   // DEX & Platforms
