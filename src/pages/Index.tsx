@@ -43,7 +43,6 @@ const Index = () => {
         <InflowTracker />
       </main>
       <Footer />
-      <Footer />
     </div>
   );
 };
