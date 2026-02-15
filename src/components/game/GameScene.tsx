@@ -544,9 +544,9 @@ export const GameScene = () => {
       {/* Radio Player */}
       <GameRadio chartExpanded={chartExpanded} />
 
-      {/* $BIGTROUT Points HUD - bottom left, above chart button */}
+      {/* $BIGTROUT Points HUD - bottom left, above chart button (pushed up on mobile) */}
       <div className="absolute left-2 z-10 pointer-events-none transition-all duration-300" style={{ bottom: chartExpanded ? 416 : 60 }}>
-        <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2" style={{ minWidth: 180 }}>
+        <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2 md:min-w-[180px] min-w-[120px] hidden md:block">
           <div className="text-xs font-bold mb-1" style={{ fontFamily: 'Bangers', color: '#44ff88' }}>
             $BIGTROUT POINTS
           </div>
@@ -558,6 +558,18 @@ export const GameScene = () => {
           </div>
           <div className="text-xs" style={{ fontFamily: 'Rajdhani', color: connected ? '#44ff88' : '#888' }}>
             {connected ? '● Live' : '○ Connecting...'}
+          </div>
+        </div>
+        {/* Mobile compact version — positioned higher */}
+        <div className="bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1.5 md:hidden" style={{ position: 'fixed', top: 70, right: 8 }}>
+          <div className="text-[9px] font-bold" style={{ fontFamily: 'Bangers', color: '#44ff88' }}>
+            $BIGTROUT
+          </div>
+          <div className="text-base font-bold" style={{ fontFamily: 'Bangers', color: '#ffcc44', textShadow: '1px 1px 0 #000' }}>
+            🐟 {troutPoints}
+          </div>
+          <div className="text-[9px]" style={{ fontFamily: 'Rajdhani', color: tokenMultiplier >= 1 ? '#44ff88' : '#ff6644' }}>
+            {(tokenMultiplier * 100).toFixed(0)}% {tokenMultiplier > 1 ? '🔥' : tokenMultiplier < 1 ? '🧊' : ''}
           </div>
         </div>
       </div>
