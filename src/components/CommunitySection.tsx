@@ -12,7 +12,7 @@ import jupiterLogo from '@/assets/logos/jupiter.svg';
 import coinmarketcapLogo from '@/assets/logos/coinmarketcap.png';
 import coingeckoLogo from '@/assets/logos/coingecko.png';
 import bitmartLogo from '@/assets/logos/bitmart-2025.png';
-import btseLogo from '@/assets/logos/btse-2026.svg';
+import btseLogo from '@/assets/logos/btse-2026.png';
 import blynexLogo from '@/assets/logos/blynex.png';
 import weexLogo from '@/assets/logos/weex.png';
 import coindarLogo from '@/assets/logos/coindar.png';
