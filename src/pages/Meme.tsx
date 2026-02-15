@@ -31,10 +31,10 @@ const Meme = () => {
           {/* Meme Generator */}
           <div className="mb-16">
             <h2 className="text-2xl font-black text-foreground text-center mb-2">
-              🎨 Meme Generator
+              🎨 $BigTrout Meme Generator
             </h2>
             <p className="text-sm text-muted-foreground text-center mb-6">
-              Add stickers, text & bling to the BigTrout — then download & share!
+              Add stickers, text & bling — or use <span className="text-pepe-glow font-bold">$BigTrout (Anime Art)</span> AI to generate!
             </p>
             <MemeGenerator />
           </div>

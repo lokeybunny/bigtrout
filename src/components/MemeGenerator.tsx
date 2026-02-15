@@ -320,7 +320,7 @@ const MemeGenerator: React.FC = () => {
               : 'border border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10'
           }`}
         >
-          <Sparkles className="w-4 h-4" /> AI Generate
+          <Sparkles className="w-4 h-4" /> $BigTrout (Anime Art)
           <span className="text-[10px] opacity-60 ml-1">(free)</span>
         </button>
       </div>
