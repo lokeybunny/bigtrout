@@ -30,7 +30,7 @@ serve(async (req) => {
       );
     }
 
-    const fullPrompt = `A funny meme image of a big trout fish: ${prompt}. Cartoon style, vibrant colors, meme-worthy, humorous. No text, no words, no letters, no captions, no watermarks on the image.`;
+    const fullPrompt = `A funny anime-style image of a big trout fish: ${prompt}. Anime art style, vibrant colors, meme-worthy, humorous. No text, no words, no letters, no captions, no watermarks on the image.`;
 
     const response = await fetch(HF_API_URL, {
       method: "POST",

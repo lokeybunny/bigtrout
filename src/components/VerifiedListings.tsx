@@ -1,4 +1,4 @@
-import { ExternalLink, Shield, Wallet, BarChart3, Globe, Copy, Check } from 'lucide-react';
+import { ExternalLink, Shield, Wallet, BarChart3, Globe, Copy, Check, TrendingUp, Layers } from 'lucide-react';
 import { useState } from 'react';
 
 const CA = 'EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG';
@@ -9,7 +9,7 @@ interface ListingItem {
   badge?: string;
 }
 
-const cexListings: ListingItem[] = [
+const spotListings: ListingItem[] = [
   { name: 'LBank', detail: 'USDT', badge: 'highest vol' },
   { name: 'BitMart', detail: 'USDT' },
   { name: 'KuCoin Alpha', detail: 'USDT' },
@@ -23,12 +23,8 @@ const cexListings: ListingItem[] = [
   { name: 'BigONE Alpha', detail: '' },
   { name: 'MEXC', detail: 'Meme+' },
   { name: 'Bitrue Alpha', detail: '' },
-  { name: 'BingX', detail: 'Perpetual Futures + ChainSpot' },
   { name: 'Pionex', detail: 'USDT Spot', badge: 'live Feb 12' },
-];
-
-const dexListings: ListingItem[] = [
-  { name: 'PumpSwap', detail: 'SOL', badge: 'main pool, highest DEX vol' },
+  { name: 'PumpSwap', detail: 'SOL', badge: 'main DEX pool' },
   { name: 'Meteora', detail: 'multiple SOL/USDC pools' },
   { name: 'Raydium', detail: 'supported pairs' },
   { name: 'Jupiter', detail: 'aggregator' },
@@ -36,10 +32,11 @@ const dexListings: ListingItem[] = [
   { name: 'Fomo', detail: 'verified + tracked' },
   { name: 'Moby', detail: 'tracked + trading + airdrops' },
   { name: 'Phemex Onchain', detail: 'supported spot trading (zero-gas)' },
+  { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
 ];
 
-const listedVerified: ListingItem[] = [
-  { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
+const perpsListings: ListingItem[] = [
+  { name: 'BingX', detail: 'Perpetual Futures + ChainSpot', badge: 'live' },
 ];
 
 const walletListings: ListingItem[] = [
@@ -52,6 +49,12 @@ const walletListings: ListingItem[] = [
   { name: 'Binance Web3 Wallet', detail: 'full DEX swaps' },
   { name: 'Bitget Wallet', detail: 'in-wallet Solana DEX' },
   { name: 'Tangem Hardware Wallet', detail: 'dedicated coin page + full Solana support' },
+];
+
+const stakingLpListings: ListingItem[] = [
+  { name: 'Meteora', detail: 'SOL/USDC liquidity pools' },
+  { name: 'Raydium', detail: 'LP farming pairs' },
+  { name: 'PumpSwap', detail: 'SOL liquidity pool' },
 ];
 
 const CategoryCard = ({
@@ -147,31 +150,31 @@ export const VerifiedListings = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <CategoryCard
           icon={BarChart3}
-          title="CEX & Trading Platforms"
-          subtitle="14+ live + 1 upcoming"
-          items={cexListings}
+          title="Spot Trading"
+          subtitle={`${spotListings.length} CEX & DEX platforms`}
+          items={spotListings}
           accentClass="text-fire"
         />
         <CategoryCard
-          icon={Globe}
-          title="DEX & Platforms"
-          subtitle="8 platforms"
-          items={dexListings}
+          icon={TrendingUp}
+          title="Perpetual Futures"
+          subtitle={`${perpsListings.length} platform`}
+          items={perpsListings}
           accentClass="text-pepe"
         />
         <CategoryCard
-          icon={Shield}
-          title="Listed & Verified"
-          subtitle="Tracked & verified aggregators"
-          items={listedVerified}
-          accentClass="text-ice"
-        />
-        <CategoryCard
           icon={Wallet}
-          title="Wallets"
+          title="Web3 Wallets"
           subtitle="Officially verified & supported"
           items={walletListings}
           accentClass="text-sakura"
+        />
+        <CategoryCard
+          icon={Layers}
+          title="Staking & LP Providers"
+          subtitle="Liquidity pools & yield"
+          items={stakingLpListings}
+          accentClass="text-ice"
         />
       </div>
 
