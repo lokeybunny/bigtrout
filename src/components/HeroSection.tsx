@@ -125,17 +125,17 @@ export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
             }} />
           )}
 
-          {/* Gradient overlays — lighter to show more artwork */}
+          {/* Gradient overlays — always on desktop */}
           <div className="absolute inset-0 z-[4]" style={{
             background: `
-              linear-gradient(180deg, transparent 0%, transparent 55%, hsl(210 25% 10% / 0.3) 70%, hsl(210 25% 10% / 0.6) 85%, hsl(210 25% 10% / 0.9) 100%),
-              linear-gradient(90deg, hsl(210 25% 10% / 0.08) 0%, transparent 15%, transparent 85%, hsl(210 25% 10% / 0.08) 100%)
+              linear-gradient(180deg, hsl(210 25% 10% / 0.15) 0%, transparent 12%, transparent 50%, hsl(210 25% 10% / 0.2) 62%, hsl(210 25% 10% / 0.5) 76%, hsl(210 25% 10% / 0.85) 88%, hsl(210 25% 10% / 1) 100%),
+              linear-gradient(90deg, hsl(210 25% 10% / 0.1) 0%, transparent 12%, transparent 88%, hsl(210 25% 10% / 0.1) 100%)
             `,
           }} />
-          <div className="absolute -bottom-4 left-0 right-0 h-48 z-[5]" style={{
+          <div className="absolute -bottom-4 left-0 right-0 h-96 z-[5]" style={{
             background: 'hsl(210 25% 10%)',
-            maskImage: 'linear-gradient(to top, black 0%, black 30%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to top, black 0%, black 30%, transparent 100%)',
+            maskImage: 'linear-gradient(to top, black 0%, black 50%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to top, black 0%, black 50%, transparent 100%)',
           }} />
 
           {/* Sakura glow accents — high & medium */}
@@ -152,37 +152,37 @@ export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
         </>
       )}
 
-      {/* Main content — glassmorphic card at bottom-left */}
-      <div className={`${isMobile ? 'relative' : 'relative z-10'} ${isMobile ? 'py-8 px-4' : 'pb-24 md:pb-32 px-6 md:px-10'} w-full overflow-visible ${isMobile ? '' : 'flex justify-start'}`} style={isMobile ? { background: 'hsl(210 25% 10%)' } : undefined}>
-        <div className={`${isMobile ? '' : 'backdrop-blur-md border border-white/10 rounded-2xl px-8 py-8 md:px-10 md:py-10'} max-w-xl`} style={isMobile ? undefined : { background: 'hsl(210 25% 10% / 0.7)' }}>
-          {/* Title */}
-          <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-3 tracking-tight animate-hero-pulse hero-title-stroke text-left">
-            $BIGTROUT
-          </h1>
+      {/* Main content */}
+      <div className={`${isMobile ? 'relative' : 'relative z-10'} text-center ${isMobile ? 'py-8' : 'pb-20 md:pb-28'} px-4 w-full max-w-4xl mx-auto overflow-visible`} style={isMobile ? { background: 'hsl(210 25% 10%)' } : undefined}>
 
-          <p className="font-display text-base sm:text-lg md:text-xl text-foreground/90 mb-8 tracking-wider hero-subtitle-glow text-left">
-            The Legendary Warrior Fish has emerged from the depths, <span className="text-pepe">Based</span> & <span className="text-sakura">Beautiful</span>
-          </p>
+        {/* Title */}
+        <h1 className="font-display text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black mb-3 tracking-tight animate-hero-pulse hero-title-stroke">
+          $BIGTROUT
+        </h1>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-row gap-4">
-            <button
-              onClick={() => setIsBuyOpen(true)}
-              className="btn-fire"
-            >
-              Join the pond
-            </button>
-            <a
-              href="#live-chart"
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector('#live-chart')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="btn-ice"
-            >
-              View chart
-            </a>
-          </div>
+        <p className="font-display text-lg sm:text-xl md:text-2xl text-foreground/90 max-w-2xl mx-auto mb-8 tracking-wider hero-subtitle-glow">
+          The Legendary Warrior Fish has emerged from the depths.
+          <span className="text-pepe"> Based</span> and <span className="text-sakura">Beautiful</span>.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onClick={() => setIsBuyOpen(true)}
+            className="btn-fire"
+          >
+            Buy $BIGTROUT
+          </button>
+          <a
+            href="#live-chart"
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector('#live-chart')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="btn-ice"
+          >
+            View Chart
+          </a>
         </div>
       </div>
 
