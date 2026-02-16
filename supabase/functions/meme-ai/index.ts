@@ -6,10 +6,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Use FLUX.1-schnell – fast, free-tier text-to-image model
-const HF_API_URL =
-  "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell";
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -18,9 +14,9 @@ serve(async (req) => {
   try {
     const { prompt } = await req.json();
 
-    const HF_KEY = Deno.env.get("HUGGINGFACE_API_KEY");
-    if (!HF_KEY) {
-      throw new Error("HUGGINGFACE_API_KEY is not configured");
+    const GEMINI_KEY = Deno.env.get("GOOGLE_GEMINI_API_KEY");
+    if (!GEMINI_KEY) {
+      throw new Error("GOOGLE_GEMINI_API_KEY is not configured");
     }
 
     if (!prompt) {
@@ -30,42 +26,25 @@ serve(async (req) => {
       );
     }
 
-    const fullPrompt = `A funny anime-style image of a big trout fish: ${prompt}. Anime art style, vibrant colors, meme-worthy, humorous. No text, no words, no letters, no captions, no watermarks on the image.`;
+    const fullPrompt = `Generate an image: A funny anime-style image of a big trout fish: ${prompt}. Anime art style, vibrant colors, meme-worthy, humorous. No text, no words, no letters, no captions, no watermarks on the image.`;
 
-    const response = await fetch(HF_API_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${HF_KEY}`,
-        "Content-Type": "application/json",
-        Accept: "image/png",
-      },
-      body: JSON.stringify({
-        inputs: fullPrompt,
-        parameters: {
-          num_inference_steps: 4,
-        },
-      }),
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: fullPrompt }] }],
+          generationConfig: {
+            responseModalities: ["TEXT", "IMAGE"],
+          },
+        }),
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("HF API error:", response.status, errorText);
-
-      if (response.status === 503) {
-        let estimatedTime = 30;
-        try {
-          const parsed = JSON.parse(errorText);
-          estimatedTime = Math.ceil(parsed.estimated_time || 30);
-        } catch {}
-        return new Response(
-          JSON.stringify({
-            error: `Model is loading, please try again in ~${estimatedTime} seconds`,
-            loading: true,
-            estimatedTime,
-          }),
-          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
+      console.error("Gemini API error:", response.status, errorText);
 
       if (response.status === 429) {
         return new Response(
@@ -74,21 +53,33 @@ serve(async (req) => {
         );
       }
 
-      throw new Error(`HuggingFace API error [${response.status}]: ${errorText}`);
+      throw new Error(`Gemini API error [${response.status}]: ${errorText}`);
     }
 
-    const imageBuffer = await response.arrayBuffer();
-    const bytes = new Uint8Array(imageBuffer);
-    const chunkSize = 8192;
-    let binary = "";
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-      const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.length));
-      for (let j = 0; j < chunk.length; j++) {
-        binary += String.fromCharCode(chunk[j]);
+    const data = await response.json();
+    
+    // Extract image from Gemini response
+    const parts = data.candidates?.[0]?.content?.parts;
+    if (!parts) {
+      throw new Error("No content in Gemini response");
+    }
+
+    let imageBase64 = "";
+    let mimeType = "image/png";
+
+    for (const part of parts) {
+      if (part.inlineData) {
+        imageBase64 = part.inlineData.data;
+        mimeType = part.inlineData.mimeType || "image/png";
+        break;
       }
     }
-    const resultBase64 = btoa(binary);
-    const resultDataUrl = `data:image/png;base64,${resultBase64}`;
+
+    if (!imageBase64) {
+      throw new Error("No image generated. The model may not have produced an image for this prompt. Try a different description.");
+    }
+
+    const resultDataUrl = `data:${mimeType};base64,${imageBase64}`;
 
     return new Response(
       JSON.stringify({ image: resultDataUrl }),
