@@ -173,7 +173,7 @@ const MemeGenerator: React.FC = () => {
     drawCanvas();
   }, [drawCanvas]);
 
-  // AI generation via HuggingFace (open-source, no Lovable credits)
+  // AI generation via Google Gemini
   const handleAiGenerate = async (prompt: string) => {
     if (!prompt.trim() || isGenerating) return;
     setIsGenerating(true);
@@ -329,7 +329,7 @@ const MemeGenerator: React.FC = () => {
       {mode === 'ai' && (
         <div className="mb-5">
           <p className="text-xs text-muted-foreground text-center mb-3">
-            Powered by open-source AI (FLUX.1) — completely free, no credits needed
+            Powered by Google Gemini AI
           </p>
           <div className="flex gap-2 mb-3">
             <input
