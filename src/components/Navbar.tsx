@@ -53,7 +53,7 @@ export const Navbar = () => {
           <Link to="/news" className={`${linkColor} hover:scale-110 transition-all duration-300 font-bold text-sm tracking-wide`}>News</Link>
           <Link to="/lore" className={`${linkColor} hover:scale-110 transition-all duration-300 font-bold text-sm tracking-wide`}>Lore</Link>
           <Link to="/game" className={`${linkColor} hover:scale-110 transition-all duration-300 font-bold text-sm tracking-wide`}>Game</Link>
-          <Link to="/meme" className={`${linkColor} hover:scale-110 transition-all duration-300 font-bold text-sm tracking-wide`}>Meme</Link>
+          
           <Link to="/live" className={`${linkColor} hover:scale-110 transition-all duration-300 font-bold text-sm tracking-wide inline-flex items-center gap-1.5`}>
             Live
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
@@ -112,7 +112,7 @@ export const Navbar = () => {
             <Link to="/news" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={() => setIsMenuOpen(false)}>News</Link>
             <Link to="/lore" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={() => setIsMenuOpen(false)}>Lore</Link>
             <Link to="/game" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={() => setIsMenuOpen(false)}>Game</Link>
-            <Link to="/meme" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={() => setIsMenuOpen(false)}>Meme</Link>
+            
             <Link to="/live" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg inline-flex items-center gap-1.5`} onClick={() => setIsMenuOpen(false)}>
               Live
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
