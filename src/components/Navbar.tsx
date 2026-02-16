@@ -1,4 +1,4 @@
-import { Fish, Menu, X } from 'lucide-react';
+import { Fish, Menu, X, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { BuyNowPopup } from '@/components/BuyNowPopup';
@@ -82,6 +82,15 @@ export const Navbar = () => {
           >
             Listings
           </a>
+          <a
+            href="/BigTrout_Whitepaper_Official.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm py-2 px-4 font-bold border border-foreground/20 rounded-md text-foreground/80 hover:bg-foreground/10 transition-all duration-300 inline-flex items-center gap-1.5"
+          >
+            <FileText className="w-4 h-4" />
+            Whitepaper
+          </a>
           <button
             onClick={() => setIsBuyOpen(true)}
             className="btn-fire text-sm py-2 px-4"
@@ -109,6 +118,10 @@ export const Navbar = () => {
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             </Link>
             <a href="#listings" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg`} onClick={(e) => { handleAnchorClick(e, '#listings'); setIsMenuOpen(false); }}>Listings</a>
+            <a href="/BigTrout_Whitepaper_Official.pdf" target="_blank" rel="noopener noreferrer" className={`${linkColor} hover:scale-110 transition-all font-bold text-lg inline-flex items-center gap-1.5`} onClick={() => setIsMenuOpen(false)}>
+              <FileText className="w-4 h-4" />
+              Whitepaper
+            </a>
           </div>
         </div>
       )}
