@@ -88,7 +88,7 @@ const exchangeLogos = [
   { name: 'Wasabi', logo: wasabiLogo, url: 'https://app.wasabi.xyz/?market=BigTroutUSDC&network=solana', alt: 'Trade BIGTROUT on Wasabi', category: 'dex' as const },
   // Listed & Verified
   { name: 'CoinGecko', logo: coingeckoLogo, url: 'https://www.coingecko.com/en/coins/the-big-trout', alt: 'View BIGTROUT on CoinGecko', category: 'dex' as const },
-  { name: 'CoinMarketCap', logo: coinmarketcapLogo, url: 'https://coinmarketcap.com/mobile/', alt: 'View BIGTROUT on CoinMarketCap', category: 'dex' as const },
+  { name: 'CoinMarketCap', logo: coinmarketcapLogo, url: 'https://coinmarketcap.com/currencies/the-big-trout/', alt: 'View BIGTROUT on CoinMarketCap', category: 'dex' as const },
   { name: 'DexScreener', logo: dexscreenerLogo, url: `https://dexscreener.com/solana/${CONTRACT_ADDRESS}`, alt: 'View BIGTROUT on DexScreener', category: 'dex' as const },
   { name: 'Coindar', logo: coindarLogo, url: 'https://coindar.org/en/event/the-big-trout-to-be-listed-on-weex-140441', alt: 'View BIGTROUT on Coindar', category: 'dex' as const },
   { name: 'Moontok', logo: moontokLogo, url: 'https://moontok.io/coins/the-big-trout', alt: 'View BIGTROUT on Moontok', category: 'dex' as const },
