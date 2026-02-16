@@ -29,7 +29,7 @@ serve(async (req) => {
     const fullPrompt = `Generate an image: A funny anime-style image of a big trout fish: ${prompt}. Anime art style, vibrant colors, meme-worthy, humorous. No text, no words, no letters, no captions, no watermarks on the image.`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-image-generation:generateContent?key=${GEMINI_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
