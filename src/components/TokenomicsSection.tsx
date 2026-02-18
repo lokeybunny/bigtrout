@@ -111,6 +111,11 @@ export const TokenomicsSection = () => {
                   LIVE
                 </span>
               )}
+              {vestingData?.source === 'fallback' && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted/30 text-muted-foreground text-xs">
+                  CACHED
+                </span>
+              )}
             </p>
           </div>
 
