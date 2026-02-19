@@ -77,8 +77,10 @@ export const TokenomicsSection = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const totalBurned = protocolData?.buybackBurn?.totalBurned || 0;
+  const burnedPercent = (totalBurned / 1_000_000_000) * 100;
   const lockedPercent = vestingData?.lockedPercent || 0;
-  const circulatingPercent = vestingData?.circulatingPercent || 100;
+  const circulatingPercent = Math.max(0, (vestingData?.circulatingPercent || 100) - burnedPercent);
 
   const staticCards = [
     { icon: TrendingUp, title: 'Total Supply', value: '1,000,000,000', description: 'One billion BIGTROUT tokens', color: 'pepe' },
@@ -188,8 +190,14 @@ export const TokenomicsSection = () => {
                 width: `${circulatingPercent}%`,
                 background: 'linear-gradient(90deg, hsl(345 45% 50%), hsl(345 55% 70%))',
               }} />
+              {burnedPercent > 0 && (
+                <div className="h-full transition-all duration-1000" style={{
+                  width: `${burnedPercent}%`,
+                  background: 'linear-gradient(90deg, hsl(20 80% 50%), hsl(0 70% 55%))',
+                }} />
+              )}
             </div>
-            <div className="flex justify-between mt-3 text-sm">
+            <div className="flex flex-wrap justify-between mt-3 text-sm gap-2">
               <span className="text-pepe flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(130 45% 38%)' }} />
                 Locked ({lockedPercent.toFixed(2)}%)
@@ -198,6 +206,12 @@ export const TokenomicsSection = () => {
                 <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(345 45% 50%)' }} />
                 Circulating ({circulatingPercent.toFixed(2)}%)
               </span>
+              {burnedPercent > 0 && (
+                <span className="flex items-center gap-2" style={{ color: 'hsl(20 80% 50%)' }}>
+                  <span className="w-3 h-3 rounded-full" style={{ background: 'hsl(20 80% 50%)' }} />
+                  Burned ({burnedPercent.toFixed(2)}%)
+                </span>
+              )}
             </div>
             
             {vestingData?.lastUpdated && (
