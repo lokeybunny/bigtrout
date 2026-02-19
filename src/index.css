@@ -170,20 +170,20 @@
     50% { transform: translateY(-20px); }
   }
   
-  /* Cherry blossom petal fall */
+  /* Rain blizzard */
   .animate-petal {
-    animation: petalFall 8s ease-in-out infinite;
+    animation: rainFall linear infinite;
   }
   
-  @keyframes petalFall {
+  @keyframes rainFall {
     0% { 
-      transform: translateY(-10vh) translateX(0) rotate(0deg);
+      transform: translateY(-10vh) translateX(0) rotate(15deg);
       opacity: 0;
     }
-    10% { opacity: 1; }
-    90% { opacity: 0.8; }
+    5% { opacity: 0.7; }
+    85% { opacity: 0.5; }
     100% { 
-      transform: translateY(100vh) translateX(40px) rotate(360deg);
+      transform: translateY(105vh) translateX(-60px) rotate(15deg);
       opacity: 0;
     }
   }
