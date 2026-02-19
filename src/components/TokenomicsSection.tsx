@@ -82,8 +82,9 @@ export const TokenomicsSection = () => {
   const lockedPercent = vestingData?.lockedPercent || 0;
   const circulatingPercent = Math.max(0, (vestingData?.circulatingPercent || 100) - burnedPercent);
 
+  const currentSupply = protocolData?.buybackBurn?.currentSupply || 1_000_000_000;
   const staticCards = [
-    { icon: TrendingUp, title: 'Total Supply', value: '1,000,000,000', description: 'One billion BIGTROUT tokens', color: 'pepe' },
+    { icon: TrendingUp, title: 'Total Supply', value: protocolLoading ? '...' : formatNumber(currentSupply), description: totalBurned > 0 ? `${formatNumber(totalBurned)} burned from 1B` : 'One billion BIGTROUT tokens', color: 'pepe' },
     { icon: Fish, title: 'Tax', value: '0%', description: 'No buy/sell tax - pure trading', color: 'pepe' },
     { icon: Zap, title: 'Contract', value: 'Renounced', description: 'Fully community owned', color: 'sakura' },
   ];
