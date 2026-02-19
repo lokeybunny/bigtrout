@@ -5,7 +5,7 @@ import sakuraGardenBg from '@/assets/sakura-garden-bg.jpg';
 
 interface ProtocolData {
   autoLP: { address: string; label: string; balance: number };
-  buybackBurn: { address: string; label: string; balance: number };
+  buybackBurn: { address: string; label: string; balance: number; totalBurned: number; currentSupply: number };
   lastUpdated: string;
 }
 
@@ -259,9 +259,14 @@ export const TokenomicsSection = () => {
               </div>
               <p className="text-muted-foreground text-sm mb-1 font-display tracking-wider">Automatic Buyback/Burn</p>
               <p className="font-display text-3xl font-bold text-sakura mb-1">
-                {protocolLoading ? '...' : formatNumber(protocolData?.buybackBurn?.balance || 0)}
+                {protocolLoading ? '...' : formatNumber(protocolData?.buybackBurn?.totalBurned || 0)}
               </p>
-              <p className="text-muted-foreground text-xs mb-2">BIGTROUT for buyback & burn</p>
+              <p className="text-muted-foreground text-xs mb-1">BIGTROUT burned</p>
+              {!protocolLoading && protocolData?.buybackBurn?.balance ? (
+                <p className="text-muted-foreground/70 text-xs mb-2">
+                  {formatNumber(protocolData.buybackBurn.balance)} pending burn
+                </p>
+              ) : <div className="mb-2" />}
               <a
                 href={`https://solscan.io/account/${protocolData?.buybackBurn?.address || '9zTWFwMGaTJWRjTupmD8kG7jKXCKYzQdmFziVbFn8mme'}`}
                 target="_blank"

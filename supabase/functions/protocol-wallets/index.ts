@@ -6,6 +6,7 @@ const corsHeaders = {
 };
 
 const BIGTROUT_MINT = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
+const TOTAL_SUPPLY = 1_000_000_000;
 const SOLANA_RPC = "https://api.mainnet-beta.solana.com";
 
 const PROTOCOL_WALLETS = {
@@ -52,16 +53,29 @@ async function getTokenBalance(walletAddress: string): Promise<number> {
   }
 }
 
+async function getTokenCurrentSupply(): Promise<number> {
+  try {
+    const result = await rpcCall("getTokenSupply", [BIGTROUT_MINT]);
+    return result?.value?.uiAmount || TOTAL_SUPPLY;
+  } catch (e) {
+    console.error("Error fetching token supply:", e.message);
+    return TOTAL_SUPPLY;
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const [autoLPBalance, buybackBurnBalance] = await Promise.all([
+    const [autoLPBalance, buybackBurnBalance, currentSupply] = await Promise.all([
       getTokenBalance(PROTOCOL_WALLETS.autoLP.address),
       getTokenBalance(PROTOCOL_WALLETS.buybackBurn.address),
+      getTokenCurrentSupply(),
     ]);
+
+    const totalBurned = TOTAL_SUPPLY - currentSupply;
 
     return new Response(
       JSON.stringify({
@@ -76,6 +90,8 @@ serve(async (req) => {
             address: PROTOCOL_WALLETS.buybackBurn.address,
             label: PROTOCOL_WALLETS.buybackBurn.label,
             balance: buybackBurnBalance,
+            totalBurned: totalBurned,
+            currentSupply: currentSupply,
           },
           lastUpdated: new Date().toISOString(),
         },
