@@ -164,7 +164,7 @@ export const TokenomicsSection = () => {
                 <Unlock className="w-7 h-7" style={{ color: 'hsl(210 25% 10%)' }} />
               </div>
               <p className="text-muted-foreground text-sm mb-1 font-display tracking-wider">Circulating Supply</p>
-              <p className="font-display text-3xl font-bold text-sakura mb-1">{loading ? '...' : formatNumber(vestingData?.totalUnlocked || 0)}</p>
+              <p className="font-display text-3xl font-bold text-sakura mb-1">{loading || protocolLoading ? '...' : formatNumber(Math.max(0, (vestingData?.totalUnlocked || 0) - totalBurned))}</p>
               <p className="text-muted-foreground text-xs">{loading ? '...' : `${circulatingPercent.toFixed(2)}% circulating`}</p>
             </div>
 
