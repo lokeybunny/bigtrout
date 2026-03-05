@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
 import { TokenomicsSection } from '@/components/TokenomicsSection';
@@ -12,8 +12,12 @@ import { ParticleField } from '@/components/ParticleField';
 import { usePerformanceMode } from '@/hooks/usePerformanceMode';
 
 const Index = () => {
-  const location = useLocation();
+  const navigate = useNavigate();
   const quality = usePerformanceMode();
+
+  useEffect(() => {
+    navigate('/warren', { replace: true });
+  }, [navigate]);
 
   useEffect(() => {
     if (location.hash) {
