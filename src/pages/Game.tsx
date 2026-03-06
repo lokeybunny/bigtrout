@@ -1,5 +1,5 @@
 import { Suspense, useState } from 'react';
-import { BuyNowPopup } from '@/components/BuyNowPopup';
+
 import { GameScene } from '@/components/game/GameScene';
 import raceMenuBg from '@/assets/game-landing-bg.jpeg';
 import raceHowtoBg from '@/assets/bigtrout-race-howto.png';
