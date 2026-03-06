@@ -1,10 +1,9 @@
-import { Lock, Unlock, Fish, Zap, TrendingUp, Clock, FileText, Flame, Droplets } from 'lucide-react';
+import { Lock, Unlock, Fish, Zap, TrendingUp, Clock, FileText, Flame } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import sakuraGardenBg from '@/assets/sakura-garden-bg.jpg';
 
 interface ProtocolData {
-  autoLP: { address: string; label: string; balance: number };
   buybackBurn: { address: string; label: string; balance: number; totalBurned: number; currentSupply: number };
   lastUpdated: string;
 }
@@ -242,28 +241,7 @@ export const TokenomicsSection = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* Auto LP */}
-            <div className="card-ukiyo p-6 text-center">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-xl flex items-center justify-center glow-ice" style={{
-                background: 'linear-gradient(135deg, hsl(200 60% 45%), hsl(200 70% 60%))',
-              }}>
-                <Droplets className="w-7 h-7" style={{ color: 'hsl(210 25% 10%)' }} />
-              </div>
-              <p className="text-muted-foreground text-sm mb-1 font-display tracking-wider">Automatic LP Function</p>
-              <p className="font-display text-3xl font-bold text-pepe mb-1">
-                {protocolLoading ? '...' : formatNumber(protocolData?.autoLP?.balance || 0)}
-              </p>
-              <p className="text-muted-foreground text-xs mb-2">BIGTROUT in LP pool</p>
-              <a
-                href={`https://solscan.io/account/${protocolData?.autoLP?.address || '5tEJqt89SqJGGycow9vJezKfDfnRUUKU9DFAS9J9YiMT'}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
-              >
-                View on Solscan →
-              </a>
-            </div>
+          <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
 
             {/* Buyback/Burn */}
             <div className="card-ukiyo p-6 text-center">
