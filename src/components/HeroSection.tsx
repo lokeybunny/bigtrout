@@ -167,12 +167,6 @@ export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={() => setIsBuyOpen(true)}
-            className="btn-fire"
-          >
-            Buy $BIGTROUT
-          </button>
           <a
             href="#live-chart"
             onClick={(e) => {
