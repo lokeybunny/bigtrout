@@ -58,14 +58,8 @@ export const Navbar = () => {
           </Link>
         </div>
 
-        {/* Mobile: Buy Now + menu button */}
+        {/* Mobile: menu button */}
         <div className="md:hidden flex items-center gap-2">
-          <button
-            onClick={() => setIsBuyOpen(true)}
-            className="btn-fire text-xs py-1.5 px-4 font-bold"
-          >
-            Buy Now
-          </button>
           <button className={`p-2 ${linkColor} transition-colors duration-300`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
