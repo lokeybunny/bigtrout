@@ -1,4 +1,4 @@
-import { Newspaper, BookOpen } from 'lucide-react';
+import { Newspaper, BookOpen, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const NewsLoreSection = () => {
