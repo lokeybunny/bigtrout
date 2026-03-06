@@ -258,7 +258,6 @@ const Game = () => {
           </div>
         </div>
       </div>
-      <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
       </>
     );
   }
