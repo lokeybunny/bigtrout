@@ -12,7 +12,7 @@ const ConditionalMusicPlayer = () => {
   return <MusicPlayer />;
 };
 import Index from "./pages/Index";
-import News from "./pages/News";
+
 import Lore from "./pages/Lore";
 import Live from "./pages/Live";
 import Game from "./pages/Game";
