@@ -7,61 +7,58 @@ export interface LoreChapter {
 
 export const loreChapters: LoreChapter[] = [
   {
-    id: 'the-beginning',
-    title: 'The Beginning',
+    id: 'the-trader',
+    title: 'The Trader',
+    emoji: '📉',
+    paragraphs: [
+      'BigTrout is an options & perps trader. He called the 2021 BTC Crash, the low, the April Tariff Drop & the current 2025–2026 Crypto Black Swan.',
+      'With years of experience in the space, teaching people how trading really works, giving alpha & edge — someone anonymously created a coin about him.',
+    ],
+  },
+  {
+    id: 'the-legend',
+    title: 'The Legend Grows',
+    emoji: '🐋',
+    paragraphs: [
+      '$BigTrout Mode became a motion for many whales in the space. Many people credited him for calling the $126K → $60K drop. BigTrout was rumoured to be a 9-figure Bitfinex whale.',
+      'In fact, he was short from $116,493 BTC to around $62,000… WOW!',
+    ],
+  },
+  {
+    id: 'trout-capital',
+    title: 'Trout Capital',
+    emoji: '🎓',
+    paragraphs: [
+      'Trout & Trout Capital have grown an enormous amount in the space and taught multiple people how to improve their trading.',
+      'Never once has he launched a memecoin — in fact, he barely even traded them!',
+    ],
+  },
+  {
+    id: 'the-pivot',
+    title: 'The Pivot',
+    emoji: '🔒',
+    paragraphs: [
+      'Upon the launch, BigTrout was given the creator fees. Instead of dumping on everyone and running, he decided to pivot to a plan.',
+      'At the first ATH, Trout locked $70,000+ worth of tokens. To this day, he has done over $140,000 back into the project — $110,000+ and rising in buybacks. Not a single token sold.',
+      'Don\'t believe it? Verify the wallets in the Whitepaper!',
+    ],
+  },
+  {
+    id: 'the-mission',
+    title: 'The Mission',
     emoji: '🌊',
     paragraphs: [
-      'In the vast, unpredictable ocean of crypto, where memecoins splash into existence every day, one fishy tale stands out: the legend of $BIGTROUT – the token born from pure happenstance, community vibes, and one trader\'s unexpected rise to "accidental founder" status.',
-      'It all started in the chill waters of early February 2026...',
+      'The atmosphere & lore of the token is BigTrout\'s intelligence, alpha & edge in markets. Now trying to "go to the moon" as the kids call it, and help everyone stack for the bear market.',
+      'Retail interest never really returned to crypto this cycle, and there are a lot of Solana devs who rug innocent people. BigTrout wants to be different — help the ecosystem heal, bring confidence, leadership, honesty & transparency back to the space.',
     ],
   },
   {
-    id: 'the-creator',
-    title: 'A Mysterious Launch',
-    emoji: '🎣',
-    paragraphs: [
-      'A mysterious creator (who remains shadowy to this day) launched $BIGTROUT on Pump.fun, inspired by the trader known as @BigTrout300 – a down-to-earth, retail-turned-trader guy who calls himself "A Trader That Is A Trout." His bio? Simple. Relatable. He\'s the intern at BitFinex, shares anon tips, and keeps his space friendly and fun for everyone.',
-      'This creator didn\'t just make a random coin. They modeled it after BigTrout\'s whole vibe – the hardworking trader who grinded through years of $20 frozen pizzas, minimum credit card payments, retail electronics jobs, and finally breaking even (or making minor profits) in trading. No whales, no hidden agendas – just a genuine dude helping little traders 24/7.',
-    ],
-  },
-  {
-    id: 'the-twist',
-    title: 'The Twist That Hooked Everyone',
-    emoji: '🪝',
-    paragraphs: [
-      'But here\'s the twist that hooked the whole school: the creator redirected all the creator fees straight to @BigTrout300\'s Solana wallet. He had zero involvement in the launch at first – didn\'t create it, didn\'t promote it, didn\'t even know it existed until his DMs exploded and fees started flowing in.',
-      'Picture this: One day he\'s just tweeting charts and helping folks, next thing – boom – a memecoin bearing his name is live, and money\'s pouring into his wallet from creator fees. Shaking, sweating, and totally conflicted, he jumped on X to be 100% transparent.',
-    ],
-  },
-  {
-    id: 'the-promise',
-    title: 'The Promise',
-    emoji: '🤝',
-    paragraphs: [
-      '"I legit did nothing."',
-      '"I want to make sure everyone is happy & chill."',
-      '"I am NEVER selling this or doing anything to harm what you guys have bought."',
-      '"I am true to my roots."',
-      'Instead of dumping or extracting, he used those fees to buy back $BIGTROUT and hold it for the community. He locked up massive chunks of his own supply – first around $70K worth near ATHs, then all his ~45,000,000 tokens (valued over $100K at points) for a full year. Proof? On-chain, trackable wallets shared openly.',
-    ],
-  },
-  {
-    id: 'the-growth',
-    title: 'The Lore Grows',
-    emoji: '📈',
-    paragraphs: [
-      'From there, the lore grew organically. He streamed for hours, chatting voice-to-voice with the fam. Scored two CEX listings (no paid fees – pure hustle). Got verified on major platforms like Jupiter, MEXC, LBank, Moonshot, CMC, CG, and more.',
-      'He looped fees through DLMM pools, added liquidity manually (even with whale help), and kept everything transparent. Asked the community: "Where should we list next?" – no shady OTC deals allowed. Teamed up with Moonshot for spotlight features and easy mobile trading. Ran giveaways to spread the love and encourage holding.',
-    ],
-  },
-  {
-    id: 'the-moral',
-    title: 'The Moral of the Tale',
+    id: 'the-community',
+    title: 'The Community',
     emoji: '🐟',
     paragraphs: [
-      'The moral of the $BIGTROUT tale? It\'s not your typical "degen launch to rug" story. It\'s about an everyday trader who got handed something unexpected, chose transparency over greed, locked his bags, supported the little guys, and turned a random memecoin into a community-driven movement.',
-      'BigTrout didn\'t start the fire... but he fanned the flames with integrity, locked liquidity, and real talk. Now the Trout Squad swims together – because in this pond, trust is the ultimate bait.',
-      '$BIGTROUT – Where a trader became the legend, one honest tweet at a time. Dive in, hold strong, and let\'s make waves!',
+      'We have an awesome community, sick memes, & real traders here.',
+      'Come hang out in the pond! $BigTrout Mode.',
     ],
   },
 ];
