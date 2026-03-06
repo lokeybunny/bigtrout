@@ -28,7 +28,7 @@ const spotListings: ListingItem[] = [
   { name: 'Moonshot', detail: 'supported' },
   { name: 'Fomo', detail: 'verified + tracked' },
   { name: 'Moby', detail: 'tracked + trading + airdrops' },
-  { name: 'Phemex Onchain', detail: 'supported spot trading (zero-gas)' },
+  { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
   { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
 ];
 
