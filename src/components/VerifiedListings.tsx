@@ -13,14 +13,11 @@ const spotListings: ListingItem[] = [
   { name: 'LBank', detail: 'USDT', badge: 'highest vol' },
   { name: 'BitMart', detail: 'USDT' },
   { name: 'KuCoin Alpha', detail: 'USDT' },
-  { name: 'Poloniex', detail: 'USDT' },
   { name: 'KCEX', detail: 'USDT' },
   { name: 'WEEX', detail: 'USDT' },
   { name: 'Bilaxy', detail: 'USDT' },
-  { name: 'Ourbit', detail: 'USDT' },
   { name: 'BTSE', detail: 'USDT' },
-  { name: 'Blynex', detail: 'USDT' },
-  { name: 'BigONE Alpha', detail: '' },
+  { name: 'MEXC', detail: 'Meme+' },
   { name: 'MEXC', detail: 'Meme+' },
   { name: 'Bitrue Alpha', detail: '' },
   { name: 'Pionex', detail: 'USDT Spot', badge: 'live Feb 12' },
@@ -31,7 +28,7 @@ const spotListings: ListingItem[] = [
   { name: 'Moonshot', detail: 'supported' },
   { name: 'Fomo', detail: 'verified + tracked' },
   { name: 'Moby', detail: 'tracked + trading + airdrops' },
-  { name: 'Phemex Onchain', detail: 'supported spot trading (zero-gas)' },
+  { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
   { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
 ];
 
@@ -48,7 +45,6 @@ const walletListings: ListingItem[] = [
   { name: 'Coin98 Wallet', detail: 'officially verified' },
   { name: 'Binance Web3 Wallet', detail: 'full DEX swaps' },
   { name: 'Bitget Wallet', detail: 'in-wallet Solana DEX' },
-  { name: 'Tangem Hardware Wallet', detail: 'dedicated coin page + full Solana support' },
 ];
 
 const stakingLpListings: ListingItem[] = [
