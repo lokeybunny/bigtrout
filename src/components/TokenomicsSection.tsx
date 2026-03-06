@@ -4,7 +4,6 @@ import { supabase } from '@/integrations/supabase/client';
 import sakuraGardenBg from '@/assets/sakura-garden-bg.jpg';
 
 interface ProtocolData {
-  autoLP: { address: string; label: string; balance: number };
   buybackBurn: { address: string; label: string; balance: number; totalBurned: number; currentSupply: number };
   lastUpdated: string;
 }
