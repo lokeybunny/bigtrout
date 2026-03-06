@@ -25,10 +25,10 @@ export const NewsLoreSection = () => {
             <p className="text-muted-foreground text-lg max-w-md mx-auto md:mx-0 mb-8">
               Follow BigTrout's trust-building journey — transparency, listings, and community moves.
             </p>
-            <Link to="/news" className="btn-fire inline-flex items-center gap-3 text-base">
-              <Newspaper className="w-5 h-5" />
+            <a href="https://t.me/BigTrout300Solana" target="_blank" rel="noopener noreferrer" className="btn-fire inline-flex items-center gap-3 text-base">
+              <ExternalLink className="w-5 h-5" />
               View All Updates
-            </Link>
+            </a>
           </div>
 
           <div id="lore" className="text-center">
