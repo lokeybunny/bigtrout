@@ -92,13 +92,6 @@ const Game = () => {
               🏁 PLAY GAME
             </button>
 
-            <button
-              onClick={() => setIsBuyOpen(true)}
-              className="btn-fire px-10 py-3 text-lg font-bold"
-              style={{ fontFamily: 'Bangers, cursive', letterSpacing: '0.08em' }}
-            >
-              💰 BUY $BIGTROUT
-            </button>
 
             <a
               href="https://bigtrout.fun"
