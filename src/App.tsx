@@ -12,7 +12,7 @@ const ConditionalMusicPlayer = () => {
   return <MusicPlayer />;
 };
 import Index from "./pages/Index";
-import News from "./pages/News";
+
 import Lore from "./pages/Lore";
 import Live from "./pages/Live";
 import Game from "./pages/Game";
@@ -31,7 +31,7 @@ const App = () => (
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/news" element={<News />} />
+          
           <Route path="/lore" element={<Lore />} />
           <Route path="/live" element={<Live />} />
           <Route path="/game" element={<Game />} />
