@@ -28,7 +28,6 @@ const spotListings: ListingItem[] = [
   { name: 'Fomo', detail: 'verified + tracked' },
   { name: 'Moby', detail: 'tracked + trading + airdrops' },
   { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
-  { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
 ];
 
 const perpsListings: ListingItem[] = [
