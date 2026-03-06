@@ -1,11 +1,9 @@
 import { Fish, Menu, X, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { BuyNowPopup } from '@/components/BuyNowPopup';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isBuyOpen, setIsBuyOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
@@ -60,14 +58,8 @@ export const Navbar = () => {
           </Link>
         </div>
 
-        {/* Mobile: Buy Now + menu button */}
+        {/* Mobile: menu button */}
         <div className="md:hidden flex items-center gap-2">
-          <button
-            onClick={() => setIsBuyOpen(true)}
-            className="btn-fire text-xs py-1.5 px-4 font-bold"
-          >
-            Buy Now
-          </button>
           <button className={`p-2 ${linkColor} transition-colors duration-300`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -91,12 +83,6 @@ export const Navbar = () => {
             <FileText className="w-4 h-4" />
             Whitepaper
           </a>
-          <button
-            onClick={() => setIsBuyOpen(true)}
-            className="btn-fire text-sm py-2 px-4"
-          >
-            Buy Now
-          </button>
         </div>
       </div>
 
@@ -125,7 +111,6 @@ export const Navbar = () => {
           </div>
         </div>
       )}
-      <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
     </nav>
   );
 };

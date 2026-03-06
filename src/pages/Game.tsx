@@ -1,5 +1,5 @@
 import { Suspense, useState } from 'react';
-import { BuyNowPopup } from '@/components/BuyNowPopup';
+
 import { GameScene } from '@/components/game/GameScene';
 import raceMenuBg from '@/assets/game-landing-bg.jpeg';
 import raceHowtoBg from '@/assets/bigtrout-race-howto.png';
@@ -41,7 +41,7 @@ const HOW_IT_WORKS = [
 
 const Game = () => {
   const [screen, setScreen] = useState<Screen>('menu');
-  const [isBuyOpen, setIsBuyOpen] = useState(false);
+  
 
   if (screen === 'menu') {
     return (
@@ -92,13 +92,6 @@ const Game = () => {
               🏁 PLAY GAME
             </button>
 
-            <button
-              onClick={() => setIsBuyOpen(true)}
-              className="btn-fire px-10 py-3 text-lg font-bold"
-              style={{ fontFamily: 'Bangers, cursive', letterSpacing: '0.08em' }}
-            >
-              💰 BUY $BIGTROUT
-            </button>
 
             <a
               href="https://bigtrout.fun"
@@ -133,7 +126,7 @@ const Game = () => {
           </div>
         </div>
       </div>
-      <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
+      
       </>
     );
   }
@@ -258,7 +251,6 @@ const Game = () => {
           </div>
         </div>
       </div>
-      <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
       </>
     );
   }
@@ -316,7 +308,6 @@ const Game = () => {
         }
       `}</style>
     </div>
-    <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
     </>
   );
 };
