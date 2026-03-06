@@ -111,7 +111,6 @@ export const Navbar = () => {
           </div>
         </div>
       )}
-      <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
     </nav>
   );
 };

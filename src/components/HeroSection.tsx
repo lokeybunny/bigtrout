@@ -11,7 +11,7 @@ interface HeroSectionProps {
 export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
   const isMobile = useIsMobile();
   const [scrollY, setScrollY] = useState(0);
-  const [isBuyOpen, setIsBuyOpen] = useState(false);
+  
   const sectionRef = useRef<HTMLElement>(null);
   const rafRef = useRef<number>(0);
 

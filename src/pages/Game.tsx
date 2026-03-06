@@ -315,7 +315,6 @@ const Game = () => {
         }
       `}</style>
     </div>
-    <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
     </>
   );
 };
