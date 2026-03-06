@@ -83,12 +83,6 @@ export const Navbar = () => {
             <FileText className="w-4 h-4" />
             Whitepaper
           </a>
-          <button
-            onClick={() => setIsBuyOpen(true)}
-            className="btn-fire text-sm py-2 px-4"
-          >
-            Buy Now
-          </button>
         </div>
       </div>
 
