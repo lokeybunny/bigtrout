@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { BuyNowPopup } from '@/components/BuyNowPopup';
+
 import { useIsMobile } from '@/hooks/use-mobile';
 import heroBanner from '@/assets/bigtrout-hero-banner.png';
 import type { QualityLevel } from '@/hooks/usePerformanceMode';
