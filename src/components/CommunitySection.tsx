@@ -37,8 +37,7 @@ import solanaWalletLogo from '@/assets/logos/solana-wallet.png';
 import bitgetWalletLogo from '@/assets/logos/bitget-wallet.png';
 import pionexLogo from '@/assets/logos/pionex.png';
 import bingxLogo from '@/assets/logos/bingx.png';
-import phemexLogo from '@/assets/logos/phemex.png';
-import tangemLogo from '@/assets/logos/tangem.png';
+import wasabiLogo from '@/assets/logos/wasabi.svg';
 import wasabiLogo from '@/assets/logos/wasabi.svg';
 
 const CONTRACT_ADDRESS = "EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG";
