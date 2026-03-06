@@ -14,7 +14,6 @@ import coingeckoLogo from '@/assets/logos/coingecko.png';
 import bitmartLogo from '@/assets/logos/bitmart-2025.png';
 import btseLogo from '@/assets/logos/btse-2026.png';
 import weexLogo from '@/assets/logos/weex.png';
-import weexLogo from '@/assets/logos/weex.png';
 import coindarLogo from '@/assets/logos/coindar.png';
 import kucoinLogo from '@/assets/logos/kucoin.png';
 import dexscreenerLogo from '@/assets/logos/dexscreener.png';
