@@ -18,7 +18,6 @@ const spotListings: ListingItem[] = [
   { name: 'Bilaxy', detail: 'USDT' },
   { name: 'BTSE', detail: 'USDT' },
   { name: 'MEXC', detail: 'Meme+' },
-  { name: 'MEXC', detail: 'Meme+' },
   { name: 'Bitrue Alpha', detail: '' },
   { name: 'Pionex', detail: 'USDT Spot', badge: 'live Feb 12' },
   { name: 'PumpSwap', detail: 'SOL', badge: 'main DEX pool' },
@@ -28,7 +27,6 @@ const spotListings: ListingItem[] = [
   { name: 'Moonshot', detail: 'supported' },
   { name: 'Fomo', detail: 'verified + tracked' },
   { name: 'Moby', detail: 'tracked + trading + airdrops' },
-  { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
   { name: 'CoinGecko', detail: 'fully tracked (live chart, MC, 18+ markets)' },
 ];
 
