@@ -64,8 +64,6 @@ const exchangeLogos = [
   { name: 'BTSE', logo: btseLogo, url: 'https://www.btse.com/en/trading/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BTSE', category: 'cex' as const },
   { name: 'MEXC', logo: mexcLogo, url: 'https://www.mexc.com/exchange/BIGTROUT_USDT?_from=search_spot_trade', alt: 'Trade BIGTROUT on MEXC Meme+', category: 'cex' as const },
   { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue Alpha', category: 'cex' as const },
-  { name: 'MEXC', logo: mexcLogo, url: 'https://www.mexc.com/exchange/BIGTROUT_USDT?_from=search_spot_trade', alt: 'Trade BIGTROUT on MEXC Meme+', category: 'cex' as const },
-  { name: 'Bitrue', logo: bitrueLogo, url: 'https://www.bitrue.com/alpha/sol/bigtrout-EKwF2HD6X4rHHr4322EJeK9QBGkqhpHZQSanSUmWkecG', alt: 'Trade BIGTROUT on Bitrue Alpha', category: 'cex' as const },
   { name: 'BingX', logo: bingxLogo, url: 'https://bingx.com/en/perpetual/BIGTROUT-USDT', alt: 'Trade BIGTROUT on BingX', category: 'cex' as const },
   { name: 'Pionex', logo: pionexLogo, url: 'https://www.pionex.com/en/trade/BIGTROUT_USDT/Bot', alt: 'Trade BIGTROUT on Pionex', category: 'cex' as const },
   // DEX & Platforms
