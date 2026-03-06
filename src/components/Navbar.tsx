@@ -1,11 +1,9 @@
 import { Fish, Menu, X, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { BuyNowPopup } from '@/components/BuyNowPopup';
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isBuyOpen, setIsBuyOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
