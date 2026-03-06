@@ -1,4 +1,4 @@
-import { Lock, Unlock, Fish, Zap, TrendingUp, Clock, FileText, Flame, Droplets } from 'lucide-react';
+import { Lock, Unlock, Fish, Zap, TrendingUp, Clock, FileText, Flame } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import sakuraGardenBg from '@/assets/sakura-garden-bg.jpg';
