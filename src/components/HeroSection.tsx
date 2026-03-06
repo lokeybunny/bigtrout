@@ -189,7 +189,6 @@ export const HeroSection = ({ quality = 'high' }: HeroSectionProps) => {
         </div>
       )}
     </section>
-    <BuyNowPopup open={isBuyOpen} onOpenChange={setIsBuyOpen} />
     </>
   );
 };
