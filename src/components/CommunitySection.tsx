@@ -27,7 +27,7 @@ import coin98Logo from '@/assets/logos/coin98.png';
 import cryptoComLogo from '@/assets/logos/crypto-com.png';
 import kcexLogo from '@/assets/logos/kcex.png';
 import bilaxyLogo from '@/assets/logos/bilaxy.png';
-import bigoneLogo from '@/assets/logos/bigone.svg';
+import pumpswapLogo from '@/assets/logos/pumpswap.png';
 import pumpswapLogo from '@/assets/logos/pumpswap.png';
 import meteoraLogo from '@/assets/logos/meteora.svg';
 import raydiumLogo from '@/assets/logos/raydium.png';
