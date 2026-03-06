@@ -45,7 +45,6 @@ const walletListings: ListingItem[] = [
   { name: 'Coin98 Wallet', detail: 'officially verified' },
   { name: 'Binance Web3 Wallet', detail: 'full DEX swaps' },
   { name: 'Bitget Wallet', detail: 'in-wallet Solana DEX' },
-  ];
 ];
 
 const stakingLpListings: ListingItem[] = [
