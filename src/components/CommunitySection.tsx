@@ -64,7 +64,7 @@ const exchangeLogos = [
   { name: 'LBank', logo: lbankLogo, url: 'https://www.lbank.com/trade/bigtrout_usdt', alt: 'Trade BIGTROUT on LBank', category: 'cex' as const },
   { name: 'BitMart', logo: bitmartLogo, url: 'https://www.bitmart.com/en-US/trade/BIGTROUT_USDT?type=spot', alt: 'Trade BIGTROUT on BitMart', category: 'cex' as const },
   { name: 'KuCoin', logo: kucoinLogo, url: 'https://www.kucoin.com/announcement/en-kucoin-alpha-has-listed-token-bigtrout-and-usor?utm_source=social_listing_2026_twitter&utm_medium=social_media_pos', alt: 'Trade BIGTROUT on KuCoin Alpha', category: 'cex' as const },
-  { name: 'Poloniex', logo: poloniexLogo, url: 'https://www.poloniex.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Poloniex', category: 'cex' as const },
+  { name: 'KCEX', logo: kcexLogo, url: 'https://www.kcex.com/exchange/BIGTROUT_USDT', alt: 'Trade BIGTROUT on KCEX', category: 'cex' as const },
   { name: 'KCEX', logo: kcexLogo, url: 'https://www.kcex.com/exchange/BIGTROUT_USDT', alt: 'Trade BIGTROUT on KCEX', category: 'cex' as const },
   { name: 'WEEX', logo: weexLogo, url: 'https://www.weex.com/spot/BIGTROUT-USDT?vipCode=ipqs', alt: 'Trade BIGTROUT on WEEX', category: 'cex' as const },
   { name: 'Bilaxy', logo: bilaxyLogo, url: 'https://bilaxy.com/trade/BIGTROUT_USDT', alt: 'Trade BIGTROUT on Bilaxy', category: 'cex' as const },
