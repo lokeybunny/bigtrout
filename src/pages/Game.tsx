@@ -41,7 +41,7 @@ const HOW_IT_WORKS = [
 
 const Game = () => {
   const [screen, setScreen] = useState<Screen>('menu');
-  const [isBuyOpen, setIsBuyOpen] = useState(false);
+  
 
   if (screen === 'menu') {
     return (
